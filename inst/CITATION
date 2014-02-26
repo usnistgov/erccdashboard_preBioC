@@ -1,0 +1,7 @@
+citHeader("Please cite our paper when you use the erccdashboard for analysis.
+This is a placeholder citation, because our manuscript is still under review.")
+
+textVersion = 
+	"Munro, SA, Lund S, Pine PS, et al. (Under Review, 2014). Assessing Technical 
+Performance in Gene Expression Experiments with External Spike-in RNA Control 
+Ratio Mixtures."

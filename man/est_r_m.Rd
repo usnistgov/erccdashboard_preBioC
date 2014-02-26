@@ -1,0 +1,26 @@
+\name{est_r_m}
+\alias{est_r_m}
+\title{Estimate the mRNA fraction differences for the pair of samples using
+replicate data}
+\usage{
+est_r_m(expDat)
+}
+\arguments{
+  \item{expDat}{list, contains input data and stores
+  analysis results}
+}
+\description{
+Estimate the mRNA fraction differences for the pair of
+samples using replicate data
+}
+\details{
+This is the first function to run after an expDat structure
+is initialized using initDat, because it is needed for all
+additional analysis. An r_m of 1 indicates that the two
+sample types under comparison have similar mRNA fractions
+of total RNA. The r_m estimate is used to adjusted the
+expected ERCC mixture ratios in this analysis and may
+indicate a need for a different sample normalization
+approach.
+}
+

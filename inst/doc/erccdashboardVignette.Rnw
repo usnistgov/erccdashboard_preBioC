@@ -1,0 +1,441 @@
+%\VignetteIndexEntry{erccdashboard examples}
+
+\documentclass{article}
+\usepackage{fullpage}
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\SweaveOpts{keep.source=TRUE}
+\SweaveOpts{width=7, height=7}
+\DefineVerbatimEnvironment{Sinput}{Verbatim} {xleftmargin=1em}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{xleftmargin=1em}
+\DefineVerbatimEnvironment{Scode}{Verbatim}{xleftmargin=1em}
+\fvset{listparameters={\setlength{\topsep}{0pt}}}
+\renewenvironment{Schunk}{\vspace{\topsep}}{\vspace{\topsep}}
+<<echo=false>>=
+options(width=60, continue = "  ")
+#options(SweaveHooks=list(fig=function()
+#                par(mar=c(5.1,4.1,1.1,2.1))))
+@    
+\title{{\tt erccdashboard} Package Vignette}
+\author{Sarah A. Munro}
+\maketitle
+
+This vignette describes the use of the erccdashboard R package to analyze 
+External RNA Control Consortium (ERCC) spike-in control ratio mixtures in gene
+expression experiments. Analysis is shown for two types of samples spiked with
+ERCC control ratio mixtures from the SEQC project
+\begin{itemize}
+  \item Rat toxicogenomics treatment and control samples for different drug
+  treatments
+  \item Human reference RNA samples from the MAQC I project, Universal Human 
+  Reference RNA (UHRR) and Human Brain Reference RNA (HBRR)
+\end{itemize}
+
+A subset of the large data set produced in the SEQC study is provided here as 
+examples. The three sets of example data are: 
+
+\begin{enumerate}
+  \item Rat toxicogenomics RNA-Seq gene expression count data
+  \item UHRR/HBRR RNA-Seq gene expression count data
+  \item UHRR/HBRR Microarray gene expression fluorescent intensity data
+\end{enumerate}
+
+
+\section{Rat Toxicogenomics Example: MET (methimazole treatment) and CTL 
+(control) Experiment}
+\subsection{Load data and define input parameters}
+Load the testerccdashboard package. 
+<<loadLibrary,results=hide,echo=TRUE>>=
+library( "erccdashboard" )
+@
+Load the package gene expression data.
+<<loadExampleData, keep.source=TRUE>>=
+data(SEQC.Example)
+@
+
+The R workspace should now contain 5 objects
+\begin{itemize}
+  \item COH.array.UHRR.HBRR - Fluorescent signal data from an Illumina 
+        beadarray microarray experiment
+  \item COH.RatTox.ILM.MET.CTL.countTable - RNA-Seq count data from a
+        rat toxicogenomics experiment
+  \item COH.RatTox.ILM.MET.CTL.totalReads - total sequenced reads factors for 
+        each column in the corresponding rat experiment count table
+  \item Lab5.ILM.UHRR.HBRR.countTable - RNA-Seq count data from the SEQC
+        interlaboratory study with UHRR and HBRR
+  \item Lab5.ILM.UHRR.HBRR.totalReads - total sequenced reads factors for 
+        each column in the corresponding UHRR/HBRR count table
+\end{itemize}
+
+Take a look at the count table for the MET experiment.
+<<inspectRatCount,keep.source=TRUE>>=
+head(COH.RatTox.ILM.MET.CTL.countTable)
+COH.RatTox.ILM.MET.CTL.totalReads
+@
+The first column of the count table, Feature, contains unique names for all
+the transcripts that were quantified in this experiment. The remaining columns 
+represent replicates of the pair of samples, in this count table 
+the control sample is labeled CTL and the treatment sample is labeled MET. An 
+underscore is included to separate the sample names from the replicate numbers 
+during analysis. This column name format Sample\textunderscore{}Rep is required 
+for the columns of any input count table.
+
+These input count tables also must be unnormalized count data, because the 
+default differential expression testing of
+RNA-Seq experiments in the erccdashboard is done with the QuasiSeq package, 
+which requires the use of integer count data. During the erccdashboad analysis 
+the input count data will be normalized using library size factors. These factors
+can be provided by the user as the input argument repNormFactor, a 
+vector of total reads. The example total reads vectors we provide here were
+derived from the FASTQ files associated with each column in the count tables. 
+Alternatively, if repNormFactor is undefined (or NULL) for an RNA-Seq analysis 
+then a vector of total mapped reads (column sums of a count table) will be 
+calculated and used for normalization. 
+
+\subsection{Quick analysis: runDashboard}
+To run the default analysis function runDashboard on the MET-CTL rat 
+toxicogenomics RNA-Seq experiment, the following input arguments are required:
+
+<<defineInputData,keep.source=TRUE>>=
+datType = "count" # count for RNA-Seq data, array for microarray data
+expTable = COH.RatTox.ILM.MET.CTL.countTable # the expression measure table
+repNormFactor = COH.RatTox.ILM.MET.CTL.totalReads # the library size factors
+filenameRoot = "COH.ILM" # user defined filename prefix for results files
+sample1Name = "MET" # name for sample 1 in the experiment
+sample2Name = "CTL" # name for sample 2 in the experiment
+erccmix = "RatioPair" # name of ERCC mixture design, "RatioPair" is default
+erccdilution = 1/100 # dilution factor used for Ambion spike-in mixtures
+spikeVol = 1 # volume (in microliters) of diluted spike-in mixture added to 
+             #   total RNA mass
+totalRNAmass = 0.500 # mass (in micrograms) of total RNA 
+choseFDR = 0.1 # user defined false discovery rate (FDR), default is 0.05
+@
+
+For any experiment the sample spiked with ERCC Mix 1 is sample1Name and the 
+sample spiked with ERCC Mix 2 is sample2Name. In this experiment 
+sample1Name = MET and sample2Name = CTL. For a more robust experimental design 
+the reverse spike-in design could be created using additional replicates of the
+treatment and control samples. ERCC Mix 2 would be spiked into MET samples and 
+ERCC Mix 1 would be spiked into CTL control replicates. 
+
+The dilution factor of the pure Ambion ERCC mixes prior to spiking into total 
+RNA samples is erccdilution. The amount of diluted ERCC mix spiked into
+the total RNA sample is spikeVol (units are $\mu$L). The mass of total RNA 
+spiked with the diluted ERCC mix is totalRNAmass (units are $\mu$g).
+
+The final required input parameter, choseFDR, is the False Discovery Rate (FDR) 
+for differential expression testing. A typical choice would be 0.05 (5\% FDR), 
+so this is the default choseFDR value. For the rat data sets a more liberal FDR 
+was used, choseFDR = 0.1.
+
+The function runDashboard.R is provided for convenient default erccdashboard 
+analysis. Execution of the runDashboard function calls the default functions for
+erccdashboard analysis and reports parameters and progress to the R console. The
+functions called within runDashboard.R are also available to the user (details 
+provided in Section 4). 
+All data and analysis results are stored in the list object expDat. For convenience 
+the main diagnostic figures are saved to a pdf file and the expDat object is 
+saved to an .RData object named using the filenameRoot provided by the user.
+
+<<runDashboardSEQCcount, keep.source=TRUE>>=
+expDat <- runDashboard(datType = "count",
+                       expTable = COH.RatTox.ILM.MET.CTL.countTable,
+                       repNormFactor = COH.RatTox.ILM.MET.CTL.totalReads,
+                       filenameRoot = "COH.ILM",sample1Name = "MET",
+                       sample2Name = "CTL",erccmix = "RatioPair",
+                       erccdilution = 1/100, spikeVol = 1,
+                       totalRNAmass = 0.500, choseFDR = 0.1)
+@
+
+\subsection{Results of dashboard analysis}
+Look at the structure of expDat. The summary function will give a top level view
+of the list structure. The str function will give more detail. It is a good idea
+to set the max.level argument in the str function, because by the end of the 
+analysis the expDat structure is quite large.
+<<initializeData,keep.source=TRUE>>=
+summary(expDat)
+@
+The figures from the analysis are stored in \verb|expDat$Figures|. The four main
+diagnostic figures that are saved to pdf are the dynRangePlot, rocPlot, 
+lodrERCCPlot, and maPlot.
+\clearpage
+\begin{center}
+<<ratPlotA,fig=TRUE >>=
+expDat$Figures$dynRangePlot
+@
+\end{center}
+For this particular experiment the relationship between abundance and signal for
+the ERCC controls show that the measurement results span a 2$^{15}$ dynamic range.
+These ERCC mixtures were designed to span a 2$^{20}$ dynamic range, but there was 
+insufficient evidence to reliably quantify ERCC transcripts at low 
+abundances.
+\clearpage
+\begin{center}
+<<ratPlotB,fig=TRUE >>=
+expDat$Figures$rocPlot
+@
+\end{center}
+The receiver operator characteristic (ROC) curve and the Area Under the Curve (AUC)
+statistic provide evidence of the diagnostic power for detecting differential expression
+in this rat toxicogenomics experiment. As expected with increased fold change,
+diagnostic power increases. The AUC summary statistic for different experiments
+can be used to compare diagnostic performance.
+\clearpage
+\begin{center}
+<<ratPlotC,fig=TRUE >>=
+expDat$Figures$lodrERCCPlot
+@
+\end{center}
+By modeling the relationship between average signal and p-values we can obtain 
+Limit of Detection of Ratios (LODR) estimates for each differential fold change 
+(or Ratio,indicated by color) and a threshold p-value, p.thresh, indicated by 
+the dotted black line. LODR values can be compared between
+experiments to evaluate the ability to detect differences between samples as a function
+of transcript abundance.
+\clearpage
+\begin{center}
+<<ratPlotD,fig=TRUE >>=
+expDat$Figures$maPlot
+@
+\end{center}
+An MA plot (Ratio of Signals vs Average Signals) shows the ratio measurements of
+transcripts in the pair of samples as a function of abundance. The ERCC control 
+ratios measurements are coded to indicate which controls are above a given LODR 
+(solid circles) or below the LODR (open circles). This plot also shows the v
+ariability in ratio measurements as a function of dynamic range and the bias in 
+control ratio measurements (r$_m$), which is influenced by the mRNA fraction difference
+between the pair of samples.
+\clearpage
+
+\section{SEQC Reference RNA (UHRR and HBRR) Examples}
+All UHRR and HBRR experiments for the SEQC interlaboratory and interplatform 
+analysis were performed with aliquots from single large samples of UHRR and 
+HBRR. The count data and microarray data provided here are from experiments 
+using the same original UHRR and HBRR samples.
+
+\subsection{RNA-Seq UHRR vs. HBRR experiment analysis}
+<<SEQCMainCount keep.source=TRUE>>=
+expDat <- runDashboard(datType="count", expTable=Lab5.ILM.UHRR.HBRR.countTable,
+                       repNormFactor=Lab5.ILM.UHRR.HBRR.totalReads, 
+                       filenameRoot="Lab5", sample1Name = "UHRR", 
+                       sample2Name = "HBRR", erccmix = "RatioPair",
+                       erccdilution = 1, spikeVol = 50, 
+                       totalRNAmass = 2.5*10^(3), choseFDR = 0.01)
+@
+\clearpage
+\begin{center}
+<<seqcCountPlotA,fig=TRUE >>=
+expDat$Figures$dynRangePlot
+@
+\end{center}
+Compared with the rat toxicogenomics experiment the UHRR/HBRR experiment from Lab 5 
+captures the full dynamic range of 2$^{20}$ in the ERCC mixture design. This 
+difference can be attributed to an much greater sequencing depth in the 
+UHRR/HBRR experiments at each laboratory (full fluidic capacity of an 
+instrument) compared to the MET-CTL rat toxicogenomics experiment. This 
+difference is apparent in the total reads vectors for the two different 
+experiments:
+<<totalReadsCompare>>=
+COH.RatTox.ILM.MET.CTL.totalReads
+Lab5.ILM.UHRR.HBRR.totalReads
+@
+\clearpage
+\begin{center}
+<<seqcCountPlotB,fig=TRUE >>=
+expDat$Figures$rocPlot
+@
+\end{center}
+
+Given the sequencing depth of the Lab 5 UHRR/HBRR experiment it is unsurprising that 
+the ROC curve results show that almost all of the spiked ERCC transcripts were 
+detected and tested for differential expression. At first glance, one may attempt
+to compare these ROC curve and AUC results to the rat toxicogenomics results, but
+this is ill-advised because the samples under comparison are different. Not only
+is the sequencing depth different for the two experiments, but the UHRR/HBRR 
+sample transcripts also have high levels of differential expression, whereas 
+the rat MET/CTL samples have much lower levels of differential expression. This
+difference in differential expression is shown in the spread and density of the 
+points representing the endogenous transcripts in the MA plots for each experiment.
+ 
+\clearpage
+\begin{center}
+<<seqcCountPlotC,fig=TRUE >>=
+expDat$Figures$lodrERCCPlot
+@
+\end{center}
+
+Much lower LODR estimates are found in the Lab 5 UHRR/HBRR experiment compared to the 
+rat experiment. One can also see that the p-values in this analysis are much smaller
+than those in the rat experiment due to the large amount of differentially expressed
+transcripts in the UHRR/HBRR comparison.
+\clearpage
+\begin{center}
+<<seqcCountPlotD,fig=TRUE >>=
+expDat$Figures$maPlot
+@
+\end{center}
+
+Variability in the ratio measurements in this experiment is much lower than in
+the rat experiment. This is due to the nature of the replication in the two experiments.
+In the rat experiment the 3 replicates for each condition represent biological 
+replicates, while in the UHRR/HBRR experiment the 4 replicates represent library 
+preparation replicates of the same source samples and each library replicate count column was 
+a sum of multiple fluidic replicates of the same library replicate.
+The bias in control ratios in this experiment is much greater than what was observed in
+the rat experiment. This bias is likely due to the known mRNA fraction difference
+between the UHRR and HBRR RNA samples.
+
+\clearpage
+\subsection{Microarray UHRR vs. HBRR experiment analysis}
+Unnormalized fluorescent signals are expected for microarray data, the data will
+be log2 transformed for DE testing with limma. The repNormFactor variable should
+be NULL for microarray analysis, and repNormFactor is set to NULL if it is 
+missing in the list of arguments for the runDashboard function. Each array 
+replicate is normalized by the 75th quantile fluoresence intensity 
+value of that array.
+<<SEQCMainArray, keep.source=TRUE>>=
+expDat <- runDashboard(datType="array", expTable=COH.array.UHRR.HBRR,
+                       repNormFactor=NULL,
+                       filenameRoot = "COH.Array",
+                       sample1Name = "UHRR", sample2Name="HBRR",
+                       erccmix = "RatioPair", erccdilution = 1, 
+                       spikeVol = 50, totalRNAmass = 2.5*10^(3), choseFDR=0.01)
+@
+\clearpage
+\begin{center}
+<<seqcArrayPlotA,fig=TRUE >>=
+expDat$Figures$dynRangePlot
+@
+\end{center}
+
+As expected for a hybridization measurement technology all ERCC transcripts were
+quantified in this microarray experiment, but although the designed dynamic 
+range is fully captured in this experiment the signal compression of high 
+abundance transcripts and the noise floor for low abundance transcripts are 
+apparent.
+\clearpage
+\begin{center}
+<<seqcArrayPlotB,fig=TRUE >>=
+expDat$Figures$rocPlot
+@
+\end{center}
+
+Comparison of these ROC curves and AUC statistics to the results in the RNA-Seq 
+UHRR/HBRR experiment from Lab 5 clearly show improvements in diagnostic power 
+for the Lab 5 data set compared to this microarray data set. Although the 
+relative cost of running microarrays compared with using the full fluidic 
+capacity of a sequencing instrument should be considered in this comparison 
+and at lower sequencing depths diagnostic performance between the
+two technologies would likely be more comparable.
+\clearpage
+\begin{center}
+<<seqcArrayPlotC,fig=TRUE >>=
+expDat$Figures$lodrERCCPlot
+@
+\end{center}
+
+LODR estimates for microarray data are derived from the intersection with the 
+threshold p-value at the lowest signal. The same FDR was chosed for the RNA-Seq 
+and microarray measurements of the UHRR/HBRR samples, it is interesting to note 
+that different threshold p-values were derived for each type of experiment using
+the same FDR = 0.01, p.thresh = 0.1512 for RNA-Seq at Lab 5 and 
+p.thresh = 0.0093 for the microarray experiment.
+\clearpage
+\begin{center}
+<<seqcArrayPlotD,fig=TRUE >>=
+expDat$Figures$maPlot
+@
+\end{center}
+
+The variability and bias in the control ratio measurements 
+in the microarray data measurement of UHRR/HBRR is similar to the observations in
+the RNA-Seq UHRR/HBRR experiment.
+
+\section{Comparison of Performance Between Experiments}
+The performance metrics provided here derived from measurements of ERCC ratios in
+gene expression experiments (AUC, LODR, r$_m$, and the standard deviations of 
+the ERCC ratio measurements) can be used to assess performance between experiments within
+the same laboratory, or between different laboratories or technology platforms.
+
+\clearpage
+
+\section{Analysis Details: Advanced Use of Functions in runDashboard}
+
+\subsection{Initialize the expDat List}
+initDat
+
+
+\subsection{Estimate the mRNA Fraction Difference Between Samples}
+est_r_m
+
+
+\subsection{Assess Dynamic Range}
+
+expDat <- dynRangePlot(expDat, errorBars = T)
+
+
+\subsection{Test for Differential Expression}
+geneExprTest
+
+
+
+\subsection{Assess Diagnostic Performance with ROC Curve and AUC Statistic}
+expDat <- erccROC(expDat)
+
+
+\subsection{Estimate Limit of Detection of Ratios}
+
+expDat = estLODR(expDat, kind = "ERCC", prob = 0.9)
+expDat = estLODR(expDat, kind = "Sim", prob = 0.9)
+
+
+\subsection{Apply LODR to MA plots and Gene Lists}
+
+expDat <- annotLODR(expDat)
+
+
+\subsection{Saving Figures to PDF}
+saveERCCPlots(expDat)
+
+
+\subsection{Saving expDat to an RData file}
+    cat("\nSaving expDat list to .RData file...")
+    nam <- paste(expDat$sampleInfo$filenameRoot, "expDat", sep = ".")
+    assign(nam, expDat)
+    to.save <- ls()
+    save(list = to.save[grepl(pattern = nam, x = to.save)], file = paste0(expDat$sampleInfo$filenameRoot, 
+        ".RData"))
+    cat("\nAnalysis completed.")
+
+
+\subsection{Analysis of Alternative Spike-in Designs}
+By default the package is configured to analyze the ERCC ratio mixtures produced
+by Ambion (ERCC ExFold RNA Spike-In Mixes, Catalog Number 4456739). This pair of
+control ratio mixtures were designed to have 1:1, 4:1, 1:1.5, and 1:2 ratios of 92
+distinct RNA transcripts (23 different RNA control sequences are in each of these 
+four ratio subpools). Alternative ERCC RNA control ratio mixture designs can be 
+produced using the NIST DNA Plasmid Library for External Spike-in Controls (NIST 
+Standard Reference Material 2374, 
+https://www-s.nist.gov/srmors/certificates/2374.pdf). For example, a pair of RNA
+contol mixtures could be created with a ternary ratio design, three subpools of 
+RNA controls with either no change (1:1) or 2-fold increased (2:1) and 2-fold
+decreased (1:2) relative abundances between the pair of mixtures (Mix 1/Mix 2).
+To use alternative spike-in mixture designs with the dashboard a csv file must
+be provided to the package with the argument userMixFile for the initDat function. 
+
+If all samples from both conditions were only spiked with a single ERCC mixture 
+(e.g. Ambion Catalog Number 4456740, ERCC RNA Spike-In Mix) a limited subset of 
+the package functions can be used. For initDat use ERCCMixes="Single" and  
+\verb|est_r_m| and \verb|dynRangePlot| functions can then be used to examine the
+mRNA fraction differences for the pair of samples and evaluate the dynamic range
+of the experiment. 
+
+\section{Notes on R version and session information}
+The results shown in this R vignette are the same as the results shown in our
+manuscript and were obtained in R version 3.0.2 with the following session 
+information.
+<<sessionData>>=
+sessionInfo()
+@
+ 
+\end{document}
