@@ -362,12 +362,11 @@ the same laboratory, or between different laboratories or technology platforms.
 \section{Analysis Details: Advanced Use of Functions in runDashboard}
 
 \subsection{Initialize the expDat List}
-initDat
+\verb|initDat|
 
 
 \subsection{Estimate the mRNA Fraction Difference Between Samples}
-est_r_m
-
+\verb|est_r_m|
 
 \subsection{Assess Dynamic Range}
 
