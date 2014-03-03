@@ -15,7 +15,7 @@ erccdashboard produces graphs and performance metrics for gene
 \tabular{ll}{
 Package: \tab erccdashboard\cr
 Type: \tab Package\cr
-Version: \tab 0.9.4\cr
+Version: \tab 0.9.5\cr
 URL: \tab http://nist.gov/erccControls\cr
 Depends: \tab 
 R (>= 3.0), ggplot2, gridExtra\cr
@@ -46,9 +46,6 @@ Built: \tab R 3.0.2; ; 2014-02-14 21:36:51 UTC; unix\cr
 
 Index:
 \preformatted{
-ERCCDef                 ERCC lengths and GC content
-ERCCMix1and2            Ambion ERCC control ratio mixture design and
-                        transcript concentrations
 annotLODR               Annotate signal-abundance and ratio-abundance
                         plots with LODR
 dynRangePlot            Produce signal-abundance plot to evaluate

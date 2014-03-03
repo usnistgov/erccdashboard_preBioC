@@ -1,7 +1,6 @@
 #' Produce Receiver Operator Characteristic (ROC) Curves and AUC statistics
 #'
 #' @param expDat    list, contains input data and stores analysis results
-#' @param pValDat   string, Pval csv file name, default is NULL
 #' 
 #' @export
 #' 
@@ -32,9 +31,9 @@ erccROC <- function(expDat,pValDat = NULL ){
   
   
   # Read in the p.values from the file
-  if (is.null(pValDat)){
+  #if (is.null(pValDat)){
     pValDat = read.csv(file=paste(filenameRoot,"ERCC","Pvals.csv"),header=T)  
-  }
+  #}
   if(is.null(pValDat)){
     stop("No P-values for ERCCs")
   }

@@ -1,4 +1,5 @@
 testDEArray <- function(expDat){
+  library(limma)
   y <- expDat$Transcripts
   choseFDR <- expDat$sampleInfo$choseFDR
   if(is.null(choseFDR)){
@@ -37,7 +38,7 @@ testDEArray <- function(expDat){
       p.thresh<-max(res$adj.P.Val[res$qvals<choseFDR])
     }
   }
-  
+  res$Feature <- row.names(res)
   
   ERCCres<- res[grep("ERCC-",row.names(res)),]
   

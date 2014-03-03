@@ -1,14 +1,11 @@
 #' Produce signal-abundance plot to evaluate dynamic range
 #'
 #' @param expDat    list, contains input data and stores analysis results
-#' @param errorBars logical, if TRUE error bars will be provided for replicates
 #' 
 #' @export
 
-dynRangePlot <- function(expDat, errorBars = NULL){
-  if (is.null(errorBars)){
-    errorBars = TRUE
-  }
+dynRangePlot <- function(expDat){
+  
   sampleInfo <- expDat$sampleInfo
   plotInfo <- expDat$plotInfo
   erccInfo <- expDat$erccInfo
@@ -20,6 +17,15 @@ dynRangePlot <- function(expDat, errorBars = NULL){
   avexlabel= plotInfo$ERCCxlabelAve
   
   expressDat = expDat$normERCCDat
+  
+  reps <- (ncol(expressDat[-c(1)]))/2
+  
+  errorBars = TRUE
+  if (reps < 3){
+    errorBars = FALSE
+    cat(paste0("\nLess than 3 replicates per sample, no sd values ",
+               "or error bars will be available.\n"))
+  }
   designMat = expDat$designMat
   FCcode = erccInfo$FCcode 
   

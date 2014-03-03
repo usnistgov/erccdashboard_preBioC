@@ -54,6 +54,7 @@ runDashboard <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
                          userMixFile=NULL){
 
   # Initialize expDat structure
+  # Required for all subsequent functions
   expDat <- initDat(datType=datType, expTable=expTable, 
                     repNormFactor=repNormFactor, filenameRoot=filenameRoot,
                     sample1Name=sample1Name, sample2Name=sample2Name, 
@@ -61,32 +62,42 @@ runDashboard <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
                     spikeVol=spikeVol, totalRNAmass=totalRNAmass,
                     choseFDR=choseFDR,userMixFile=userMixFile)
   
-  # Estimate mRNA fraction of total RNA difference for two samples
+  # Estimate the difference in mRNA fraction of total RNA for the two samples
+  # Required for all subsequent functions
   expDat <- est_r_m(expDat)
   
-  # Test for differential expression
+  # Evaluate the dynamic range of the experiment (Signal-Abundance plot)
+  # Not required for subsequent functions
+  expDat <- dynRangePlot(expDat)
+  
+  # Test for differential expression between samples
+  # Required for all subsequent functions
   expDat <- geneExprTest(expDat)
   
   # Generate ROC curves and AUC statistics
+  # Not Required for subsequent functions
   expDat <- erccROC(expDat)
   
   # Estimate LODR for ERCC controls
+  # Required for subsequent functions
   expDat = estLODR(expDat,kind = "ERCC", prob=0.9)
   
   # Estimate LODR using Simulated data from endogenous transcripts
+  # Not required for subsequent functions
   expDat = estLODR(expDat,kind = "Sim", prob=0.9)
   
-  # Evaluate dynamic range of experiment with Signal-Abundance plot
-  expDat <- dynRangePlot(expDat, errorBars = T)
-  
   # Generate MA plot (Ratio vs. Average Signal) with ERCC controls below LODR 
-  #   annotated also flag genes based on LODR threshold from DE gene list
+  #   annotated also flags possible False Negatives on DE gene list based on LODR 
+  #   threshold from DE gene list
+  # Not required for subsequent functions
   expDat <- annotLODR(expDat)
   
   
-  #
+  ### Saving plots and results
+  # Convenience function to save 4 main figures to PDF
   saveERCCPlots(expDat)
   
+  # Save expDat to a RData file for later use
   cat("\nSaving expDat list to .RData file...")
   nam <- paste(expDat$sampleInfo$filenameRoot, "expDat",sep = ".")
   assign(nam,expDat)
@@ -96,7 +107,7 @@ runDashboard <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
   save(list = to.save[grepl(pattern = nam,x=to.save)],
        file=paste0(expDat$sampleInfo$filenameRoot,".RData"))
   
-  
+  # End analysis and return expDat to global environ. / workspace
   cat("\nAnalysis completed.")
   return(expDat)
   
