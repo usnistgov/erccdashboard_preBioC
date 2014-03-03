@@ -25,7 +25,7 @@ Imports:
     gtools
 License: GPL (>=2)
 Collate:
-    compareReps.R dashboardFile.R dynRangePlot.R 
+    compareReps.R dashboardFile.R dynRangePlot.R
     dynRangePlotLODR.R erccROC.R estLODR.R estMnLibeFactor.R est_r_m.R 
     geneExprTest.R getDesignMat.R initDat.R libeSizeNorm.R loadERCCInfo.R 
     loadExpMeas.R loadExpMeasFromRaw.R maConcPlot.R meltExpDat.R multiplot.R 

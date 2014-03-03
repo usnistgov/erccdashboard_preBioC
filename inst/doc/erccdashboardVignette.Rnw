@@ -357,55 +357,43 @@ gene expression experiments (AUC, LODR, r$_m$, and the standard deviations of
 the ERCC ratio measurements) can be used to assess performance between experiments within
 the same laboratory, or between different laboratories or technology platforms.
 
-\clearpage
-
 \section{Analysis Details: Advanced Use of Functions in runDashboard}
+The analysis functions contained in the convenience wrapper function 
+\verb|runDashboard| can also be used directly by the user. There are constraints
+on the order in which the functions are called. View the runDashboard script to see comments describing the analysis functions and the ordering constraints:
+<<viewDashboardOrder>>=
+runDashboard
+@
 
-\subsection{Initialize the expDat List}
-\verb|initDat|
+\subsection{Flexibility in Differential Expression Testing}
+The \verb|geneExprTest| function wraps the QuasiSeq differential expression 
+testing package for datType = "count" or uses the limma package for differential
+expression testing if datType = "array". The function uses the DE testing 
+p-value results and choseFDR parameter to select a threshold p-value for LODR 
+estimation.
+In the case of count data if a correctly formatted csv file is provided with the
+necessary DE test results, then geneExprTest will bypass DE testing (with 
+reduced runtime). The function will look for a csv file with the name 
+"filenameRoot.quasiSeq.res.csv" and columns with names "Feature", "pvals", and 
+"qvals" must be in the file.
 
+\subsection{Options for LODR Estimation}
+The default behavior of runDashboard is to use the \verb|estLODR| function to
+obtain an LODR estimate using empirical data from the ERCCs and a model-based 
+simulation using the endogenous genes in the sample. The type of LODR estimation
+is selected using the argument kind in the \verb|estLODR| function. The other 
+parameter that may be adjusted is the probability for the LODR estimate, in the 
+default analysis prob = 0.9 is selected.
 
-\subsection{Estimate the mRNA Fraction Difference Between Samples}
-\verb|est_r_m|
+\subsection{Options for Printing Plots to File}
+The function savePlots will save selected figures to a pdf file. The default 
+is the 4 manuscript figures to a single page (plotsPerPg = "manuscript"). 
+If plotsPerPg = "single" then each plot is placed on an 
+individual page in one pdf file. If plotlist is not defined (plotlist = NULL)
+then all plots in \verb|expDat$Figures| are printed to the file.
 
-\subsection{Assess Dynamic Range}
-
-expDat <- dynRangePlot(expDat, errorBars = T)
-
-
-\subsection{Test for Differential Expression}
-geneExprTest
-
-
-
-\subsection{Assess Diagnostic Performance with ROC Curve and AUC Statistic}
-expDat <- erccROC(expDat)
-
-
-\subsection{Estimate Limit of Detection of Ratios}
-
-expDat = estLODR(expDat, kind = "ERCC", prob = 0.9)
-expDat = estLODR(expDat, kind = "Sim", prob = 0.9)
-
-
-\subsection{Apply LODR to MA plots and Gene Lists}
-
-expDat <- annotLODR(expDat)
-
-
-\subsection{Saving Figures to PDF}
-saveERCCPlots(expDat)
-
-
-\subsection{Saving expDat to an RData file}
-    cat("\nSaving expDat list to .RData file...")
-    nam <- paste(expDat$sampleInfo$filenameRoot, "expDat", sep = ".")
-    assign(nam, expDat)
-    to.save <- ls()
-    save(list = to.save[grepl(pattern = nam, x = to.save)], file = paste0(expDat$sampleInfo$filenameRoot, 
-        ".RData"))
-    cat("\nAnalysis completed.")
-
+To print 4 plots from manuscript to a single page pdf file use plotsPerPg = 
+"manuscript" in the \verb|saveERCCPlots| function or to create a multiple page pdf of all plots produced use plotsPerPg = "single". 
 
 \subsection{Analysis of Alternative Spike-in Designs}
 By default the package is configured to analyze the ERCC ratio mixtures produced
@@ -416,7 +404,7 @@ four ratio subpools). Alternative ERCC RNA control ratio mixture designs can be
 produced using the NIST DNA Plasmid Library for External Spike-in Controls (NIST 
 Standard Reference Material 2374, 
 https://www-s.nist.gov/srmors/certificates/2374.pdf). For example, a pair of RNA
-contol mixtures could be created with a ternary ratio design, three subpools of 
+control mixtures could be created with a ternary ratio design, three subpools of 
 RNA controls with either no change (1:1) or 2-fold increased (2:1) and 2-fold
 decreased (1:2) relative abundances between the pair of mixtures (Mix 1/Mix 2).
 To use alternative spike-in mixture designs with the dashboard a csv file must
@@ -424,10 +412,11 @@ be provided to the package with the argument userMixFile for the initDat functio
 
 If all samples from both conditions were only spiked with a single ERCC mixture 
 (e.g. Ambion Catalog Number 4456740, ERCC RNA Spike-In Mix) a limited subset of 
-the package functions can be used. For initDat use ERCCMixes="Single" and  
-\verb|est_r_m| and \verb|dynRangePlot| functions can then be used to examine the
-mRNA fraction differences for the pair of samples and evaluate the dynamic range
-of the experiment. 
+the package functions can be used (\verb|initDat|, \verb|est_r_m|, and 
+\verb|dynRangePlot|. For \verb|initDat| use ERCCMixes="Single" and \verb|est_r_m| and 
+\verb|dynRangePlot| functions can then be used to examine the mRNA fraction 
+differences for the pair of samples and evaluate the dynamic range of the 
+experiment. 
 
 \section{Notes on R version and session information}
 The results shown in this R vignette are the same as the results shown in our

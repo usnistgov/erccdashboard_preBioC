@@ -17,6 +17,7 @@ belowLODR <- function(expDat,pvalDat = NULL){
   }
   if (datType == "array"){
     pval = expDat$Results$limma.res
+    pval$A <- 2^(expDat$Results$limma.res$AveExpr)
     pval$logFC <- abs(pval$logFC)
   }
   #cat(paste("\nTotal Number of features tested for differential expression",
@@ -43,7 +44,7 @@ belowLODR <- function(expDat,pvalDat = NULL){
     #print(logFC)
     #estIdx <- match(logFCcut, abs(log2(expDat$erccInfo$FCcode$FC)))
     estLODRraw <- as.numeric(as.character(LODRtable$Count[i]))
-    estLODRnorm <- as.numeric(LODRtable$Log2Count_normalized[i])
+    #estLODRnorm <- as.numeric(LODRtable$Log2Count_normalized[i])
     if (estLODRraw != "Inf"){
       cat(paste0("\nFor abs(log2(fold change)) less than or equal to ", 
                  round(logFCcut,digits=3), 
@@ -52,11 +53,11 @@ belowLODR <- function(expDat,pvalDat = NULL){
       
       
       if(datType == "array"){
-        pval$A <-  expDat$Results$maDatAll$A
+        
         cat(paste("and below LODR estimate =",
                    estLODRraw,"average log2 fluorescent signal\n"))
         
-        belowLODR <- pvalCutoff[((pvalCutoff$A < estLODRnorm)&
+        belowLODR <- pvalCutoff[((pvalCutoff$A < estLODRraw)&
                                    ((abs(pvalCutoff$logFC) < logFCcut)|
                                       (is.na(abs(pvalCutoff$logFC))))),]
 #                             (logFC >= logFCcut) & 

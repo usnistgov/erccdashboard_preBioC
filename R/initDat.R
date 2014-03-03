@@ -42,6 +42,8 @@ initDat <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
                     spikeVol = 1, totalRNAmass = 1,choseFDR = 0.05,
                     userMixFile =NULL){
   cat("\nInitializing the expDat list structure...\n")
+  
+  expDat<-NULL
   myXLimMA = c(-10,15)
   myYLimMA = c(-4,4)
   myXLim = c(-10,15)

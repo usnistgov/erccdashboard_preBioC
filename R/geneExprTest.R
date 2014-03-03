@@ -9,8 +9,7 @@
 #' correctly formatted csv file is provided with the necessary DE test results, 
 #' then geneExprTest will bypass DE testing (with reduced runtime). The function
 #' will look for a csv file with the name "filenameRoot.quasiSeq.res.csv" and 
-#' columns corresponding to "Feature", "pvals", and "qvals" should be in the 
-#' file.
+#' columns with names "Feature", "pvals", and "qvals" must be in the file
 #' 
 #' @export
 
