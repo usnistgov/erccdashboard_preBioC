@@ -184,7 +184,7 @@ est_r_m <- function(expDat){
       geom_text(data = textDat, aes(x = AveConc, y = (r_m.hat - nominal),
                                     label = gsub("ERCC-00","",Feature)),
                 colour = "black", size = 6,show_guide = F,angle = 90) + 
-      geom_hline(yintercept = r_m.mn) + colScale + 
+      geom_hline(yintercept = r_m.mn) + colScale + theme_bw()
       theme(legend.justification=c(1,0), legend.position=c(1,0))  
   }else{
     plotSiter_m = ggplot(r_m, aes(x = AveConc, y = r_m.hat - nominal, 
@@ -193,7 +193,8 @@ est_r_m <- function(expDat){
       geom_errorbar(aes(ymin = ymin,ymax = ymax),alpha = 0.7) + 
       coord_cartesian(xlim = myXLim, ylim = c(-1.5,1.5)) + xlab(avexlabel) + 
       ylab(expression(log(r[m]))) + geom_hline(yintercept = r_m.mn) + 
-      colScale + theme(legend.justification=c(1,0), legend.position=c(1,0))
+      colScale + theme_bw() + 
+      theme(legend.justification=c(1,0), legend.position=c(1,0))
   }
   
   expDat$idColsAdj <- idCols

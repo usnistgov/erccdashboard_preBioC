@@ -359,22 +359,14 @@ the same laboratory, or between different laboratories or technology platforms.
 
 \section{Analysis Details: Advanced Use of Functions in runDashboard}
 The analysis functions contained in the convenience wrapper function 
-\verb|runDashboard| can also be used directly by the user. There are constraints
-<<<<<<< HEAD
-on the order in which the functions are called. View the \verb|runDashboard| 
-script to see comments describing the analysis functions and the ordering constraints:
-<<viewDashboardOrder>>=
-runDashboard
-@
+\verb|runDashboard| can also be used directly by the user.
 Comments are provided above each analysis step included in \verb|runDashboard| to
 describe the purpose and ordering constraints.
-=======
-on the order in which the functions are called. View the runDashboard script to see comments describing the analysis functions and the ordering constraints:
+View the runDashboard script to see comments describing the analysis functions and the ordering constraints:
 <<viewDashboardOrder>>=
 runDashboard
 @
 
->>>>>>> 3cd779df43b0084d19d9bacfd1e7b4b2e4a2db6b
 \subsection{Flexibility in Differential Expression Testing}
 The \verb|geneExprTest| function wraps the QuasiSeq differential expression 
 testing package for datType = "count" or uses the limma package for differential

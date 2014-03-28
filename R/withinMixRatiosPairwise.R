@@ -2,13 +2,12 @@ withinMixRatios <- function(expDat){
   # calculate deviation of relative abundances of transcripts within a mix from
   #the nominal concentration
   
-  #dynRangeDat <- expDat$Results$dynRangeDat
+ 
   colScale <- expDat$plotInfo$colScale
   fillScale <- expDat$plotInfo$fillScale
+  datType <- expDat$sampleInfo$datType
   sampleNames <- expDat$sampleNames
-  #dynRangeDat_o <- dynRangeDat[order(dynRangeDat$Ratio,
-  #                                   dynRangeDat$Sample,
-  #                                   dynRangeDat$Conc,decreasing = T),]
+  
   playDat <- merge(expDat$normERCCDat, expDat$erccInfo$idColsSRM)
   playDat$Feature <- as.factor(as.character(playDat$Feature))
   
@@ -24,13 +23,10 @@ withinMixRatios <- function(expDat){
   Ratio <- NULL
   Sample <- NULL
   Feature <- NULL
-  #for (i in 1:2)){
-    #subDynSample <- subset(dynRangeDat_o, Sample == 
-    #                   as.character(levels(dynRangeDat_o$Sample))[i])
   for (j in 1:nlevels(playDat$Ratio)){
     subDyn <- subset(playDat, 
                      (Ratio == levels(playDat$Ratio)[j]))
-    print(nrow(subDyn))
+    #print(nrow(subDyn))
     nominalMix1 <- NULL
     nominalMix2 <- NULL
     observedMix1 <- NULL
@@ -39,79 +35,113 @@ withinMixRatios <- function(expDat){
     aveCtl2<-NULL
     FeaturePair <- NULL
     Ratio <- NULL
+    GCrat <- NULL
+    Lengthrat <- NULL
     #Sample <- NULL
     for (k in 2:nrow(subDyn)){
       #print(nrow(subDyn))
+      
       nominalMix1[k-1] <- log2(subDyn$Conc1[k-1]) - log2(subDyn$Conc1[k])
       nominalMix2[k-1] <- log2(subDyn$Conc2[k-1]) - log2(subDyn$Conc2[k])
       aveCtl1[k-1]<- log2((subDyn$Mean1[k-1] + subDyn$Mean1[k])/2) 
       aveCtl2[k-1]<- log2((subDyn$Mean1[k-1] + subDyn$Mean1[k])/2) 
       observedMix1[k-1] <- log2(subDyn$Mean1[k-1]) - log2(subDyn$Mean1[k])
-      observedMix2[k-1] <- log2(subDyn$Mean2[k-1]) - log2(subDyn$Mean2[k])
+      observedMix2[k-1] <- log2(subDyn$Mean2[k-1]) - log2(subDyn$Mean2[k])  
+      
       FeaturePair[k-1] <- paste(subDyn$Feature[k],
                                 subDyn$Feature[k-1],sep = ".")
       Ratio[k-1] <- as.character(subDyn$Ratio[k-1])
-      #Sample[k-1]<- as.character(subDyn$Sample[k-1])
-      
+      GCrat[k-1] <- subDyn$GC[k-1]/subDyn$GC[k]
+      Lengthrat[k-1] <- subDyn$Length[k-1]/subDyn$Length[k]
     }
-    #Feature <- as.character(subDyn$Feature)
-    #Ratio <- as.character(subDyn$Ratio)
-    #Sample <- as.character(subDyn$Sample)
+    
     
     addRes1 <- data.frame(Feature = FeaturePair, Ratio = Ratio,
                           Nominal = nominalMix1, Observed = observedMix1, 
                           AveCtl = aveCtl1,
-                          Sample = sampleNames[1])
+                          Sample = sampleNames[1], GCrat = GCrat, 
+                          Lengthrat = Lengthrat)
     addRes2 <- data.frame(Feature = FeaturePair, Ratio = Ratio,
                           Nominal = nominalMix2, Observed = observedMix2,
                           AveCtl = aveCtl2,
-                          Sample = sampleNames[2])
+                          Sample = sampleNames[2], GCrat = GCrat, 
+                          Lengthrat = Lengthrat)
     #addRes <- cbind(subDyn, addRes)
     addRes <- rbind(addRes1, addRes2)
     perERCCRatios <- rbind(perERCCRatios, addRes)
-    print(perERCCRatios)
+    #print(perERCCRatios)
   }
-  #}
-  perERCCRatios$NomFactor <- as.factor(round(perERCCRatios$Nominal))
   
+  perERCCRatios$NomFactor <- as.factor(round(abs(perERCCRatios$Nominal)))
   
   betwCtlRats <- ggplot(perERCCRatios, aes(x = NomFactor, y = Observed)) + 
     geom_boxplot(aes(x= NomFactor), alpha = 0.5) + 
     geom_point(aes(colour = Ratio,shape = Sample),size = 5,alpha = 0.7) + 
     ylab("Observed Log2 Ratios for pairs of ERCCs") + 
     xlab("Nominal Log2 Ratios for pairs of ERCCs") + 
-    facet_grid(~Sample) + colScale + fillScale #+ geom_text(aes(label = gsub("ERCC-00", "",Feature)),angle = 315)
-  
-  print(betwCtlRats)
+    facet_grid(~Sample) + colScale + fillScale + theme_bw() #+ geom_text(aes(label = gsub("ERCC-00", "",Feature)),angle = 315)
   
   residRats <- ggplot(perERCCRatios, aes(x = NomFactor, y = Observed-Nominal)) +
     geom_boxplot(aes(x= NomFactor), alpha = 0.5) + 
     geom_point(aes(colour = Ratio,shape = Sample),size = 5,alpha = 0.7) + 
-    ylab("Observed/Nominal Log2 Ratios for pairs of ERCCs") + 
-    xlab("Nominal Log2 Ratios for pairs of ERCCs") + facet_grid(~Sample) + 
-    colScale + fillScale + geom_abline(aes(intercept = 0, slope =0))#+ geom_text(aes(label = gsub("ERCC-00", "",Feature)),angle = 315)
+    ylab(paste0("Residuals (Observed - Nominal) of Log2 Ratios \n", 
+         "for Pairs of ERCC Controls Within Each Mixture")) + 
+    xlab(paste0("Nominal Log2 Ratios \n",
+                "for Pairs of ERCC Controls Within Each Mixture")) +
+    facet_grid(~Sample) + 
+    colScale + fillScale + geom_abline(aes(intercept = 0, slope =0)) + theme_bw()
   
-  print(residRats)
-  
-  ERCCEffects <- ggplot(dynRangeDat, aes(x=Conc, y = (value.Ave-Conc)-median(value.Ave-Conc)))+ geom_boxplot()+geom_point(aes(colour = Ratio, shape = Sample),size = 5, alpha = 0.5) + colScale + fillScale
-  
-  ggplot(perERCCRatios) + geom_point(aes(x = Nominal, y = Observed-Nominal, colour = Ratio, shape = Sample),size = 5)
+  perERCCRatios$Resid <- (perERCCRatios$Observed - perERCCRatios$Nominal)
+  getVertices = by(perERCCRatios, perERCCRatios[,"Ratio"], function(myHull) chull(myHull$AveCtl,myHull$Resid))
+  for (t in 1:(length(getVertices))){
+    findVerts = perERCCRatios[which(perERCCRatios$Ratio == names(getVertices[t])),]
+    # handle the 1st time through
+    if (t==1){
+      getVerts = findVerts[getVertices[[t]],]
+    }else{	
+      getVerts = rbind(getVerts, findVerts[getVertices[[t]],] )		
+    }	
+  }
 
-  ggplot(perERCCRatios, aes(x = Nominal, y = Observed-Nominal)) + geom_boxplot(aes()) + geom_point(aes(colour = Ratio, shape = Sample),size = 5) + ylab("Observed Ratio - Nominal Ratio for pairs of ERCCs") + xlab("Nominal Ratios for pairs of ERCCs") + facet_grid(~Ratio)
+  medList <- as.data.frame(tapply(perERCCRatios$Resid,perERCCRatios[,"Ratio"],median))
+  medList$Ratio <- row.names(medList)
+  names(medList)[1]<- "medianResid"
+  medList$Ratio <- as.factor(medList$Ratio)
+  medList$medianResid <- as.numeric(medList$medianResid)
   
-  ggplot(perERCCRatios, aes(x = Nominal, y = Observed)) + geom_point(aes(colour = Ratio, shape = Sample),size = 5) + ylab("Observed Ratios for pairs of ERCCs") + xlab("Nominal Ratios for pairs of ERCCs") + facet_grid(~Ratio)
+  ratVerts <- ggplot()+
+    geom_polygon(data = getVerts, aes(x = AveCtl, 
+                                      y = Resid, 
+                                      fill = Ratio), alpha = 0.15) +
+    geom_point(data = perERCCRatios, aes(x = AveCtl,
+                                         y = Resid,
+                                         colour = Ratio, 
+                                         shape = Sample), 
+               size = 5, alpha = 0.5) + 
+    ylab(paste0("Residuals (Observed - Nominal) of Log2 Ratios \n",
+                "for Pairs of ERCC Controls Within Each Mixture")) + 
+    xlab(paste0("Average Log2 Abundance \n",
+                "for Pairs of ERCC Controls Within Each Mixture")) +
+    geom_hline(aes(yintercept = 0), colour = "grey50") +
+    geom_hline(data = medList, aes(yintercept = medianResid, colour = Ratio)) +
+    colScale + fillScale + theme_bw()
   
   
-  betwCtlRats <- ggplot(perERCCRatios, aes(x = Nominal, y = Observed)) + geom_point(aes(colour = Ratio, shape = Sample),size = 5,alpha = 0.7) + ylab("Observed Ratios for pairs of ERCCs") + xlab("Nominal Ratios for pairs of ERCCs") + facet_grid(Sample~Ratio) + geom_text(aes(label = gsub("ERCC-00", "",Feature)),hjust = -0.5) + geom_abline(aes(slope = 1, intercept = 0)) + colScale + fillScale
-  
-  residCtlRats <- ggplot(perERCCRatios, aes(x = Nominal, y = Observed-Nominal)) + geom_boxplot(aes(fill = Ratio), alpha = 0.5) + geom_point(aes(colour = Ratio, shape = Sample),size = 5,alpha = 0.7) + ylab("Observed Ratios for pairs of ERCCs") + xlab("Nominal Ratios for pairs of ERCCs") + facet_grid(Sample~Ratio) + geom_text(aes(label = gsub("ERCC-00", "",Feature)),angle = 315) + geom_abline(aes(slope = 0, intercept = 0))+ colScale + fillScale
-  
-  
-  multiplot(betwCtlRats,residCtlRats,cols=1)
-  
-  ggplot(perERCCRatios)+ geom_point(aes(x = Observed, y = Nominal))
-  
-  expDat$Figures$betwCtlRats <- betwCtlRats
-  expDat$Figures$residCtlRats <- residCtlRats
+  violinrats <- ggplot(perERCCRatios, aes(x = NomFactor, y = Observed-Nominal))+
+    geom_violin(aes()) + 
+    ylab("Residuals for ERCC pairwise ratios (Log2(Observed) - Log2(Nominal))")+
+    xlab("Nominal Log2 Ratios for pairs of ERCCs") + 
+    facet_grid(~Sample) + geom_abline(aes(slope = 0, intercept = 0)) + theme_bw()
     
+  
+  #multiplot(betwCtlRats,residCtlRats,cols=1)
+  
+  #ggplot(perERCCRatios)+ geom_point(aes(x = Observed, y = Nominal))
+  expDat$Results$perERCCRatios <- perERCCRatios
+  expDat$Figures$betwCtlRats <- betwCtlRats
+  expDat$Figures$residRats <- residRats
+  expDat$Figures$violinrats <- violinrats
+  expDat$Figures$ratVerts <- ratVerts
+  return(expDat)
+  
 }

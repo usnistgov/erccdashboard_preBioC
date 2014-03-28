@@ -70,6 +70,13 @@ runDashboard <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
   # Not required for subsequent functions
   expDat <- dynRangePlot(expDat)
   
+  # Evaluate pairwise ERCC control ratios within Mix1 and Mix2
+  # Not required for subsequent functions
+  if(erccmix == "RatioPair"){
+    expDat <- withinMixRatios(expDat)  
+  }
+  
+  
   # Test for differential expression between samples
   # Required for all subsequent functions
   expDat <- geneExprTest(expDat)

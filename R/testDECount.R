@@ -353,7 +353,7 @@ print(paste("Spline scaling factor:", phi0))
                                         alpha = 0.6) +
   geom_point(data = dispERCC, aes(x = mean, y = y,colour = Ratio), 
              size = 5, alpha = 0.6) + xlab("Mean Counts") + 
-  ylab("log(Quasi Dispersion)") + 
+  ylab("Log Dispersion Estimates from QuasiSeq)") + 
   stat_smooth(data = dispcntSort,aes(x = xsort, y = ysort),colour = "black") + 
   scale_x_log10() + colScale + theme_bw() +
   theme(legend.justification=c(1,1), legend.position=c(1,1)) 

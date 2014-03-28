@@ -1,8 +1,13 @@
 withinMixRatios <- function(expDat){
   # calculate deviation of relative abundances of transcripts within a mix from
   #the nominal concentration
+
+  dynRangeDat <- merge(expDat$Results$dynRangeDat, 
+                       expDat$idColsAdj[c(1:3)], by = "Feature")
+  dynRangeDat$GCtype <- "High"
+  dynRangeDat$GCtype[dynRangeDat$GC < 0.4] <- "Low"
+  dynRangeDat$GCtype <- as.factor(dynRangeDat$GCtype)
   
-  dynRangeDat <- expDat$Results$dynRangeDat
   colScale <- expDat$plotInfo$colScale
   fillScale <- expDat$plotInfo$fillScale
   

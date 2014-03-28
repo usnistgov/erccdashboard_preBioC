@@ -312,12 +312,19 @@ maSignal <-function(expDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
         theme( legend.justification = c(1,0),legend.position=c(1,0))
     }
   
+  ratioVarPlot <- ggplot(maData) + geom_violin(aes(x = Ratio, 
+                                                   y = M.SD, 
+                                                   fill = Ratio), 
+                                               alpha = alphaPoint) +
+  ylab("SD of Log2 Ratios") + colScale + fillScale + theme_bw()
+
+  
   expDat$Figures$maPlot <- maPlot
   #expDat$Results$ratVarDat <- ratVarDat
   expDat$Results$modRatVar <- stdevCoef
   expDat$Results$maDatAll <- maDatAll
-  expDat$Figures$ratioSDPlot <- sdRatioplotFit
-  
+  #expDat$Figures$ratioSDPlot <- sdRatioplotFit
+  expDat$Figures$ratioSDPlot <- ratioVarPlot
   
   return(expDat)
 }
