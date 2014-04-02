@@ -157,8 +157,8 @@ maSignal <-function(expDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
   if(sampleInfo$datType == "array"){
     avexlabel = "Log2 Average of Normalized Intensity"
     ymalabel = "Log2 Ratio of Normalized Intensity"
-    myXLimMA = c(min(maData$A)-1, max(maData$A)+1)
-    expDat$plotInfo$myXLimMA <- myXLimMA
+   # myXLimMA = c(min(maData$A)-1, max(maData$A)+1)
+   # expDat$plotInfo$myXLimMA <- myXLimMA
   }
   xlabel = xlab(avexlabel)
   
@@ -293,8 +293,9 @@ maSignal <-function(expDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
                                     gpar.rowfill = gpar(fill = "grey80",
                                                         col = "white"),
                                     gpar.colfill = gpar(fill = "grey80",
-                                                        col = "white")), xmin = 
-                            1.2*min(maData$A), xmax = max(maData$A),
+                                                        col = "white")), 
+                          #xmin = quantile(maData$A,probs=0.25),
+                          #xmax = max(maData$A),
                           ymin = (myYLim[2]) - 0.25*myYLim[2], 
                           ymax = myYLim[2]) + 
         scale_y_continuous(breaks = seq(myYLim[1],myYLim[2],1))+ theme_bw()+

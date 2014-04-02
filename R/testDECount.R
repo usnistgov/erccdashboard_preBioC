@@ -7,12 +7,13 @@ testDECount<- function(sampleInfo, expDat, cnt = cnt, info = info){
   filenameRoot = sampleInfo$filenameRoot
   legendLabels = sampleInfo$legendLabels
   FCcode = erccInfo$FCcode
-  totalSeqReads = sampleInfo$totalSeqReads
+  #totalSeqReads = sampleInfo$totalSeqReads
   
   
   idCols = expDat$idColsAdj
   r_m.mn = expDat$Results$r_m.res$r_m.mn 
   repNormFactor = sampleInfo$repNormFactor 
+  libeSize <- expDat$libeSize
   sample1 = expDat$sampleNames[1]
   sample2 = expDat$sampleNames[2]
   
@@ -40,14 +41,18 @@ testDECount<- function(sampleInfo, expDat, cnt = cnt, info = info){
   design.list<-list(trt,rep(1,ncol(cnt)))
   
   ## Compute offset (e.g. total counts, 75% quantile, TMM, etc)
-  if(is.null(repNormFactor)){
-    log.offset<-log(colSums(cnt))
-    cat("\nUsing Mapped Reads\n")
-    cat(colSums(cnt),"\n")  
+  if(is.null(libeSize)){
+    stop(cat("\nlibe size normalization is missing\n"))
+    #log.offset<-log(colSums(cnt))
+    #cat("\nUsing Mapped Reads\n")
+    #cat(colSums(cnt),"\n")  
   }else{
-    log.offset<- log(repNormFactor)
-    cat("\nUsing Total Reads\n")
-    cat(repNormFactor,"\n")
+    #log.offset<- log(repNormFactor)
+    log.offset<- log(libeSize)
+    #cat("\nUsing repNormFactor\n")
+    #cat(repNormFactor,"\n")
+    cat("\nShow libe sizes\n")
+    cat(libeSize,"\n")
   }
   
   ERCC.FC = idCols[c(1,4)];rownames(ERCC.FC)<-ERCC.FC[,1]

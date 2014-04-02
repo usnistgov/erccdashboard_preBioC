@@ -5,15 +5,16 @@ libeSizeNorm <- function(expDat){
   expressDat = expDat$Transcripts
   datType <- sampleInfo$datType
   repNormFactor <- sampleInfo$repNormFactor
-  totalSeqReads = T
+  #print(sampleInfo$repNormFactor)
+  normVec = T
   if(sampleInfo$datType == "count"){
     if (is.null(sampleInfo$repNormFactor)){
-      totalSeqReads == F
+      normVec = F
     }
-    #print(totalSeqReads)
+   # print(normVec)
   }
   if(sampleInfo$datType == "array"){
-    totalSeqReads = F
+    normVec = F
   }
   
   # Library size normalize the data
@@ -36,18 +37,23 @@ libeSizeNorm <- function(expDat){
       expressDat = cbind(expressDat[c(1)], libAdjust)
     }
     if(sampleInfo$datType == "count"){
-      if (totalSeqReads == F){
+      if (normVec == F){
+        cat(paste("\nrepNormFactor is NULL,\n",
+                  "Using Default Upper Quartile Normalization Method",
+                  " - 75th quantile)\n"))
         TranscriptsAll = expressDat
-        TranscriptMappedReadSums = colSums(TranscriptsAll[-c(1)],na.rm = T)
-        libeSize = TranscriptMappedReadSums
+        libeSize = apply(expressDat[-c(1)],MARGIN=2,FUN=quantile,probs=0.75)
+        #TranscriptMappedReadSums = colSums(TranscriptsAll[-c(1)],na.rm = T)
+        #libeSize = TranscriptMappedReadSums
         datCols = expressDat[-c(1)]
-        libeSize = libeSize/(10^6) #per million mapped reads
+        libeSize = libeSize#/(10^6) #per million mapped reads
         #Library size normalize the data  
         libAdjust = sweep(datCols, 2, libeSize,"/")
         expressDat = cbind(expressDat[c(1)], libAdjust)
       }
       
-      if (totalSeqReads == T){
+      if (normVec == T){
+        cat("\nUsing read depth normalization factors provided in repNormFactor\n")
         TranscriptsAll = expressDat
         libeSize = repNormFactor
         #print(libeSize)

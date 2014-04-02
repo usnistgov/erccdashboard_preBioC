@@ -76,13 +76,15 @@ loadExpMeas<- function(expDat, expTable, repNormFactor){
               "analysis."))
     cat(paste("\nA total of",length(insuffDat),"out of",length(idCols$Feature),
               "\nERCC controls were filtered from the data set"))
-    cat("\nThe excluded ERCCs are:\n")
-    for (j in seq(from=1,to=length(insuffDat),by=5)){
-      k = j+4
-      if (k > length(insuffDat)) k = length(insuffDat)
-      cat(insuffDat[j:k])
-      cat("\n")
-    } 
+    if(length(insuffDat > 0)){
+      cat("\nThe excluded ERCCs are:\n")
+      for (j in seq(from=1,to=length(insuffDat),by=5)){
+        k = j+4
+        if (k > length(insuffDat)) k = length(insuffDat)
+        cat(insuffDat[j:k])
+        cat("\n")
+      }  
+    }
      
   }
   

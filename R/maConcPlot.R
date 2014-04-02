@@ -239,7 +239,8 @@ maConcPlot <-function(expDat, LODR.annot.ERCC, alphaPoint = 0.8,
                                                         col = "white"),
                                     gpar.colfill = gpar(fill = "grey80",
                                                         col = "white")), xmin = 
-                            0.25*max(maDataAveSD$A), xmax = max(maDataAveSD$A),
+                            quantile(maDataAveSD$A,probs=0.25), 
+                          xmax = max(maDataAveSD$A),
                           ymin = (myYLim[2]) - 0.25*myYLim[2], 
                           ymax = myYLim[2]) + theme(legend.justification=c(1,0),
                                                     legend.position=c(1,0)) 

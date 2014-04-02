@@ -26,6 +26,8 @@
 #' @param totalRNAmass  mass in micrograms of total RNA spiked with diluted ERCC
 #'                      mixtures 
 #' @param choseFDR      False Discovery Rate for differential expression testing
+#' @param ratioLim      Limits for ratio axis on MA plot, default is c(-4,4)
+#' @param signalLim      Limits for ratio axis on MA plot, default is c(-14,14)
 #' @param userMixFile   optional filename input, default is NULL, if ERCC 
 #'                      control ratio mixtures other than the Ambion product
 #'                      were used then a userMixFile can be used for the analysis
@@ -51,6 +53,7 @@ runDashboard <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
                          sample1Name = NULL,sample2Name = NULL, 
                          erccmix = "RatioPair", erccdilution = 1,
                          spikeVol = 1, totalRNAmass = 1,choseFDR = 0.05,
+                         ratioLim=c(-4,4),signalLim=c(-14,14),
                          userMixFile=NULL){
 
   # Initialize expDat structure
@@ -60,7 +63,8 @@ runDashboard <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
                     sample1Name=sample1Name, sample2Name=sample2Name, 
                     erccmix=erccmix, erccdilution=erccdilution, 
                     spikeVol=spikeVol, totalRNAmass=totalRNAmass,
-                    choseFDR=choseFDR,userMixFile=userMixFile)
+                    choseFDR=choseFDR,ratioLim = ratioLim,
+                    signalLim = signalLim,userMixFile=userMixFile)
   
   # Estimate the difference in mRNA fraction of total RNA for the two samples
   # Required for all subsequent functions
@@ -89,9 +93,9 @@ runDashboard <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
   # Required for subsequent functions
   expDat = estLODR(expDat,kind = "ERCC", prob=0.9)
   
-  # Estimate LODR using Simulated data from endogenous transcripts
-  # Not required for subsequent functions
-  expDat = estLODR(expDat,kind = "Sim", prob=0.9)
+  ## Estimate LODR using Simulated data from endogenous transcripts
+  ## Not required for subsequent functions
+  #expDat = estLODR(expDat,kind = "Sim", prob=0.9)
   
   # Generate MA plot (Ratio vs. Average Signal) with ERCC controls below LODR 
   #   annotated also flags possible False Negatives on DE gene list based on LODR 

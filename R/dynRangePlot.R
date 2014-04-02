@@ -144,14 +144,31 @@ dynRangePlot <- function(expDat){
   AandBAveSD$value.Ave = as.vector(AandBAveSD$value.Ave)
    
   #set limits and axis labels
-  yinfo = ylab("Read Depth Normalized Log2 Transformed ERCC Counts")
+  if(sampleInfo$datType == "count"){
+    yinfo = ylab("Read Depth Normalized Log2 Transformed ERCC Counts")
+    #avexlabel = "Log2 Average of Read Depth Normalized Counts"
+    #ymalabel = "Log2 Ratio of Read Depth Normalized Counts"
+  }
+  if(sampleInfo$datType == "array"){
+    yinfo = ylab("Log2 Normalized Fluorescent Intensity")
+    #avexlabel = "Log2 Average of Normalized Intensity"
+    #ymalabel = "Log2 Ratio of Normalized Intensity"
+    #myXLimMA = c(min(maData$A)-1, max(maData$A)+1)
+    #expDat$plotInfo$myXLimMA <- myXLimMA
+  }
+  
   #xlabel = xlab(expression(paste("Log2 ERCC Spike Amount (attomol nt/ng total RNA",mu,"L)",sep = "")))
   xlabel = xlab(indivxlabel)
-  if(is.null(myXLim)){
-    xmin = min(AandBAveSD$Conc) - 1
-    xmax = max(AandBAveSD$Conc) + 1
+  #if(is.null(myXLim)){
+    conc <- NULL
+    for (i in grep("Conc",names(idCols))){
+      conc <- c(conc, idCols[,i])  
+    }
+    xmin = min(log2(conc)) - 1
+    xmax = max(log2(conc)) + 1
     myXLim = c(xmin,xmax)
-  }
+  #}
+  
   if(is.null(myYLim)){
     ymin = min(AandBAveSD$value.Ave) - 1
     ymax = max(AandBAveSD$value.Ave) +1

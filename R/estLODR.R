@@ -3,6 +3,7 @@
 #' @param expDat    list, contains input data and stores analysis results
 #' @param kind      "ERCC" or "Sim"
 #' @param prob      probability, ranging from 0 - 1, default is 0.9
+#' @param yrange    y-axis limits, default is c(1e-15, 1e1) 
 #' 
 #' @details
 #' This is the function to estimate a limit of detection of ratios (LODR) for a
@@ -10,7 +11,7 @@
 #' control ratio mixtures.
 #' @export
 #' 
-estLODR <- function(expDat,kind = "ERCC", prob=0.9){
+estLODR <- function(expDat,kind = "ERCC", prob=0.9, yrange = c(1e-15,1e1)){
   ##############
   #### LODR ####
   ##############
@@ -214,10 +215,17 @@ estLODR <- function(expDat,kind = "ERCC", prob=0.9){
                         gpar.rowfill = gpar(fill = "grey80", col = "white"),
                         gpar.colfill = gpar(fill = "grey80", col = "white"))
   
+#print(min(log(pval.res$Pval)))
+  if (((min(pval.res$LogPval)) < log(1e-15)) & (yrange[1]>=1e-15)){
+    cat("\nVery small p-values, adjusting y-limits to show all data\n")
+    ymin <- min(pval.res$Pval)/1e5
+    yrange <- c(ymin, 1e1)
+  }
   LODRplot <- ggplot(pval.res, aes(x = MnCnt, y = Pval, colour = Ratio)) + 
     geom_point(size = 6) + 
     scale_x_log10(limits = xrange) + 
-    scale_y_log10(breaks = c(1e-12,1e-10,1e-8,1e-5,1e-4,1e-3,1e-2,1e-1,1e0)) + 
+    scale_y_log10(breaks = c(1e-12,1e-10,1e-8,1e-5,1e-4,1e-3,1e-2,1e-1,1e0), 
+                  limits = yrange) + 
     geom_ribbon(data = lineDat, aes(x = x.new, 
                                     y = fitLine, 
                                     ymin=fitLower, 
