@@ -1,28 +1,28 @@
-loadExpMeas<- function(expDat, expTable, repNormFactor){
+loadExpMeas<- function(exDat, exTable, repNormFactor){
   
   designFactors <- c("Sample","Rep")
-  datType <- expDat$sampleInfo$datType
+  datType <- exDat$sampleInfo$datType
   # Check for countable input errors
-  for (i in 2:length(colnames(expTable))){
-      if (str_count(colnames(expTable[c(i)]),"_") != 1){
-        stop("Check expTable column names for use of underscore (_)")
+  for (i in 2:length(colnames(exTable))){
+      if (str_count(colnames(exTable[c(i)]),"_") != 1){
+        stop("Check exTable column names for use of underscore (_)")
       }
   }
-  if (anyDuplicated(colnames(expTable)) > 0){
+  if (anyDuplicated(colnames(exTable)) > 0){
     stop("Column names must be unique sample IDs")  
   }
-  sampleInfo = expDat$sampleInfo
-  # Pull idCols out of expDat
-  idCols <- expDat$erccInfo$idCols 
+  sampleInfo = exDat$sampleInfo
+  # Pull idCols out of exDat
+  idCols <- exDat$erccInfo$idCols 
 
   if (missing(repNormFactor)){
     repNormFactor <- NULL
   }
   #}else{
-    expDat$sampleInfo$repNormFactor = repNormFactor
+    exDat$sampleInfo$repNormFactor = repNormFactor
   #}
   
-  Transcripts = expTable
+  Transcripts = exTable
   
   # Import data based on analysis type from SEQC main project
     
@@ -92,11 +92,11 @@ loadExpMeas<- function(expDat, expTable, repNormFactor){
   # write Transcript csv file to directory
   #write.csv(Transcripts, paste(sampleInfo$filenameRoot,"Transcripts.csv",sep="."),
   #          row.names = F)
-  # collect everything to add to expDat
-  expDat = append(expDat, list(Transcripts = Transcripts,
+  # collect everything to add to exDat
+  exDat = append(exDat, list(Transcripts = Transcripts,
                                designMat = designMat,
                                sampleNames = c(sample1,sample2),
                                idCols = idCols))
-  return(expDat)
+  return(exDat)
 
 }

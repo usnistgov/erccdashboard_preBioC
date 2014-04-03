@@ -1,22 +1,22 @@
-testDEArray <- function(expDat){
+testDEArray <- function(exDat){
   library(limma)
-  y <- expDat$Transcripts
-  choseFDR <- expDat$sampleInfo$choseFDR
+  y <- exDat$Transcripts
+  choseFDR <- exDat$sampleInfo$choseFDR
   if(is.null(choseFDR)){
-    p.thresh <- expDat$Results$p.thresh
+    p.thresh <- exDat$Results$p.thresh
   }
   
-  #normy <- sweep(y[-c(1)], 2, expDat$libeSize/1000,"/")
+  #normy <- sweep(y[-c(1)], 2, exDat$libeSize/1000,"/")
   #y <- cbind(y[c(1)],normy)
-  erccInfo <- expDat$erccInfo
-  sampleInfo <- expDat$sampleInfo
+  erccInfo <- exDat$erccInfo
+  sampleInfo <- exDat$sampleInfo
   row.names(y) <- y$Feature
   y <- y[-c(1)]
   
   
   ylog <- log2(y)
   
-  wts <- log(expDat$libeSize)
+  wts <- log(exDat$libeSize)
   
   design <- cbind(Grp1=1,Grp1vs2=c(1,1,1,0,0,0))
   
@@ -55,8 +55,8 @@ testDEArray <- function(expDat){
   write.csv(pval.res, paste(sampleInfo$filenameRoot, "ERCC Pvals.csv"),
             row.names = F)
   
-  expDat$Results$limma.res <- res
-  expDat$Results$ERCC.pval <- pval.res
-  expDat$Results$p.thresh <- p.thresh
-  return(expDat)
+  exDat$Results$limma.res <- res
+  exDat$Results$ERCC.pval <- pval.res
+  exDat$Results$p.thresh <- p.thresh
+  return(exDat)
 }

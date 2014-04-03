@@ -1,21 +1,21 @@
-testDECount<- function(sampleInfo, expDat, cnt = cnt, info = info){
+testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
   library(QuasiSeq)
   #library(DESeq)
   library(edgeR)
-  erccInfo <- expDat$erccInfo
-  plotInfo <- expDat$plotInfo
+  erccInfo <- exDat$erccInfo
+  plotInfo <- exDat$plotInfo
   filenameRoot = sampleInfo$filenameRoot
   legendLabels = sampleInfo$legendLabels
   FCcode = erccInfo$FCcode
   #totalSeqReads = sampleInfo$totalSeqReads
   
   
-  idCols = expDat$idColsAdj
-  r_m.mn = expDat$Results$r_m.res$r_m.mn 
+  idCols = exDat$idColsAdj
+  r_m.mn = exDat$Results$r_m.res$r_m.mn 
   repNormFactor = sampleInfo$repNormFactor 
-  libeSize <- expDat$libeSize
-  sample1 = expDat$sampleNames[1]
-  sample2 = expDat$sampleNames[2]
+  libeSize <- exDat$libeSize
+  sample1 = exDat$sampleNames[1]
+  sample2 = exDat$sampleNames[2]
   
   colScale <- plotInfo$colScale
   fillScale <- plotInfo$fillScale
@@ -241,8 +241,8 @@ testDECount<- function(sampleInfo, expDat, cnt = cnt, info = info){
   write.csv(pval.res,file=paste(filenameRoot,"ERCC Pvals.csv"), row.names = F)
   print("Finished DE testing")
   
-  expDat$Results$quasiSeq.res <- quasiSeq.res
-  expDat$Results$ERCCpvals <- pval.res
+  exDat$Results$quasiSeq.res <- quasiSeq.res
+  exDat$Results$ERCCpvals <- pval.res
   
   #### Code from QuasiSeq
 #if (!Dispersion %in% c("Deviance", "Pearson")) 
@@ -363,8 +363,8 @@ print(paste("Spline scaling factor:", phi0))
   scale_x_log10() + colScale + theme_bw() +
   theme(legend.justification=c(1,1), legend.position=c(1,1)) 
 
-  expDat$Figures$dispPlot <- quasiDispPlot
-  expDat$Results$simcnt <- simcnt 
+  exDat$Figures$dispPlot <- quasiDispPlot
+  exDat$Results$simcnt <- simcnt 
 
 #   #################################################
 #   ###Examine ERCC blending with endogenous genes###
@@ -473,11 +473,11 @@ print(paste("Spline scaling factor:", phi0))
 #   scale_x_log10() + colScale + 
 #   theme(legend.justification=c(1,1), legend.position=c(1,1)) + theme_bw()
 
-   expDat$Figures$dispPlot <- quasiDispPlot
-   expDat$Results$simcnt <- simcnt 
+   exDat$Figures$dispPlot <- quasiDispPlot
+   exDat$Results$simcnt <- simcnt 
 #   #save(quasiDispPlot, file=paste(filenameRoot,"DispPlot.RData", sep = "."))
    cat("\nFinished examining dispersions\n")
   
-  return(expDat)
+  return(exDat)
 ### end Edit Sarah Munro 20140216
 }

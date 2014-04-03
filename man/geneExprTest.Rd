@@ -2,10 +2,10 @@
 \alias{geneExprTest}
 \title{Prepare differential expression testing results for spike-in analysis}
 \usage{
-geneExprTest(expDat)
+geneExprTest(exDat)
 }
 \arguments{
-  \item{expDat}{list, contains input data and stores
+  \item{exDat}{list, contains input data and stores
   analysis results}
 }
 \description{
@@ -21,7 +21,7 @@ formatted csv file is provided with the necessary DE test
 results, then geneExprTest will bypass DE testing (with
 reduced runtime). The function will look for a csv file
 with the name "filenameRoot.quasiSeq.res.csv" and columns
-corresponding to "Feature", "pvals", and "qvals" should be
-in the file.
+with names "Feature", "pvals", and "qvals" must be in the
+file
 }
 

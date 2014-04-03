@@ -1,4 +1,4 @@
-#' Initialize the expDat list
+#' Initialize the exDat list
 #'
 #' @param datType       type is "count" or "array", unnormalized data is  
 #'                      expected (normalized data may be accepted in future
@@ -7,11 +7,13 @@
 #'                      intensities from microarray
 #'                      fluorescent intensities (not log transformed or 
 #'                      normalized)
-#' @param expTable      data frame, the first column contains names of 
+#' @param exTable      data frame, the first column contains names of 
 #'                      genes or transcripts (Feature) and the remaining columns
 #'                      are counts for sample replicates spiked with ERCC 
 #'                      controls
-#' @param repNormFactor vector of normalization factors for each replicate
+#' @param repNormFactor optional vector of normalization factors for each 
+#'                      replicate, default value is NULL and 75th quantile
+#'                      normalization will be applied to replicates
 #' @param filenameRoot  string root name for output files
 #' @param sample1Name   string name for sample 1 in the gene expression 
 #'                      experiment
@@ -37,14 +39,14 @@
 #' @export
 
 
-initDat <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
+initDat <- function(datType=NULL, exTable=NULL, repNormFactor=NULL,
                     filenameRoot = NULL,
                     sample1Name = NULL,sample2Name = NULL, 
                     erccmix = "RatioPair", erccdilution = 1,
                     spikeVol = 1, totalRNAmass = 1,choseFDR = 0.05,
                     ratioLim = c(-4,4), signalLim = c(-14,14), 
                     userMixFile =NULL){
-  cat("\nInitializing the expDat list structure...\n")
+  cat("\nInitializing the exDat list structure...\n")
   
   myYLimMA <- ratioLim
   myXLimMA <- signalLim
@@ -52,7 +54,7 @@ initDat <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
   myYLim <- myXLimMA
   myXLim <- NULL
   
-  expDat<-NULL
+  exDat<-NULL
   
   #myXLimMA = c(-10,15)
   #myYLimMA = c(-4,4)
@@ -105,10 +107,10 @@ initDat <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
                     myXLim = myXLim, myYLim = myYLim, xlimEffects = NULL)
 
  
-  expDat <- list(sampleInfo = sampleInfo,plotInfo = plotInfo)
+  exDat <- list(sampleInfo = sampleInfo,plotInfo = plotInfo)
   
   if (exists("filenameRoot")){
-    expDat <- dashboardFile(expDat,filenameRoot = filenameRoot)  
+    exDat <- dashboardFile(exDat,filenameRoot = filenameRoot)  
   }else{
     stop("The filenameRoot character string has not been defined!")
   }
@@ -116,33 +118,29 @@ initDat <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
   
   ###############################################################################
   # Run loadERCCInfo function to obtain ERCC information
-  expDat <- loadERCCInfo(expDat, erccmix, userMixFile)
+  exDat <- loadERCCInfo(exDat, erccmix, userMixFile)
   
-  ###############################################################################
-  # Assume user has created data frame countTable and totalReads vector
-  # process those data files to add to expDat structure
-  expDat <- loadExpMeas(expDat, expTable, repNormFactor)
-  
-  
+  ############################################################################### 
+  # Add experimental data (exTable) to exDat structure
+  exDat <- loadExpMeas(exDat, exTable, repNormFactor)
 
   ###############################################################################
   # library size normalize the data
-  
   if(libeSizeNorm == T){
-    expDat <- libeSizeNorm(expDat)  
+    exDat <- libeSizeNorm(exDat)  
   }
   
   
   ###############################################################################
   # length normalize the ERCC concentrations
-  expDat <- prepERCCDat(expDat)
+  exDat <- prepERCCDat(exDat)
   
   # Estimate the mean library size factor for the data to use to estimate
   # corresponding concentrations for LODR
-  #expDat <- estMnLibeFactor(expDat, cnt = expDat$Transcripts)
+  #exDat <- estMnLibeFactor(exDat, cnt = exDat$Transcripts)
   
-  expDat <- plotAdjust(expDat)
+  exDat <- plotAdjust(exDat)
   
-  return(expDat)
+  return(exDat)
   
 }

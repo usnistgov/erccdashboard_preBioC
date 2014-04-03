@@ -1,6 +1,6 @@
 #' Prepare differential expression testing results for spike-in analysis
 #'
-#' @param expDat    list, contains input data and stores analysis results
+#' @param exDat    list, contains input data and stores analysis results
 #' 
 #' @details
 #' This function wraps the QuasiSeq differential expression testing package for
@@ -13,24 +13,24 @@
 #' 
 #' @export
 
-geneExprTest <- function(expDat){
-  datType <- expDat$sampleInfo$datType
+geneExprTest <- function(exDat){
+  datType <- exDat$sampleInfo$datType
   if(datType == "array"){
-    if(is.null(expDat$sampleInfo$choseFDR)){
+    if(is.null(exDat$sampleInfo$choseFDR)){
       getPThresh<- function(){
         cat("\nFDR is NULL, to continue with P-values for LODR estimation\n")
         readline("Enter the threshold P-value: ")
       }
-      expDat$Results$p.thresh <- as.numeric(getPThresh())  
+      exDat$Results$p.thresh <- as.numeric(getPThresh())  
     }
     
-    expDat <- testDEArray(expDat)
+    exDat <- testDEArray(exDat)
     cat("\nFinished DE testing\n")
   }
   if(datType == "count"){
-    cnt <- expDat$Transcripts
-    designMat <- expDat$designMat
-    sampleInfo <- expDat$sampleInfo
+    cnt <- exDat$Transcripts
+    designMat <- exDat$designMat
+    sampleInfo <- exDat$sampleInfo
     info <- designMat
     choseFDR <- sampleInfo$choseFDR
     
@@ -56,7 +56,7 @@ geneExprTest <- function(expDat){
         }
       }else{
         cat("\nStarting differential expression tests\n")
-        expDat <- suppressWarnings(testDECount(sampleInfo, expDat, cnt = cnt, 
+        exDat <- suppressWarnings(testDECount(sampleInfo, exDat, cnt = cnt, 
                                           info = info ))  
         deRes <- read.csv(qvalFile)
         if(any(deRes$qvals<choseFDR)){
@@ -79,7 +79,7 @@ geneExprTest <- function(expDat){
         
       }else{
         cat("\nStarting differential expression tests\n")
-        expDat <- suppressWarnings(testDECount(sampleInfo, expDat, cnt = cnt, 
+        exDat <- suppressWarnings(testDECount(sampleInfo, exDat, cnt = cnt, 
                                           info = info ))  
         deRes <- read.csv(qvalFile)
         if(any(deRes$qvals<choseFDR)){
@@ -90,7 +90,7 @@ geneExprTest <- function(expDat){
     }
     
     
-    if(is.null(expDat$Figures$dispPlot)){
+    if(is.null(exDat$Figures$dispPlot)){
       cat(paste("\nDE testing results supplied without companion dispersion\n",
                 "plot. Dispersion plot is unavailable to print.\n"))
     }  
@@ -104,9 +104,9 @@ geneExprTest <- function(expDat){
                 "differential expression in the measured transcript \n",
                 "populations\n"))
     }
-    expDat$Results$p.thresh <- p.thresh
+    exDat$Results$p.thresh <- p.thresh
   }
   
-  return(expDat)
+  return(exDat)
   
 }

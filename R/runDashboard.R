@@ -7,7 +7,7 @@
 #'                      intensities from microarray
 #'                      fluorescent intensities (not log transformed or 
 #'                      normalized)
-#' @param expTable      data frame, the first column contains names of 
+#' @param exTable      data frame, the first column contains names of 
 #'                      genes or transcripts (Feature) and the remaining columns
 #'                      are counts for sample replicates spiked with ERCC 
 #'                      controls
@@ -38,17 +38,17 @@
 #' load(file = system.file("data/SEQC.Example.RData",
 #'      package = "erccdashboard"))
 #'      
-#' expDat = runDashboard(datType = "count",
-#'                  expTable = COH.RatTox.ILM.MET.CTL.countTable, 
+#' exDat = runDashboard(datType = "count",
+#'                  exTable = COH.RatTox.ILM.MET.CTL.countTable, 
 #'                  repNormFactor = COH.RatTox.ILM.MET.CTL.totalReads, 
 #'                  filenameRoot = "COH.ILM",
 #'                  sample1Name = "MET", sample2Name = "CTL", 
 #'                  erccmix = "RatioPair", erccdilution = 1/100, 
 #'                  spikeVol = 1, totalRNAmass = 0.500,choseFDR = 0.1)
 #'                  
-#' summary(expDat)
+#' summary(exDat)
 
-runDashboard <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
+runDashboard <- function(datType=NULL, exTable=NULL, repNormFactor=NULL,
                          filenameRoot = NULL,
                          sample1Name = NULL,sample2Name = NULL, 
                          erccmix = "RatioPair", erccdilution = 1,
@@ -56,9 +56,9 @@ runDashboard <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
                          ratioLim=c(-4,4),signalLim=c(-14,14),
                          userMixFile=NULL){
 
-  # Initialize expDat structure
+  # Initialize exDat structure
   # Required for all subsequent functions
-  expDat <- initDat(datType=datType, expTable=expTable, 
+  exDat <- initDat(datType=datType, exTable=exTable, 
                     repNormFactor=repNormFactor, filenameRoot=filenameRoot,
                     sample1Name=sample1Name, sample2Name=sample2Name, 
                     erccmix=erccmix, erccdilution=erccdilution, 
@@ -68,58 +68,58 @@ runDashboard <- function(datType=NULL, expTable=NULL, repNormFactor=NULL,
   
   # Estimate the difference in mRNA fraction of total RNA for the two samples
   # Required for all subsequent functions
-  expDat <- est_r_m(expDat)
+  exDat <- est_r_m(exDat)
   
   # Evaluate the dynamic range of the experiment (Signal-Abundance plot)
   # Not required for subsequent functions
-  expDat <- dynRangePlot(expDat)
+  exDat <- dynRangePlot(exDat)
   
   # Evaluate pairwise ERCC control ratios within Mix1 and Mix2
   # Not required for subsequent functions
   if(erccmix == "RatioPair"){
-    expDat <- withinMixRatios(expDat)  
+    exDat <- withinMixRatios(exDat)  
   }
   
   
   # Test for differential expression between samples
   # Required for all subsequent functions
-  expDat <- geneExprTest(expDat)
+  exDat <- geneExprTest(exDat)
   
   # Generate ROC curves and AUC statistics
   # Not Required for subsequent functions
-  expDat <- erccROC(expDat)
+  exDat <- erccROC(exDat)
   
   # Estimate LODR for ERCC controls
   # Required for subsequent functions
-  expDat = estLODR(expDat,kind = "ERCC", prob=0.9)
+  exDat = estLODR(exDat,kind = "ERCC", prob=0.9)
   
   ## Estimate LODR using Simulated data from endogenous transcripts
   ## Not required for subsequent functions
-  #expDat = estLODR(expDat,kind = "Sim", prob=0.9)
+  #exDat = estLODR(exDat,kind = "Sim", prob=0.9)
   
   # Generate MA plot (Ratio vs. Average Signal) with ERCC controls below LODR 
   #   annotated also flags possible False Negatives on DE gene list based on LODR 
   #   threshold from DE gene list
   # Not required for subsequent functions
-  expDat <- annotLODR(expDat)
+  exDat <- annotLODR(exDat)
   
   
   ### Saving plots and results
   # Convenience function to save 4 main figures to PDF
-  saveERCCPlots(expDat)
+  saveERCCPlots(exDat)
   
-  # Save expDat to a RData file for later use
-  cat("\nSaving expDat list to .RData file...")
-  nam <- paste(expDat$sampleInfo$filenameRoot, "expDat",sep = ".")
-  assign(nam,expDat)
+  # Save exDat to a RData file for later use
+  cat("\nSaving exDat list to .RData file...")
+  nam <- paste(exDat$sampleInfo$filenameRoot, "exDat",sep = ".")
+  assign(nam,exDat)
   
   to.save <- ls()
   
   save(list = to.save[grepl(pattern = nam,x=to.save)],
-       file=paste0(expDat$sampleInfo$filenameRoot,".RData"))
+       file=paste0(exDat$sampleInfo$filenameRoot,".RData"))
   
-  # End analysis and return expDat to global environ. / workspace
+  # End analysis and return exDat to global environ. / workspace
   cat("\nAnalysis completed.")
-  return(expDat)
+  return(exDat)
   
 }

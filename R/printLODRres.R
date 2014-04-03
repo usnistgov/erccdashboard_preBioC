@@ -1,18 +1,18 @@
-printLODRres <- function(expDat){
-  sampleInfo <- expDat$sampleInfo
-  erccInfo <- expDat$erccInfo
+printLODRres <- function(exDat){
+  sampleInfo <- exDat$sampleInfo
+  erccInfo <- exDat$erccInfo
   
-  fit.coeff <- expDat$fit.coeff
-  mnLibeFactor <- expDat$mnLibeFactor
+  fit.coeff <- exDat$fit.coeff
+  mnLibeFactor <- exDat$mnLibeFactor
   
   FCcode = erccInfo$FCcode
   legendLabels = erccInfo$legendLabels
   
 
-  lodr.res = data.frame(expDat$Results$lodr.res.ERCC)
+  lodr.res = data.frame(exDat$Results$lodr.res.ERCC)
   
   ### Fold = lodr.res[c(1)]
-  Fold = as.numeric(expDat$erccInfo$FCcode$FC)
+  Fold = as.numeric(exDat$erccInfo$FCcode$FC)
 
   Count = as.numeric(gsub("<", "",lodr.res$Estimate))
   Ratio = legendLabels 

@@ -2,10 +2,10 @@
 \alias{maSignal}
 \title{Generate MA plots with or without annotation using LODR estimates}
 \usage{
-maSignal(expDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T)
+maSignal(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T)
 }
 \arguments{
-  \item{expDat}{list, contains input data and stores
+  \item{exDat}{list, contains input data and stores
   analysis results}
 
   \item{alphaPoint}{numeric value, for alpha (transparency)

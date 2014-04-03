@@ -1,6 +1,6 @@
 #' Estimate Limit of Detection of Ratios (LODR)
 #'
-#' @param expDat    list, contains input data and stores analysis results
+#' @param exDat    list, contains input data and stores analysis results
 #' @param kind      "ERCC" or "Sim"
 #' @param prob      probability, ranging from 0 - 1, default is 0.9
 #' @param yrange    y-axis limits, default is c(1e-15, 1e1) 
@@ -11,7 +11,7 @@
 #' control ratio mixtures.
 #' @export
 #' 
-estLODR <- function(expDat,kind = "ERCC", prob=0.9, yrange = c(1e-15,1e1)){
+estLODR <- function(exDat,kind = "ERCC", prob=0.9, yrange = c(1e-15,1e1)){
   ##############
   #### LODR ####
   ##############
@@ -19,11 +19,11 @@ estLODR <- function(expDat,kind = "ERCC", prob=0.9, yrange = c(1e-15,1e1)){
   # pval.cutoff default is .001
   # probability cutoff is .9
   # kind can be ERCC or Sim
-  sampleInfo <- expDat$sampleInfo
-  erccInfo <- expDat$erccInfo
-  plotInfo <- expDat$plotInfo
+  sampleInfo <- exDat$sampleInfo
+  erccInfo <- exDat$erccInfo
+  plotInfo <- exDat$plotInfo
   
-  pval.cutoff<- expDat$Results$p.thresh 
+  pval.cutoff<- exDat$Results$p.thresh 
   filenameRoot<-sampleInfo$filenameRoot
   FCcode <- erccInfo$FCcode
   #FCcode = data.frame(Ratio = c("4:1","1:1","1.5:1","2:1"),FC =  c(4,1,.667,.5))
@@ -43,7 +43,7 @@ estLODR <- function(expDat,kind = "ERCC", prob=0.9, yrange = c(1e-15,1e1)){
     cat(paste0("\n",filenameRoot," ",kind," Pvals.csv is missing, ",
               "because simulated DE data was not generated \nand tested for ",
               "differential expression. Continuing with analysis...\n"))
-    return(expDat)
+    return(exDat)
   }
    
   names(pval.res)[1]= "Feature"
@@ -194,12 +194,12 @@ estLODR <- function(expDat,kind = "ERCC", prob=0.9, yrange = c(1e-15,1e1)){
               "threshold p-value, may be due to insufficient data quantity\n"))
     break
   }
-  if(expDat$sampleInfo$datType == "array"){
+  if(exDat$sampleInfo$datType == "array"){
     xlabDE <- xlab("Average Fluorescence Intensity")
     xrange <- c(min(pval.res$MnCnt),max(pval.res$MnCnt))
     legendPos <- theme(legend.justification=c(1,0), legend.position=c(1,0))
   }
-  if(expDat$sampleInfo$datType == "count"){
+  if(exDat$sampleInfo$datType == "count"){
     xlabDE <- xlab("Average Counts")
     xrange <- c(1,max(pval.res$MnCnt))
     legendPos <- theme(legend.justification=c(0,0), legend.position=c(0,0))
@@ -272,13 +272,13 @@ estLODR <- function(expDat,kind = "ERCC", prob=0.9, yrange = c(1e-15,1e1)){
   #print(annotLODRplot)
   
   nam <- paste0("lodr",kind,"Plot")
-  expDat$Figures$plotLODR <- annotLODRplot
-  #print(expDat$Figures$plotLODR)
-  names(expDat$Figures)[which(names(expDat$Figures) == "plotLODR")] <- nam
+  exDat$Figures$plotLODR <- annotLODRplot
+  #print(exDat$Figures$plotLODR)
+  names(exDat$Figures)[which(names(exDat$Figures) == "plotLODR")] <- nam
   
   nam <- paste("lodr.res",kind,sep = ".")
-  expDat$Results$lodr.res <- lodr.resLess
-  names(expDat$Results)[which(names(expDat$Results) == "lodr.res")] <- nam
+  exDat$Results$lodr.res <- lodr.resLess
+  names(exDat$Results)[which(names(exDat$Results) == "lodr.res")] <- nam
   
-  return(expDat)
+  return(exDat)
 }

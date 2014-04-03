@@ -1,10 +1,10 @@
 #' Estimate the mRNA fraction differences for the pair of samples using 
 #' replicate data 
 #'
-#' @param expDat    list, contains input data and stores analysis results
+#' @param exDat    list, contains input data and stores analysis results
 #' 
 #' @details
-#' This is the first function to run after an expDat structure is initialized
+#' This is the first function to run after an exDat structure is initialized
 #' using initDat, because it is needed for all additional analysis. An r_m of
 #' 1 indicates that the two sample types under comparison have 
 #' similar mRNA fractions of total RNA. The r_m estimate is used to adjusted 
@@ -13,17 +13,17 @@
 
 #' @export
 
-est_r_m <- function(expDat){
+est_r_m <- function(exDat){
   cat("\nCheck for sample mRNA fraction differences(r_m)...\n")
-  cnt = expDat$Transcripts
-  sampleInfo <- expDat$sampleInfo
-  plotInfo <- expDat$plotInfo
-  erccInfo <- expDat$erccInfo
+  cnt = exDat$Transcripts
+  sampleInfo <- exDat$sampleInfo
+  plotInfo <- exDat$plotInfo
+  erccInfo <- exDat$erccInfo
   
   site <- sampleInfo$siteName
   avexlabel <- plotInfo$ERCCxlabelAve
   myXLim <- plotInfo$myXLim
-  idCols <- expDat$idCols
+  idCols <- exDat$idCols
   # requires that the sample1 columns are first in the table -> 
   # need to add a stopifnot statement for this 
   
@@ -35,7 +35,7 @@ est_r_m <- function(expDat){
   Features = gsub(".","-", Features, fixed = T)
   rownames(dat)<-Features; dat<-as.matrix(dat[,-1])
     
-  colnames(dat)<-paste(rep(c(expDat$sample1,expDat$sample2),
+  colnames(dat)<-paste(rep(c(exDat$sample1,exDat$sample2),
                            each=ncol(dat)/2),c(1:(ncol(dat)/2),
                                                1:(ncol(dat)/2)),sep="")
   
@@ -51,9 +51,9 @@ est_r_m <- function(expDat){
   #log.offset<-log(colSums(dat))
   log.offset <- NULL
  # if(sampleInfo$totalSeqReads == T){
-#      log.offset = log(expDat$totalReads)
+#      log.offset = log(exDat$totalReads)
  # }else{
-      log.offset = log(expDat$libeSize)
+      log.offset = log(exDat$libeSize)
 #  }
   
   ######################################################
@@ -197,9 +197,9 @@ est_r_m <- function(expDat){
       theme(legend.justification=c(1,0), legend.position=c(1,0))
   }
   
-  expDat$idColsAdj <- idCols
-  expDat$Results$r_m.res <- list(r_m.mn = r_m.mn, r_m.upper = r_m.upper.limit,
+  exDat$idColsAdj <- idCols
+  exDat$Results$r_m.res <- list(r_m.mn = r_m.mn, r_m.upper = r_m.upper.limit,
                          r_m.lower = r_m.lower.limit) 
-  expDat$Figures$r_mPlot <- plotSiter_m
-  return(expDat)
+  exDat$Figures$r_mPlot <- plotSiter_m
+  return(exDat)
 }

@@ -1,19 +1,19 @@
 #' Produce Receiver Operator Characteristic (ROC) Curves and AUC statistics
 #'
-#' @param expDat    list, contains input data and stores analysis results
+#' @param exDat    list, contains input data and stores analysis results
 #' 
 #' @export
 #' 
-erccROC <- function(expDat,pValDat = NULL ){
+erccROC <- function(exDat,pValDat = NULL ){
   
   library("ROCR")
   
   cat("\nGenerating ROC curve and AUC statistics...\n")
   
-  filenameRoot = expDat$sampleInfo$filenameRoot
-  folds = expDat$erccInfo$FCcode
-  legendLabels = expDat$erccInfo$legendLabels
-  idCols = expDat$erccInfo$idColsSRM
+  filenameRoot = exDat$sampleInfo$filenameRoot
+  folds = exDat$erccInfo$FCcode
+  legendLabels = exDat$erccInfo$legendLabels
+  idCols = exDat$erccInfo$idColsSRM
   
   idCols <- idCols[-which(is.na(idCols$Ratio)),]
   #Create a custom color scale
@@ -25,7 +25,7 @@ erccROC <- function(expDat,pValDat = NULL ){
 # colScale <- scale_colour_manual(name = "Ratio",values = myColorsDiff, labels = legendLabelsDiff)
 # fillScale <- scale_fill_manual(name = "Ratio", values = myColorsDiff, labels = legendLabelsDiff)
   
-  plotInfo <- expDat$plotInfo
+  plotInfo <- exDat$plotInfo
   colScale <- plotInfo$colScale
   fillScale <- plotInfo$fillScale
   
@@ -107,8 +107,8 @@ erccROC <- function(expDat,pValDat = NULL ){
 #                                    xmin=0.375,xmax=1.0,ymin = 0,ymax = 0.25) +
 #     theme(legend.position=c(0.75,0.5))
   
-  expDat$Figures$rocPlot <- ROCplot
-  expDat$Results$AUCdat <- AUCAnnot
-  return(expDat)
+  exDat$Figures$rocPlot <- ROCplot
+  exDat$Results$AUCdat <- AUCAnnot
+  return(exDat)
  
 }

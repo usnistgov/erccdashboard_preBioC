@@ -1,22 +1,22 @@
 #' Produce signal-abundance plot to evaluate dynamic range
 #'
-#' @param expDat    list, contains input data and stores analysis results
+#' @param exDat    list, contains input data and stores analysis results
 #' 
 #' @export
 
-dynRangePlot <- function(expDat){
+dynRangePlot <- function(exDat){
   
-  sampleInfo <- expDat$sampleInfo
-  plotInfo <- expDat$plotInfo
-  erccInfo <- expDat$erccInfo
+  sampleInfo <- exDat$sampleInfo
+  plotInfo <- exDat$plotInfo
+  erccInfo <- exDat$erccInfo
   
-  idCols = expDat$idColsAdj
-  sampleNames = expDat$sampleNames
+  idCols = exDat$idColsAdj
+  sampleNames = exDat$sampleNames
   
   indivxlabel = plotInfo$ERCCxlabelIndiv
   avexlabel= plotInfo$ERCCxlabelAve
   
-  expressDat = expDat$normERCCDat
+  expressDat = exDat$normERCCDat
   
   reps <- (ncol(expressDat[-c(1)]))/2
   
@@ -26,7 +26,7 @@ dynRangePlot <- function(expDat){
     cat(paste0("\nLess than 3 replicates per sample, no sd values ",
                "or error bars will be available.\n"))
   }
-  designMat = expDat$designMat
+  designMat = exDat$designMat
   FCcode = erccInfo$FCcode 
   
   myXLim = plotInfo$myXLim 
@@ -154,7 +154,7 @@ dynRangePlot <- function(expDat){
     #avexlabel = "Log2 Average of Normalized Intensity"
     #ymalabel = "Log2 Ratio of Normalized Intensity"
     #myXLimMA = c(min(maData$A)-1, max(maData$A)+1)
-    #expDat$plotInfo$myXLimMA <- myXLimMA
+    #exDat$plotInfo$myXLimMA <- myXLimMA
   }
   
   #xlabel = xlab(expression(paste("Log2 ERCC Spike Amount (attomol nt/ng total RNA",mu,"L)",sep = "")))
@@ -174,8 +174,15 @@ dynRangePlot <- function(expDat){
     ymax = max(AandBAveSD$value.Ave) +1
     myYLim = c(ymin,ymax)
   }
+  if((sampleInfo$datType == "array")&(myYLim[1]+1 < min(AandBAveSD$value.Ave))){
+    ymin = min(AandBAveSD$value.Ave) - 1
+    ymax = max(AandBAveSD$value.Ave) +1
+    myYLim = c(ymin,ymax)
+  }
   myYLim = myYLim
   myXLim = myXLim
+  exDat$plotInfo$myXLim <- myXLim
+  exDat$plotInfo$myYLim <- myYLim
   
   plotLim = coord_cartesian(xlim=myXLim,ylim = myYLim)
   
@@ -277,7 +284,7 @@ dynRangePlot <- function(expDat){
 # Get the residuals from fit1.lm
 
   fit.coeff = unlist(fit1.lm$coefficients)
-  #expDat$fit.coeff <- fit.coeff
+  #exDat$fit.coeff <- fit.coeff
   
   
   if(sampleInfo$datType == "array"){
@@ -285,13 +292,13 @@ dynRangePlot <- function(expDat){
     cat("\ndatType is array, no linear model fit for ERCC specific effects\n")
     cat("\nrangeResidPlot is empty")
   }
-  cat("\n\nSaving dynRangePlot to expDat\n")
-  expDat$Figures$dynRangePlot <- dynRange
-  expDat$Figures$rangeResidPlot <- effectsPlot
+  cat("\n\nSaving dynRangePlot to exDat\n")
+  exDat$Figures$dynRangePlot <- dynRange
+  exDat$Figures$rangeResidPlot <- effectsPlot
   
   
-  expDat$Results$dynRangeDat <- AandBAveSD
-  expDat$Results$rangeResidDat <- effects
-  return(expDat)
+  exDat$Results$dynRangeDat <- AandBAveSD
+  exDat$Results$rangeResidDat <- effects
+  return(exDat)
  
 }

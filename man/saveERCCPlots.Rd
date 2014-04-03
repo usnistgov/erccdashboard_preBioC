@@ -2,10 +2,10 @@
 \alias{saveERCCPlots}
 \title{Save erccdashboard plots to a pdf file}
 \usage{
-saveERCCPlots(expDat, plotsPerPg = "manuscript", plotlist = NULL)
+saveERCCPlots(exDat, plotsPerPg = "manuscript", plotlist = NULL)
 }
 \arguments{
-  \item{expDat}{list, contains input data and stores
+  \item{exDat}{list, contains input data and stores
   analysis results}
 
   \item{plotsPerPg}{string, if "manuscript" then the 4 main
@@ -20,13 +20,13 @@ file. The default is the 4 manuscript figures to a single
 page (plotsPerPg = "manuscript"). If plotsPerPg = "single"
 then each plot is placed on an individual page in one pdf
 file. If plotlist is not defined (plotlist = NULL) then all
-plots in expDat$Figures are printed to the file.
+plots in exDat$Figures are printed to the file.
 
 # to print 4 plots from manuscript to a single page pdf
-file saveERCCPlots(expDat, plotsPerPg = "manuscript")
+file saveERCCPlots(exDat, plotsPerPg = "manuscript")
 
 # to create a multiple page pdf of all plots produced
-saveERCCPlots(expDat, plotsPerPg = "single", plotlist =
-expDat$Figures)
+saveERCCPlots(exDat, plotsPerPg = "single", plotlist =
+exDat$Figures)
 }
 

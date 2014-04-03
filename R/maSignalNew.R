@@ -1,6 +1,6 @@
 #' Generate MA plots with or without annotation using LODR estimates 
 #'
-#' @param expDat      list, contains input data and stores analysis results
+#' @param exDat      list, contains input data and stores analysis results
 #' @param alphaPoint  numeric value, for alpha (transparency) for plotted points,
 #'                    range is 0 - 1
 #' @param r_mAdjust   default is TRUE, if FALSE then the r_m estimate will not
@@ -12,24 +12,24 @@
 #' @export
 
 # Plots with target ratios and R adjusted ratios, MA plots and Ratio Summaries
-maSignal <-function(expDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
+maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
   
   #ReplicateName = "Rep"
   # Melt the data
-  #expDat <- meltExpDat(expDat, cnt = expDat$Transcripts, 
-  #                    designMat = expDat$designMat)
-  #countPair <- expDat$expressDat_l
-  sampleInfo <- expDat$sampleInfo
-  erccInfo <- expDat$erccInfo
-  plotInfo <- expDat$plotInfo
+  #exDat <- meltexDat(exDat, cnt = exDat$Transcripts, 
+  #                    designMat = exDat$designMat)
+  #countPair <- exDat$expressDat_l
+  sampleInfo <- exDat$sampleInfo
+  erccInfo <- exDat$erccInfo
+  plotInfo <- exDat$plotInfo
   
-  cnt <- expDat$Transcripts
-  designMat <- expDat$designMat
-  sampleInfo <- expDat$sampleInfo
-  libeSize <- expDat$libeSize
+  cnt <- exDat$Transcripts
+  designMat <- exDat$designMat
+  sampleInfo <- exDat$sampleInfo
+  libeSize <- exDat$libeSize
   datNames <- colnames(designMat)[-1]
-  sample1 <- expDat$sampleNames[1]
-  sample2 <- expDat$sampleNames[2]
+  sample1 <- exDat$sampleNames[1]
+  sample2 <- exDat$sampleNames[2]
   
   datCols = cnt[-c(1)]
   libAdjust = sweep(datCols, 2, libeSize,"/")
@@ -45,39 +45,43 @@ maSignal <-function(expDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
     dat$Feature))
   dat$Ratio <- as.character(dat$Ratio)
   #idx1 <- suppressWarnings(which(as.character(dat$Feature) == 
-  #                                 as.character(expDat$idColsAdj$Feature)))
+  #                                 as.character(exDat$idColsAdj$Feature)))
   idxERCC <- grep("ERCC-",dat$Feature)
   for (i in 1:length(idxERCC)){
-    dat$Ratio[i] <- as.character(expDat$idColsAdj$Ratio)[match(dat$Feature[i],
-                                           expDat$idColsAdj$Feature)]
+    dat$Ratio[i] <- as.character(exDat$idColsAdj$Ratio)[match(dat$Feature[i],
+                                           exDat$idColsAdj$Feature)]
   }
 
-  #idx1 <- match( expDat$idColsAdj$Feature, dat$Feature,
+  #idx1 <- match( exDat$idColsAdj$Feature, dat$Feature,
   #               nomatch=F)
-  #dat$Ratio[idx1] <- as.character(expDat$idColsAdj[idx1,c(4)])
+  #dat$Ratio[idx1] <- as.character(exDat$idColsAdj[idx1,c(4)])
   dat$Ratio <- as.factor(dat$Ratio)
   
   
   
   myYLim = plotInfo$myYLimMA
   myXLimMA = plotInfo$myXLimMA
+  xlimMArange <- myXLimMA[2]-myXLimMA[1]
+  if (xlimMArange > (plotInfo$myYLim[2] - plotInfo$myYLim[1])){
+    myXLimMA <- c(plotInfo$myYLim[1],plotInfo$myYLim[2])
+  }
   
   filenameRoot = sampleInfo$filenameRoot
-  sample1 = expDat$sampleNames[1]
-  sample2 = expDat$sampleNames[2]
+  sample1 = exDat$sampleNames[1]
+  sample2 = exDat$sampleNames[2]
  
   
-  #idCols = expDat$idColsAdj
-  r_m.res = expDat$Results$r_m.res
+  #idCols = exDat$idColsAdj
+  r_m.res = exDat$Results$r_m.res
   
   #cutoffs = LODR.annot.ERCC$cutoffs
-  cutoffs = expDat$Results$LODR.annot.ERCC$countCutoffs
+  cutoffs = exDat$Results$LODR.annot.ERCC$countCutoffs
   
   FCcode = erccInfo$FCcode
   legendLabels=erccInfo$legendLabels
   
   
-  spikeFraction = expDat$spikeFraction
+  spikeFraction = exDat$spikeFraction
   
   r_m.mn = exp(r_m.res$r_m.mn)
   r_m.UL = exp(r_m.res$r_m.upper)
@@ -114,7 +118,7 @@ maSignal <-function(expDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
   maData <- subset(maDatAll, Ratio != "Endo")
   maData$Ratio <- factor(as.character(maData$Ratio),levels=FCcode$Ratio)
   maData$Feature <- as.factor(as.character(maData$Feature))
-  #countPair <- subset(expDat$expressDat_l, subset = Ratio != "Endo")
+  #countPair <- subset(exDat$expressDat_l, subset = Ratio != "Endo")
   #countPair$Ratio <- as.factor(as.character(countPair$Ratio))
   
   maData$Nominal = FCcode$FC[1]
@@ -149,7 +153,7 @@ maSignal <-function(expDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
     maData$Feature = as.factor(as.character(maData$Feature))
     #write.csv(maData,file = paste(filenameRoot,"maDataFinite.csv",sep = "."))
   
-  #avexlabel = expDat$ERCCxlabelAve
+  #avexlabel = exDat$ERCCxlabelAve
   if(sampleInfo$datType == "count"){
     avexlabel = "Log2 Average of Read Depth Normalized Counts"
     ymalabel = "Log2 Ratio of Read Depth Normalized Counts"
@@ -158,7 +162,7 @@ maSignal <-function(expDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
     avexlabel = "Log2 Average of Normalized Intensity"
     ymalabel = "Log2 Ratio of Normalized Intensity"
    # myXLimMA = c(min(maData$A)-1, max(maData$A)+1)
-   # expDat$plotInfo$myXLimMA <- myXLimMA
+   # exDat$plotInfo$myXLimMA <- myXLimMA
   }
   xlabel = xlab(avexlabel)
   
@@ -320,12 +324,12 @@ maSignal <-function(expDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
   ylab("SD of Log2 Ratios") + colScale + fillScale + theme_bw()
 
   
-  expDat$Figures$maPlot <- maPlot
-  #expDat$Results$ratVarDat <- ratVarDat
-  expDat$Results$modRatVar <- stdevCoef
-  expDat$Results$maDatAll <- maDatAll
-  #expDat$Figures$ratioSDPlot <- sdRatioplotFit
-  expDat$Figures$ratioSDPlot <- ratioVarPlot
+  exDat$Figures$maPlot <- maPlot
+  #exDat$Results$ratVarDat <- ratVarDat
+  exDat$Results$modRatVar <- stdevCoef
+  exDat$Results$maDatAll <- maDatAll
+  #exDat$Figures$ratioSDPlot <- sdRatioplotFit
+  exDat$Figures$ratioSDPlot <- ratioVarPlot
   
-  return(expDat)
+  return(exDat)
 }

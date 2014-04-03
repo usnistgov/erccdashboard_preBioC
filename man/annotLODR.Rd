@@ -2,10 +2,10 @@
 \alias{annotLODR}
 \title{Annotate signal-abundance and ratio-abundance plots with LODR}
 \usage{
-annotLODR(expDat)
+annotLODR(exDat)
 }
 \arguments{
-  \item{expDat}{list, contains input data and stores
+  \item{exDat}{list, contains input data and stores
   analysis results}
 }
 \description{

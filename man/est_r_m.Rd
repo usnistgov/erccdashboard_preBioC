@@ -3,10 +3,10 @@
 \title{Estimate the mRNA fraction differences for the pair of samples using
 replicate data}
 \usage{
-est_r_m(expDat)
+est_r_m(exDat)
 }
 \arguments{
-  \item{expDat}{list, contains input data and stores
+  \item{exDat}{list, contains input data and stores
   analysis results}
 }
 \description{
@@ -14,7 +14,7 @@ Estimate the mRNA fraction differences for the pair of
 samples using replicate data
 }
 \details{
-This is the first function to run after an expDat structure
+This is the first function to run after an exDat structure
 is initialized using initDat, because it is needed for all
 additional analysis. An r_m of 1 indicates that the two
 sample types under comparison have similar mRNA fractions

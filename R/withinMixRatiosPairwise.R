@@ -1,14 +1,14 @@
-withinMixRatios <- function(expDat){
+withinMixRatios <- function(exDat){
   # calculate deviation of relative abundances of transcripts within a mix from
   #the nominal concentration
   
  
-  colScale <- expDat$plotInfo$colScale
-  fillScale <- expDat$plotInfo$fillScale
-  datType <- expDat$sampleInfo$datType
-  sampleNames <- expDat$sampleNames
+  colScale <- exDat$plotInfo$colScale
+  fillScale <- exDat$plotInfo$fillScale
+  datType <- exDat$sampleInfo$datType
+  sampleNames <- exDat$sampleNames
   
-  playDat <- merge(expDat$normERCCDat, expDat$erccInfo$idColsSRM)
+  playDat <- merge(exDat$normERCCDat, exDat$erccInfo$idColsSRM)
   playDat$Feature <- as.factor(as.character(playDat$Feature))
   
   playDat$Mean1 <- apply(playDat[grep(sampleNames[1],colnames(playDat))],1,mean)
@@ -137,11 +137,11 @@ withinMixRatios <- function(expDat){
   #multiplot(betwCtlRats,residCtlRats,cols=1)
   
   #ggplot(perERCCRatios)+ geom_point(aes(x = Observed, y = Nominal))
-  expDat$Results$perERCCRatios <- perERCCRatios
-  expDat$Figures$betwCtlRats <- betwCtlRats
-  expDat$Figures$residRats <- residRats
-  expDat$Figures$violinrats <- violinrats
-  expDat$Figures$ratVerts <- ratVerts
-  return(expDat)
+  exDat$Results$perERCCRatios <- perERCCRatios
+  exDat$Figures$betwCtlRats <- betwCtlRats
+  exDat$Figures$residRats <- residRats
+  exDat$Figures$violinrats <- violinrats
+  exDat$Figures$ratVerts <- ratVerts
+  return(exDat)
   
 }

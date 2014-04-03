@@ -2,10 +2,11 @@
 \alias{runDashboard}
 \title{Run default erccdashboard analysis of ERCC control ratio mixtures}
 \usage{
-runDashboard(datType = NULL, expTable = NULL, repNormFactor = NULL,
+runDashboard(datType = NULL, exTable = NULL, repNormFactor = NULL,
   filenameRoot = NULL, sample1Name = NULL, sample2Name = NULL,
   erccmix = "RatioPair", erccdilution = 1, spikeVol = 1,
-  totalRNAmass = 1, choseFDR = 0.05, userMixFile = NULL)
+  totalRNAmass = 1, choseFDR = 0.05, ratioLim = c(-4, 4),
+  signalLim = c(-14, 14), userMixFile = NULL)
 }
 \arguments{
   \item{datType}{type is "count" or "array", unnormalized
@@ -15,7 +16,7 @@ runDashboard(datType = NULL, expTable = NULL, repNormFactor = NULL,
   intensities from microarray fluorescent intensities (not
   log transformed or normalized)}
 
-  \item{expTable}{data frame, the first column contains
+  \item{exTable}{data frame, the first column contains
   names of genes or transcripts (Feature) and the remaining
   columns are counts for sample replicates spiked with ERCC
   controls}
@@ -46,6 +47,12 @@ runDashboard(datType = NULL, expTable = NULL, repNormFactor = NULL,
   \item{choseFDR}{False Discovery Rate for differential
   expression testing}
 
+  \item{ratioLim}{Limits for ratio axis on MA plot, default
+  is c(-4,4)}
+
+  \item{signalLim}{Limits for ratio axis on MA plot,
+  default is c(-14,14)}
+
   \item{userMixFile}{optional filename input, default is
   NULL, if ERCC control ratio mixtures other than the
   Ambion product were used then a userMixFile can be used
@@ -59,14 +66,14 @@ mixtures
 load(file = system.file("data/SEQC.Example.RData",
      package = "erccdashboard"))
 
-expDat = runDashboard(datType = "count",
-                 expTable = COH.RatTox.ILM.MET.CTL.countTable,
+exDat = runDashboard(datType = "count",
+                 exTable = COH.RatTox.ILM.MET.CTL.countTable,
                  repNormFactor = COH.RatTox.ILM.MET.CTL.totalReads,
                  filenameRoot = "COH.ILM",
                  sample1Name = "MET", sample2Name = "CTL",
                  erccmix = "RatioPair", erccdilution = 1/100,
                  spikeVol = 1, totalRNAmass = 0.500,choseFDR = 0.1)
 
-summary(expDat)
+summary(exDat)
 }
 
