@@ -53,7 +53,6 @@ Quick Start:
 
 	> expDat <- runDashboard(datType = "count",
                        expTable = COH.RatTox.ILM.MET.CTL.countTable,
-                       repNormFactor = COH.RatTox.ILM.MET.CTL.totalReads,
                        filenameRoot = "COH.ILM",sample1Name = "MET",
                        sample2Name = "CTL",erccmix = "RatioPair",
                        erccdilution = 1/100, spikeVol = 1,
