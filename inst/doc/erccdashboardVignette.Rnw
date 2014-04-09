@@ -56,7 +56,7 @@ data(SEQC.Example)
 The R workspace should now contain 5 objects
 Three of these objects are gene expression experiment expression measures:
 \begin{itemize}
-  \item COH.array.UHRR.HBRR - Fluorescent signal data from an Illumina 
+  \item Lab4.array.UHRR.HBRR - Fluorescent signal data from an Illumina 
         beadarray microarray experiment with UHRR and HBRR
   \item COH.RatTox.ILM.MET.CTL.countTable - RNA-Seq count data from a
         rat toxicogenomics experiment
@@ -294,8 +294,8 @@ missing in the list of arguments for the runDashboard function. Each array
 replicate is normalized by the 75th quantile fluoresence intensity 
 value of that array.
 <<SEQCMainArray, keep.source=TRUE>>=
-exDat <- runDashboard(datType="array", exTable=COH.array.UHRR.HBRR,
-                       filenameRoot = "COH.Array",
+exDat <- runDashboard(datType="array", exTable=Lab4.array.UHRR.HBRR,
+                       filenameRoot = "Lab4.array",
                        sample1Name = "UHRR", sample2Name="HBRR",
                        erccmix = "RatioPair", erccdilution = 1, 
                        spikeVol = 50, totalRNAmass = 2.5*10^(3), choseFDR=0.01,)

@@ -23,7 +23,7 @@ libeSizeNorm <- function(expDat){
       #cat("\nUsing median intensity for ERCC 1:1 controls\n")
       #cat("\nUse median intensity from each array for normalization\n")
       #cat("\nUsing total intensity to normalize each array\n")
-      cat("\nUsing 75th quantile intensity to normalize each array\n")
+      cat("\nUsing 75th percentile (upper quartile) intensity to normalize each array\n")
       ### Subset the 1:1 ercc controls and calculate the median intensity for
       # for each column, build a libeSize vector  
       TranscriptsAll = expressDat
@@ -40,7 +40,7 @@ libeSizeNorm <- function(expDat){
       if (normVec == F){
         cat(paste("\nrepNormFactor is NULL,\n",
                   "Using Default Upper Quartile Normalization Method",
-                  " - 75th quantile)\n"))
+                  " - 75th percentile)\n"))
         TranscriptsAll = expressDat
         libeSize = apply(expressDat[-c(1)],MARGIN=2,FUN=quantile,probs=0.75)
         #TranscriptMappedReadSums = colSums(TranscriptsAll[-c(1)],na.rm = T)

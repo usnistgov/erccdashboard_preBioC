@@ -21,8 +21,10 @@ runDashboard(datType = NULL, exTable = NULL, repNormFactor = NULL,
   columns are counts for sample replicates spiked with ERCC
   controls}
 
-  \item{repNormFactor}{vector of normalization factors for
-  each replicate}
+  \item{repNormFactor}{optional vector of normalization
+  factors for each replicate, default value is NULL and
+  75th percentile normalization will be applied to
+  replicates}
 
   \item{filenameRoot}{string root name for output files}
 
@@ -68,7 +70,6 @@ load(file = system.file("data/SEQC.Example.RData",
 
 exDat = runDashboard(datType = "count",
                  exTable = COH.RatTox.ILM.MET.CTL.countTable,
-                 repNormFactor = COH.RatTox.ILM.MET.CTL.totalReads,
                  filenameRoot = "COH.ILM",
                  sample1Name = "MET", sample2Name = "CTL",
                  erccmix = "RatioPair", erccdilution = 1/100,

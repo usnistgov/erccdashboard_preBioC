@@ -23,7 +23,7 @@ initDat(datType = NULL, exTable = NULL, repNormFactor = NULL,
 
   \item{repNormFactor}{optional vector of normalization
   factors for each replicate, default value is NULL and
-  75th quantile normalization will be applied to
+  75th percentile normalization will be applied to
   replicates}
 
   \item{filenameRoot}{string root name for output files}

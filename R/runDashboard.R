@@ -11,7 +11,9 @@
 #'                      genes or transcripts (Feature) and the remaining columns
 #'                      are counts for sample replicates spiked with ERCC 
 #'                      controls
-#' @param repNormFactor vector of normalization factors for each replicate
+#' @param repNormFactor optional vector of normalization factors for each 
+#'                      replicate, default value is NULL and 75th percentile
+#'                      normalization will be applied to replicates
 #' @param filenameRoot  string root name for output files
 #' @param sample1Name   string name for sample 1 in the gene expression 
 #'                      experiment
@@ -40,7 +42,6 @@
 #'      
 #' exDat = runDashboard(datType = "count",
 #'                  exTable = COH.RatTox.ILM.MET.CTL.countTable, 
-#'                  repNormFactor = COH.RatTox.ILM.MET.CTL.totalReads, 
 #'                  filenameRoot = "COH.ILM",
 #'                  sample1Name = "MET", sample2Name = "CTL", 
 #'                  erccmix = "RatioPair", erccdilution = 1/100, 

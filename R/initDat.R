@@ -12,7 +12,7 @@
 #'                      are counts for sample replicates spiked with ERCC 
 #'                      controls
 #' @param repNormFactor optional vector of normalization factors for each 
-#'                      replicate, default value is NULL and 75th quantile
+#'                      replicate, default value is NULL and 75th percentile
 #'                      normalization will be applied to replicates
 #' @param filenameRoot  string root name for output files
 #' @param sample1Name   string name for sample 1 in the gene expression 
@@ -50,6 +50,7 @@ initDat <- function(datType=NULL, exTable=NULL, repNormFactor=NULL,
   
   myYLimMA <- ratioLim
   myXLimMA <- signalLim
+  xlimEffects <- c(-15,15)
   
   myYLim <- myXLimMA
   myXLim <- NULL
@@ -85,6 +86,9 @@ initDat <- function(datType=NULL, exTable=NULL, repNormFactor=NULL,
     #repNormFactor <- NULL
     cat("repNormFactor is NULL \n")
   }
+#   if(libeSizeNorm == FALSE){
+#     cat("libeSizeNorm is FALSE, be sure that data is library size normalized")
+#   }
   ## Do some library loading
   #library("QuasiSeq")
   #library("ROCR")
@@ -104,7 +108,7 @@ initDat <- function(datType=NULL, exTable=NULL, repNormFactor=NULL,
                     libeSizeNorm = libeSizeNorm, datType = datType)
   
   plotInfo = list(myXLimMA = myXLimMA, myYLimMA = myYLimMA,
-                    myXLim = myXLim, myYLim = myYLim, xlimEffects = NULL)
+                    myXLim = myXLim, myYLim = myYLim, xlimEffects = xlimEffects)
 
  
   exDat <- list(sampleInfo = sampleInfo,plotInfo = plotInfo)

@@ -10,7 +10,13 @@ dynRangePlot <- function(exDat){
   plotInfo <- exDat$plotInfo
   erccInfo <- exDat$erccInfo
   
-  idCols = exDat$idColsAdj
+  if(is.null(exDat$idColsAdj)){
+      idCols = exDat$idCols
+      cat("mRNA fraction estimate is assumed to be equal to 1")
+  }else{
+      idCols = exDat$idColsAdj    
+  }
+  
   sampleNames = exDat$sampleNames
   
   indivxlabel = plotInfo$ERCCxlabelIndiv
@@ -255,9 +261,9 @@ dynRangePlot <- function(exDat){
   maxLabel = effects$ERCC.effect >= fivenum(effects$ERCC.effect)[4]+ 
     1.5*IQR(effects$ERCC.effect)
   xlabel = xlab(avexlabel)
-  if(is.null(xlimEffects)){
-    xlimEffects = c((min(effects$ERCC.effect)-0.5),
-                    (max(effects$ERCC.effect)+0.5))  
+  if(xlimEffects[1] > min(effects$ERCC.effect)){
+    xlimEffects = c((min(effects$ERCC.effect)),
+                    (abs(min(effects$ERCC.effect)))) 
   }
   
 #if((any(minLabel))|(any(maxLabel))){
