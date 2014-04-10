@@ -155,8 +155,8 @@ maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
   
   #avexlabel = exDat$ERCCxlabelAve
   if(sampleInfo$datType == "count"){
-    avexlabel = "Log2 Average of Read Depth Normalized Counts"
-    ymalabel = "Log2 Ratio of Read Depth Normalized Counts"
+    avexlabel = "Log2 Average of Normalized Counts"
+    ymalabel = "Log2 Ratio of Normalized Counts"
   }
   if(sampleInfo$datType == "array"){
     avexlabel = "Log2 Average of Normalized Intensity"

@@ -96,13 +96,13 @@ est_r_m <- function(exDat){
     
     
   }
-  
+
+#### Collect Per ERCC r_m estimates and se in data frame
  colnames(r_m)<-c("r_m.hat","r_m.se")
  rownames(r_m)<-rownames(dat)[substr(rownames(dat),1,5)=="ERCC-"]
-
-  #### Add nominal log fold change to results
  r_m <- data.frame(r_m)
-  
+
+#### Add nominal log fold change to results    
  r_m$nominal<- - log(ERCC.FC[rownames(r_m),2])
   
  #### Make 95% CIs based on t-distribution
@@ -112,13 +112,23 @@ est_r_m <- function(exDat){
  r_m$Ratio = ERCC.Ratio$Ratio[match(row.names(r_m), ERCC.Ratio$Feature)]
  # Subset data frame to remove missing ERCC controls
  r_m <- subset(r_m, is.finite(Ratio))
- # weighted mean of the individual means
- r_m.mn<-sum((r_m[,1]-r_m[,3])/r_m[,2]^2)/sum(r_m[,2]^-2)
+
+#### Get global site r_m estimate and sd
+#  # weighted mean of the individual means
+
+#  # standard deviation, sigma of the weighted mean
   
-  
- # standard deviation, sigma of the weighted mean
- r_m.mn.sd <- sqrt(1/(sum(1/(r_m[,2]^2))))
-  
+
+### Try new version SM code added 20140410
+  w_vec <- 1/(r_m[,2]^2)
+  r_m.mn <- sum((r_m[,1]-r_m[,3])*w_vec)/sum(w_vec)
+  len_w_vec <- length(w_vec[w_vec > 0])
+  print(len_w_vec)
+  r_m.mn.sd <- sqrt((sum(w_vec*(((r_m[,1]-r_m[,3])-
+                                   r_m.mn)^2)))/(((len_w_vec - 1)*sum(w_vec))/(len_w_vec)))
+
+
+ # add Feature column to left side of r_m matrix
  r_m = cbind(as.character(row.names(r_m)), r_m)
  names(r_m)[1]= "Feature" 
   
@@ -162,9 +172,10 @@ est_r_m <- function(exDat){
   cat("\nGLM log(r_m) estimate standard deviation:\n")
   cat(r_m.mn.sd,"\n")
 
-  r_m.upper.limit = r_m.mn + (quant)*((r_m.mn.sd)/(sqrt(nrow(r_m))))
-  r_m.lower.limit = r_m.mn - (quant)*((r_m.mn.sd)/(sqrt(nrow(r_m))))
-  
+  r_m.upper.limit = r_m.mn + r_m.mn.sd 
+  r_m.lower.limit = r_m.mn - r_m.mn.sd
+
+
   cat(paste(site,"\nGLM r_m estimate:\n"))
   cat(exp(r_m.mn),"\n")
   
@@ -201,5 +212,6 @@ est_r_m <- function(exDat){
   exDat$Results$r_m.res <- list(r_m.mn = r_m.mn, r_m.upper = r_m.upper.limit,
                          r_m.lower = r_m.lower.limit) 
   exDat$Figures$r_mPlot <- plotSiter_m
+  exDat$Results$r_mDat <- r_m  
   return(exDat)
 }

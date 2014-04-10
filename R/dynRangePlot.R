@@ -151,7 +151,7 @@ dynRangePlot <- function(exDat){
    
   #set limits and axis labels
   if(sampleInfo$datType == "count"){
-    yinfo = ylab("Read Depth Normalized Log2 Transformed ERCC Counts")
+    yinfo = ylab("Log2 Normalized ERCC Counts")
     #avexlabel = "Log2 Average of Read Depth Normalized Counts"
     #ymalabel = "Log2 Ratio of Read Depth Normalized Counts"
   }
