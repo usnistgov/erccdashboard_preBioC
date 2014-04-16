@@ -298,7 +298,7 @@ exDat <- runDashboard(datType="array", exTable=Lab4.array.UHRR.HBRR,
                        filenameRoot = "Lab4.array",
                        sample1Name = "UHRR", sample2Name="HBRR",
                        erccmix = "RatioPair", erccdilution = 1, 
-                       spikeVol = 50, totalRNAmass = 2.5*10^(3), choseFDR=0.01,)
+                       spikeVol = 50, totalRNAmass = 2.5*10^(3), choseFDR=0.01)
 @
 \clearpage
 \begin{center}

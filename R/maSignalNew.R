@@ -83,9 +83,8 @@ maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
   
   spikeFraction = exDat$spikeFraction
   
-  r_m.mn = exp(r_m.res$r_m.mn)
-  r_m.UL = exp(r_m.res$r_m.upper)
-  r_m.LL = exp(r_m.res$r_m.lower)
+  r_m.mn = r_m.res$r_m.mn
+  r_m.mnse = r_m.res$r_m.mnse
   
   #theme_update(legend.justification=c(1,0), legend.position=c(1,0))
   
@@ -128,7 +127,7 @@ maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
  
     
   if(r_mAdjust == T){
-    maData$Empirical = maData$Nominal/r_m.mn  
+    maData$Empirical = maData$Nominal/exp(r_m.mn)  
   }else{
     maData$Empirical = maData$Nominal
   }
@@ -271,11 +270,10 @@ maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
       
       maData$LODR <- as.factor(maData$LODR)
       rm_dat = data.frame("Mean r_m" = signif(r_m.mn,digits = 4),
-                          "Lower Limit" = signif(r_m.LL,digits = 4), 
-                          "Upper Limit" = signif(r_m.UL,digits = 4))
-      colnames(rm_dat) <- c("Mean", expression(paste("95% CI Lower Bound")), 
-                            expression(paste("95% CI Upper Bound")))
-      rownames(rm_dat) <- expression(r[m])
+                          "Weighted SE" = signif(r_m.mnse,digits = 4))
+      colnames(rm_dat) <- c("'Weighted Mean'",
+                            "'(+/-) Weighted Standard Error'")
+      rownames(rm_dat) <- expression(log(r[m]))
       
       # Plot ratio-signal data coding points below the LODR with open circles
       maPlot <- ggplot(maData, aes(x = A, y = M.Ave) ) + 

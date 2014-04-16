@@ -2,7 +2,7 @@
 \alias{estLODR}
 \title{Estimate Limit of Detection of Ratios (LODR)}
 \usage{
-estLODR(exDat, kind = "ERCC", prob = 0.9, yrange = c(1e-15, 10))
+estLODR(exDat, kind = "ERCC", prob = 0.9)
 }
 \arguments{
   \item{exDat}{list, contains input data and stores
@@ -12,8 +12,6 @@ estLODR(exDat, kind = "ERCC", prob = 0.9, yrange = c(1e-15, 10))
 
   \item{prob}{probability, ranging from 0 - 1, default is
   0.9}
-
-  \item{yrange}{y-axis limits, default is c(1e-15, 1e1)}
 }
 \description{
 Estimate Limit of Detection of Ratios (LODR)

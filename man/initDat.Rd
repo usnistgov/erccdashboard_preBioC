@@ -52,8 +52,8 @@ initDat(datType = NULL, exTable = NULL, repNormFactor = NULL,
   \item{ratioLim}{Limits for ratio axis on MA plot, default
   is c(-4,4)}
 
-  \item{signalLim}{Limits for ratio axis on MA plot,
-  default is c(-12,12)}
+  \item{signalLim}{Limits for signal axis on dynamic range
+  plot, default is c(-14,14)}
 
   \item{userMixFile}{optional filename input, default is
   NULL, if ERCC control ratio mixtures other than the

@@ -30,7 +30,7 @@
 #' @param choseFDR      False Discovery Rate for differential expression testing
 #'                      , default is 0.05
 #' @param ratioLim      Limits for ratio axis on MA plot, default is c(-4,4)
-#' @param signalLim      Limits for ratio axis on MA plot, default is c(-12,12)
+#' @param signalLim     Limits for signal axis on dynamic range plot, default is c(-14,14)
 #' @param userMixFile   optional filename input, default is NULL, if ERCC 
 #'                      control ratio mixtures other than the Ambion product
 #'                      were used then a userMixFile can be used for the analysis

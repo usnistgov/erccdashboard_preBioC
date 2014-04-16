@@ -15,6 +15,7 @@
 
 est_r_m <- function(exDat){
   cat("\nCheck for sample mRNA fraction differences(r_m)...\n")
+ 
   cnt = exDat$Transcripts
   sampleInfo <- exDat$sampleInfo
   plotInfo <- exDat$plotInfo
@@ -38,10 +39,16 @@ est_r_m <- function(exDat){
   colnames(dat)<-paste(rep(c(exDat$sample1,exDat$sample2),
                            each=ncol(dat)/2),c(1:(ncol(dat)/2),
                                                1:(ncol(dat)/2)),sep="")
-  
+
+  if (sampleInfo$datType == "array"){
+    cat("\n datType is array, using 1:1 ERCC controls for r_m estimate\n")
+    # Pull out all ERCCs from dat except for the 1:1 ERCCs
+    ERCCcut <- idCols$Feature[idCols$Ratio != "1:1"]
+    dat <- dat[-(which(rownames(dat) %in% as.character(ERCCcut))),]
+  }
   ## Get ERCC names
   ERCC<-rownames(dat[substr(rownames(dat),1,5)=="ERCC-",])
-
+  
   ## Specify Sample (A or B)
   trt<-rep(1:2,each=ncol(dat)/2)
   design.list<-list(trt,rep(1,ncol(dat)))
@@ -106,7 +113,8 @@ est_r_m <- function(exDat){
  r_m$nominal<- - log(ERCC.FC[rownames(r_m),2])
   
  #### Make 95% CIs based on t-distribution
- quant<-qt(.975,6)
+ dft <- ncol(dat) - 2  
+ quant<-qt(.975, dft )
 
  #### Plot log r_m estimates and corresponding 95% CIs
  r_m$Ratio = ERCC.Ratio$Ratio[match(row.names(r_m), ERCC.Ratio$Feature)]
@@ -122,9 +130,11 @@ est_r_m <- function(exDat){
 ### Try new version SM code added 20140410
   w_vec <- 1/(r_m[,2]^2)
   r_m.mn <- sum((r_m[,1]-r_m[,3])*w_vec)/sum(w_vec)
+  
+
   len_w_vec <- length(w_vec[w_vec > 0])
-  print(len_w_vec)
-  r_m.mn.sd <- sqrt((sum(w_vec*(((r_m[,1]-r_m[,3])-
+  #print(len_w_vec)
+  r_m.mnse <- sqrt((sum(w_vec*(((r_m[,1]-r_m[,3])-
                                    r_m.mn)^2)))/(((len_w_vec - 1)*sum(w_vec))/(len_w_vec)))
 
 
@@ -169,21 +179,16 @@ est_r_m <- function(exDat){
   cat(paste("\nGLM log(r_m) estimate:\n"))
   cat(r_m.mn,"\n")
   
-  cat("\nGLM log(r_m) estimate standard deviation:\n")
-  cat(r_m.mn.sd,"\n")
-
-  r_m.upper.limit = r_m.mn + r_m.mn.sd 
-  r_m.lower.limit = r_m.mn - r_m.mn.sd
+  cat("\nGLM log(r_m) estimate weighted s.e.:\n")
+  cat(r_m.mnse,"\n")
 
 
-  cat(paste(site,"\nGLM r_m estimate:\n"))
-  cat(exp(r_m.mn),"\n")
+  #cat(paste(site,"\nGLM r_m estimate:\n"))
+  #cat(exp(r_m.mn),"\n")
   
-  cat("\nGLM r_m upper limit\n")
-  cat(exp(r_m.upper.limit),"\n")
+  #cat("\nGLM r_m weighted s.e.\n")
+  #cat(exp(r_m.mnse),"\n")
   
-  cat("\nGLM r_m lower limit\n")
-  cat(exp(r_m.lower.limit),"\n")
   
   if (nrow(textDat)>1){
     plotSiter_m = ggplot(r_m, aes(x = AveConc, y = r_m.hat - nominal, 
@@ -209,8 +214,8 @@ est_r_m <- function(exDat){
   }
   
   exDat$idColsAdj <- idCols
-  exDat$Results$r_m.res <- list(r_m.mn = r_m.mn, r_m.upper = r_m.upper.limit,
-                         r_m.lower = r_m.lower.limit) 
+  exDat$Results$r_m.res <- list(r_m.mn = r_m.mn, r_m.mnse = r_m.mnse)
+ 
   exDat$Figures$r_mPlot <- plotSiter_m
   exDat$Results$r_mDat <- r_m  
   return(exDat)

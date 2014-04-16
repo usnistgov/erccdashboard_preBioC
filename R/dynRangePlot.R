@@ -12,7 +12,7 @@ dynRangePlot <- function(exDat){
   
   if(is.null(exDat$idColsAdj)){
       idCols = exDat$idCols
-      cat("mRNA fraction estimate is assumed to be equal to 1")
+      cat("\nmRNA fraction estimate is assumed to be equal to 1")
   }else{
       idCols = exDat$idColsAdj    
   }
@@ -167,8 +167,9 @@ dynRangePlot <- function(exDat){
   xlabel = xlab(indivxlabel)
   #if(is.null(myXLim)){
     conc <- NULL
-    for (i in grep("Conc",names(idCols))){
-      conc <- c(conc, idCols[,i])  
+  idColsOrig <- exDat$idCols
+    for (i in grep("Conc",names(idColsOrig))){
+      conc <- c(conc, idColsOrig[,i])  
     }
     xmin = min(log2(conc)) - 1
     xmax = max(log2(conc)) + 1
