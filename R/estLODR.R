@@ -189,9 +189,10 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
   arrowDat = arrowDat[which(is.finite(arrowDat$x)),]
   
   if(dim(arrowDat)[1] == 0){
-    cat(paste("\nError! Estimated distribution of p-values does not cross \n",
-              "threshold p-value, may be due to insufficient data quantity\n"))
-    break
+    cat(paste("\nWarning! Estimated distribution of p-values does not cross \n",
+              "threshold p-value, may be due to insufficient data quantity\n",
+              "Consider adjusting FDR choice.\n"))
+    #break
   }
   if(exDat$sampleInfo$datType == "array"){
     xlabDE <- xlab("Average Fluorescence Intensity")
@@ -220,29 +221,56 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
 #     ymin <- min(pval.res$Pval)/1e5
 #     yrange <- c(ymin, 1e1)
 #   }
-  LODRplot <- ggplot(pval.res, aes(x = MnCnt, y = Pval, colour = Ratio)) + 
-    geom_point(size = 6) + 
-    scale_x_log10(limits = xrange) + 
-    #scale_y_log10(breaks = c(1e-12,1e-10,1e-8,1e-5,1e-4,1e-3,1e-2,1e-1,1e0), 
-    #              limits = yrange) + 
-    scale_y_log10(breaks = c(1e-12,1e-10,1e-8,1e-5,1e-4,1e-3,1e-2,1e-1,1e0))+
-    geom_ribbon(data = lineDat, aes(x = x.new, 
-                                    y = fitLine, 
-                                    ymin=fitLower, 
-                                    ymax=fitUpper,
-                                    fill = Ratio), alpha = 0.3,colour = NA,show_guide =F) + 
-    geom_line(data = lineDat,aes(x = x.new,
-                                 y=fitLine, 
-                                 colour = Ratio),show_guide = F) + 
-    colScale + fillScale + xlabDE + ylab("DE Test P-values") + 
-    geom_hline(yintercept = pval.cutoff, linetype = 2, size = 2 ) + 
-    geom_segment(data = arrowDat, aes(x = x,
-                                      y = y, 
-                                      xend = xend,
-                                      yend = yend, 
-                                      colour = Ratio), 
-                 lineend = "round", arrow = arrow(length =unit(0.5,"cm")), 
-                 size = 2, alpha = 0.6) + theme_bw()+ legendPos
+  if(dim(arrowDat)[1]!=0){
+    LODRplot <- ggplot(pval.res, aes(x = MnCnt, y = Pval, colour = Ratio)) + 
+      geom_point(size = 6) + 
+      scale_x_log10(limits = xrange) + 
+      #scale_y_log10(breaks = c(1e-12,1e-10,1e-8,1e-5,1e-4,1e-3,1e-2,1e-1,1e0), 
+      #              limits = yrange) + 
+      scale_y_log10(breaks = c(1e-12,1e-10,1e-8,1e-5,1e-4,1e-3,1e-2,1e-1,1e0))+
+      geom_ribbon(data = lineDat, aes(x = x.new, 
+                                      y = fitLine, 
+                                      ymin=fitLower, 
+                                      ymax=fitUpper,
+                                      fill = Ratio), alpha = 0.3,colour = NA,show_guide =F) + 
+      geom_line(data = lineDat,aes(x = x.new,
+                                   y=fitLine, 
+                                   colour = Ratio),show_guide = F) + 
+      colScale + fillScale + xlabDE + ylab("DE Test P-values") + 
+      geom_hline(yintercept = pval.cutoff, linetype = 2, size = 2 ) + 
+      geom_segment(data = arrowDat, aes(x = x,
+                                        y = y, 
+                                        xend = xend,
+                                        yend = yend, 
+                                        colour = Ratio), 
+                   lineend = "round", arrow = arrow(length =unit(0.5,"cm")), 
+                   size = 2, alpha = 0.6) + theme_bw()+ legendPos  
+  }else{
+      LODRplot <- ggplot(pval.res, aes(x = MnCnt, y = Pval, colour = Ratio)) + 
+        geom_point(size = 6) + 
+        scale_x_log10(limits = xrange) + 
+        #scale_y_log10(breaks = c(1e-12,1e-10,1e-8,1e-5,1e-4,1e-3,1e-2,1e-1,1e0), 
+        #              limits = yrange) + 
+        scale_y_log10(breaks = c(1e-12,1e-10,1e-8,1e-5,1e-4,1e-3,1e-2,1e-1,1e0))+
+        geom_ribbon(data = lineDat, aes(x = x.new, 
+                                        y = fitLine, 
+                                        ymin=fitLower, 
+                                        ymax=fitUpper,
+                                        fill = Ratio), alpha = 0.3,colour = NA,show_guide =F) + 
+        geom_line(data = lineDat,aes(x = x.new,
+                                     y=fitLine, 
+                                     colour = Ratio),show_guide = F) + 
+        colScale + fillScale + xlabDE + ylab("DE Test P-values") + 
+        geom_hline(yintercept = pval.cutoff, linetype = 2, size = 2 ) +
+#         geom_segment(data = arrowDat, aes(x = x,
+#                                           y = y, 
+#                                           xend = xend,
+#                                           yend = yend, 
+#                                           colour = Ratio), 
+#                      lineend = "round", arrow = arrow(length =unit(0.5,"cm")), 
+#                      size = 2, alpha = 0.6) + 
+        theme_bw()+ legendPos
+  }
     
     
   ### final result 
