@@ -1,6 +1,6 @@
 erccdashboard
 =============
-This is the source code for the erccdashboard R packge (v. 0.9.5)
+This is the source code for the erccdashboard R packge (v. 0.9.6)
 
 Note that the erccdashboard package has other packages as dependencies. These packages will need to be installed and loaded by the user. Once the erccdashboard package is on a remote repository (e.g. CRAN or Bioconductor) the package dependencies will automatically be addressed during installation and loading of the erccdashboard package. All package dependencies are on CRAN except for edgeR and qvalue which are both on Bioconductor. Use the following R commands to install edgeR and qvalue: 
 
@@ -33,7 +33,7 @@ Installation:
 
 2. At R prompt install the package with:
 
-  > install.packages(pkgs="path_to_package/erccdashboard_0.9.5.")
+  > install.packages(pkgs="path_to_package/erccdashboard_0.9.6")
 
 3. Load the package with
 
