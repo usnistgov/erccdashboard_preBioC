@@ -5,19 +5,17 @@
 \title{
 Assessment of Gene Expression Measurement Technical Performance with
 External Spike-in RNA Controls
-~~ package title ~~
 }
 \description{
 erccdashboard produces graphs and performance metrics for gene
     expression measurements derived from analysis of the External RNA
     Control Consortium (ERCC) spike-in controls.
-~~ A concise (1-5 lines) description of the package ~~
 }
 \details{
 \tabular{ll}{
 Package: \tab erccdashboard\cr
 Type: \tab Package\cr
-Version: \tab 0.9.6\cr
+Version: \tab 0.9.7\cr
 URL: \tab http://nist.gov/erccControls\cr
 Depends: \tab 
 R (>= 3.0), ggplot2, gridExtra\cr
