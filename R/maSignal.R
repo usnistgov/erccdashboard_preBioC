@@ -228,8 +228,10 @@ maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
         geom_point(aes(colour = Ratio),size = 5, alpha = alphaPoint) +
         geom_point(data = subset(maData, (LODR == "below")),
                    colour = "white",size = 2.5) + 
+        geom_hline(aes(yintercept = log2(Nominal), colour = Ratio), 
+                   alpha = 0.7) +
         geom_hline(aes(yintercept = log2(Empirical), colour = Ratio), 
-                   linetype = "longdash",alpha = 0.7) + 
+                   size = 1, linetype = "longdash") + 
         ylab(ymalabel) + xlabel + 
         coord_cartesian(xlim = myXLimMA, ylim = myYLim) + colScale + 
         annotation_custom(tableGrob(rm_dat,parse=T, 
@@ -244,7 +246,8 @@ maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
                           ymin = (myYLim[2]) - 0.25*myYLim[2], 
                           ymax = myYLim[2]) + 
         scale_y_continuous(breaks = seq(myYLim[1],myYLim[2],1))+ theme_bw()+
-        theme( legend.justification = c(1,0),legend.position=c(1,0))
+        theme( legend.justification = c(1,0),legend.position=c(1,0)) +
+        theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())
         
     }else{
       # Plot ratio-signal data without LODR coding
@@ -252,11 +255,14 @@ maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
         geom_errorbar(aes(ymax = M.Ave + M.SD, ymin = M.Ave - M.SD),
                       size = 1, alpha = alphaPoint) + 
         geom_point(size = 5, alpha = alphaPoint) + 
+        geom_hline(aes(yintercept = log2(Nominal), colour = Ratio), 
+                   alpha = 0.7) +
         geom_hline(aes(yintercept = log2(Empirical), colour = Ratio), 
-                   linetype = "longdash",alpha = 0.7) + 
+                   size = 1, linetype = "longdash") + 
         ylab(ymalabel) + xlabel + colScale+ 
         coord_cartesian(xlim = myXLimMA, ylim = myYLim) + theme_bw()+
-        theme( legend.justification = c(1,0),legend.position=c(1,0))
+        theme( legend.justification = c(1,0),legend.position=c(1,0)) +
+        theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())
     }
   
   ratioVarPlot <- ggplot(maData) + geom_violin(aes(x = Ratio, 

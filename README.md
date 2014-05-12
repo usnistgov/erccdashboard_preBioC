@@ -32,7 +32,7 @@ Installation:
 
 2. At R prompt install the package with:
 
-  > install.packages(pkgs="path_to_package/erccdashboard_0.9.7.tar.tgz")
+  > install.packages(pkgs="path_to_package/erccdashboard_0.9.8.tar.tgz")
 
 3. Load the package with
 

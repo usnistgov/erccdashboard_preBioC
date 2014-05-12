@@ -92,6 +92,13 @@ initDat <- function(datType=NULL, isNorm = F, exTable=NULL, repNormFactor=NULL,
   }
   if(isNorm == T){
     cat("\nisNorm is TRUE, input data will be considered to be normalized\n")
+    getKNorm<- function(){
+      cat("\nIs the expression data length normalized (e.g. FPKM or RPKM)?\n")
+      readline("Enter Y or N: ")
+    }
+   kNorm <- as.character(getKNorm())  
+  }else{
+    kNorm = "N"
   }
   
   ##############################
@@ -100,7 +107,7 @@ initDat <- function(datType=NULL, isNorm = F, exTable=NULL, repNormFactor=NULL,
                     sample2Name = sample2Name, choseFDR = choseFDR,
                     erccdilution = erccdilution, erccmix = erccmix,
                     spikeVol = spikeVol, totalRNAmass = totalRNAmass,
-                    isNorm = isNorm, datType = datType)
+                    isNorm = isNorm, kNorm = kNorm, datType = datType)
   
   plotInfo = list(myXLimMA = myXLimMA, myYLimMA = myYLimMA,
                     myXLim = myXLim, myYLim = myYLim, xlimEffects = xlimEffects)

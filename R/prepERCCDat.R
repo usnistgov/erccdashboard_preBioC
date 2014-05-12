@@ -6,10 +6,23 @@ prepERCCDat <- function(expDat){
   expressDat = expressDat[c(grep("ERCC-0", expressDat$Feature)),]
   
   # Length normalize the Expected ERCC concentrations
-  lengthnorm = F
-  if (lengthnorm == F){
-    lengthFactor = (idCols$Length)/(1000)  
+  kNorm = sampleInfo$kNorm
+  if (kNorm %in% c("N","n","no","No")){
+    lengthFactor = (idCols$Length) #/(1000)
+    ERCCxlabelIndiv = expression(paste("Log2 ERCC Spike Amount(attomol nt/",
+                                       mu,"g total RNA)",sep = ""))
+    ERCCxlabelAve = expression(paste("Log2 Average ERCC Spike Amount(attomol nt/",
+                                     mu,"g total RNA)",sep = ""))
   }
+  if(kNorm %in% c("Y","y","yes","Yes")){
+    lengthFactor = 1
+    ERCCxlabelIndiv = expression(paste("Log2 ERCC Spike Amount(attomol/",
+                                       mu,"g total RNA)",sep = ""))
+    ERCCxlabelAve = expression(paste("Log2 Average ERCC Spike Amount(attomol/",
+                                     mu,"g total RNA)",sep = ""))
+    
+  }
+  
   
   
   # If length normalization of the expected concentrations is desired (default)
@@ -22,8 +35,7 @@ prepERCCDat <- function(expDat){
   idCols$Conc1 <- idCols$Conc1*spikeFraction
   idCols$Conc2 <- idCols$Conc2*spikeFraction
   
-  ERCCxlabelIndiv = expression(paste("Log2 ERCC Spike Amount(attomol nt/",mu,"g total RNA)",sep = ""))
-  ERCCxlabelAve = expression(paste("Log2 Average ERCC Spike Amount(attomol nt/",mu,"g total RNA)",sep = ""))
+ 
   expDat$idCols <- idCols
   expDat$plotInfo$ERCCxlabelIndiv <- ERCCxlabelIndiv
   expDat$plotInfo$ERCCxlabelAve <- ERCCxlabelAve
