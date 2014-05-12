@@ -1,15 +1,17 @@
 #' Run default erccdashboard analysis of ERCC control ratio mixtures
 #'
-#' @param datType       type is "count" or "array", unnormalized data is  
-#'                      expected (normalized data may be accepted in future
-#'                      version of the package). Default is "count" (integer 
-#'                      count data),"array" is unnormalized fluorescent 
-#'                      intensities from microarray
-#'                      fluorescent intensities (not log transformed or 
-#'                      normalized)
-#' @param exTable      data frame, the first column contains names of 
+#' @param datType       type is "count" (RNA-Seq) or "array" (microarray),
+#'                      "count" is unnormalized integer count data (normalized
+#'                      RNA-Seq data will be accepted in an updated version of
+#'                      the package), "array" can be normalized or unnormalized 
+#'                      fluorescent intensities from a microarray experiment.
+#' @param isNorm        default is FALSE, if FALSE then the unnormalized
+#'                      input data will be
+#'                      normalized in erccdashboard analysis. If TRUE then
+#'                      it is expected that the data is already normalized
+#' @param exTable       data frame, the first column contains names of 
 #'                      genes or transcripts (Feature) and the remaining columns
-#'                      are counts for sample replicates spiked with ERCC 
+#'                      are expression measures for sample replicates spiked with ERCC 
 #'                      controls
 #' @param repNormFactor optional vector of normalization factors for each 
 #'                      replicate, default value is NULL and 75th percentile
@@ -37,19 +39,23 @@
 #' 
 #' @export
 #' @examples
-#' load(file = system.file("data/SEQC.Example.RData",
-#'      package = "erccdashboard"))
+#' \dontrun{
+#' 
+#' data(SEQC.Example)
 #'      
-#' exDat = runDashboard(datType = "count",
-#'                  exTable = COH.RatTox.ILM.MET.CTL.countTable, 
-#'                  filenameRoot = "COH.ILM",
-#'                  sample1Name = "MET", sample2Name = "CTL", 
-#'                  erccmix = "RatioPair", erccdilution = 1/100, 
-#'                  spikeVol = 1, totalRNAmass = 0.500,choseFDR = 0.1)
+#' exDat = runDashboard(datType = "count",isNorm = F,
+#'                      exTable = COH.RatTox.ILM.MET.CTL.countTable, 
+#'                      filenameRoot = "COH.ILM",
+#'                      sample1Name = "MET", sample2Name = "CTL", 
+#'                      erccmix = "RatioPair", erccdilution = 1/100, 
+#'                      spikeVol = 1, totalRNAmass = 0.500,choseFDR = 0.1)
 #'                  
 #' summary(exDat)
+#' }
+#' 
 
-runDashboard <- function(datType=NULL, exTable=NULL, repNormFactor=NULL,
+runDashboard <- function(datType=NULL, isNorm = F, 
+                         exTable=NULL, repNormFactor=NULL,
                          filenameRoot = NULL,
                          sample1Name = NULL,sample2Name = NULL, 
                          erccmix = "RatioPair", erccdilution = 1,
@@ -59,7 +65,7 @@ runDashboard <- function(datType=NULL, exTable=NULL, repNormFactor=NULL,
 
   # Initialize exDat structure
   # Required for all subsequent functions
-  exDat <- initDat(datType=datType, exTable=exTable, 
+  exDat <- initDat(datType=datType, isNorm = isNorm, exTable=exTable, 
                     repNormFactor=repNormFactor, filenameRoot=filenameRoot,
                     sample1Name=sample1Name, sample2Name=sample2Name, 
                     erccmix=erccmix, erccdilution=erccdilution, 

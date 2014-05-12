@@ -7,6 +7,10 @@
 #'                      intensities from microarray
 #'                      fluorescent intensities (not log transformed or 
 #'                      normalized)
+#' @param isNorm        default is FALSE, if FALSE then the unnormalized
+#'                      input data will be
+#'                      normalized in erccdashboard analysis. If TRUE then
+#'                      it is expected that the data is already normalized
 #' @param exTable      data frame, the first column contains names of 
 #'                      genes or transcripts (Feature) and the remaining columns
 #'                      are counts for sample replicates spiked with ERCC 
@@ -39,7 +43,7 @@
 #' @export
 
 
-initDat <- function(datType=NULL, exTable=NULL, repNormFactor=NULL,
+initDat <- function(datType=NULL, isNorm = F, exTable=NULL, repNormFactor=NULL,
                     filenameRoot = NULL,
                     sample1Name = NULL,sample2Name = NULL, 
                     erccmix = "RatioPair", erccdilution = 1,
@@ -47,7 +51,7 @@ initDat <- function(datType=NULL, exTable=NULL, repNormFactor=NULL,
                     ratioLim = c(-4,4), signalLim = c(-14,14), 
                     userMixFile =NULL){
   cat("\nInitializing the exDat list structure...\n")
-  
+
   myYLimMA <- ratioLim
   myXLimMA <- signalLim
   xlimEffects <- c(-15,15)
@@ -86,26 +90,17 @@ initDat <- function(datType=NULL, exTable=NULL, repNormFactor=NULL,
     #repNormFactor <- NULL
     cat("repNormFactor is NULL \n")
   }
-#   if(libeSizeNorm == FALSE){
-#     cat("libeSizeNorm is FALSE, be sure that data is library size normalized")
-#   }
-  ## Do some library loading
-  #library("QuasiSeq")
-  #library("ROCR")
-  #library("edgeR")
-  #library("grid")
-  #library("gridExtra")
-  #library("reshape2")
-  #library("gtools")
-  #library("qvalue")
+  if(isNorm == T){
+    cat("\nisNorm is TRUE, input data will be considered to be normalized\n")
+  }
   
   ##############################
-  libeSizeNorm = T ## set default to library size normalization
+
   sampleInfo = list(sample1Name = sample1Name,
                     sample2Name = sample2Name, choseFDR = choseFDR,
                     erccdilution = erccdilution, erccmix = erccmix,
                     spikeVol = spikeVol, totalRNAmass = totalRNAmass,
-                    libeSizeNorm = libeSizeNorm, datType = datType)
+                    isNorm = isNorm, datType = datType)
   
   plotInfo = list(myXLimMA = myXLimMA, myYLimMA = myYLimMA,
                     myXLim = myXLim, myYLim = myYLim, xlimEffects = xlimEffects)
@@ -129,20 +124,17 @@ initDat <- function(datType=NULL, exTable=NULL, repNormFactor=NULL,
   exDat <- loadExpMeas(exDat, exTable, repNormFactor)
 
   ###############################################################################
-  # library size normalize the data
-  if(libeSizeNorm == T){
-    exDat <- libeSizeNorm(exDat)  
-  }
+  # normalize the data
+  #if(isNorm == F){
+    exDat <- normalizeDat(exDat)  
+  #}
   
   
   ###############################################################################
   # length normalize the ERCC concentrations
   exDat <- prepERCCDat(exDat)
   
-  # Estimate the mean library size factor for the data to use to estimate
-  # corresponding concentrations for LODR
-  #exDat <- estMnLibeFactor(exDat, cnt = exDat$Transcripts)
-  
+   
   exDat <- plotAdjust(exDat)
   
   return(exDat)

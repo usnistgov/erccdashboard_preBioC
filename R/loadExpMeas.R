@@ -2,6 +2,7 @@ loadExpMeas<- function(exDat, exTable, repNormFactor){
   
   designFactors <- c("Sample","Rep")
   datType <- exDat$sampleInfo$datType
+  isNorm <- exDat$sampleInfo$isNorm
   # Check for countable input errors
   for (i in 2:length(colnames(exTable))){
       if (str_count(colnames(exTable[c(i)]),"_") != 1){
@@ -28,10 +29,13 @@ loadExpMeas<- function(exDat, exTable, repNormFactor){
     
    # force names to be ERCC- and first column name to Feature
    names(Transcripts)[1] = "Feature"
-   Transcripts$Feature = gsub("ERCC_","ERCC-",Transcripts$Feature)
+   
    #Transcripts$Feature = gsub(".","-",Transcripts$Feature)
    Transcripts$Feature = gsub(":","",Transcripts$Feature)
-   
+   row.names(Transcripts) <- gsub("[[:punct:]]", "_", row.names(Transcripts))
+   Transcripts$Feature <- gsub("[[:punct:]]", "_", Transcripts$Feature)
+  Transcripts$Feature = gsub("ERCC_","ERCC-",Transcripts$Feature)
+  #print(head(Transcripts))
    # get data frames with just the ERCCs and just the human genes
    TranscriptsERCCOnly = Transcripts[c(grep("ERCC-0", Transcripts$Feature)),]
    TranscriptsHumanOnly = Transcripts[-c(grep("ERCC-0", Transcripts$Feature)),]
@@ -56,7 +60,7 @@ loadExpMeas<- function(exDat, exTable, repNormFactor){
                                patternSplit = '_')
   
   ### Filter the transcripts
-  if (datType == "count"){
+  if ((datType == "count")&(isNorm == FALSE)){
     lengthinit <- dim(Transcripts)[1]
     idxsample <- which((rowMeans(Transcripts[-c(1)])>1)&(rowSums(
       Transcripts[-c(1)]!=0)>2))

@@ -15,7 +15,7 @@ erccdashboard produces graphs and performance metrics for gene
 \tabular{ll}{
 Package: \tab erccdashboard\cr
 Type: \tab Package\cr
-Version: \tab 0.9.7\cr
+Version: \tab 0.9.8\cr
 URL: \tab http://nist.gov/erccControls\cr
 Depends: \tab 
 R (>= 3.0), ggplot2, gridExtra\cr
@@ -81,12 +81,9 @@ Maintainer: Sarah Munro <sarah.munro@nist.gov>
 }
 \references{
 
-To cite the erccdashboard analysis package:\cr
-Munro SA, Lund S, Pine PS, Binder H, Clevert D, Conesa A, Dopazo J, Fasold
-  M, Hochreiter S, Hong H, Jafari N, Kreil DP, Łabaj PP, Liao Y, Lin S,
-  Meehan J, Mason CE, Santoyo J, Setterquist RA, Shi L, Shi W, Smyth GK,
-  Stralis-Pavese N, Su Z, Tong W, Wang C, Wang J, Xu J, Ye Z, Yang Y, Yu Y,
-  Salit M (Under Review, 2014). Assessing Technical Performance in Gene
+Please cite our paper when you use the dashboard:\cr
+citation("erccdashboard")
+Munro SA et al. (2014). Assessing Technical Performance in Gene
   Expression Experiments with External Spike-in RNA Control Ratio Mixtures.\cr
 
 The certificate for the NIST Standard Reference Material (SRM 2374) which is the

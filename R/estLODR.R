@@ -39,9 +39,8 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
   if(file.exists(paste(filenameRoot,kind,"Pvals.csv"))){
     pval.res<-read.csv(paste(filenameRoot,kind,"Pvals.csv"),header=TRUE)  
   }else{
-    cat(paste0("\n",filenameRoot," ",kind," Pvals.csv is missing, ",
-              "because simulated DE data was not generated \nand tested for ",
-              "differential expression. Continuing with analysis...\n"))
+    cat(paste0("\n",filenameRoot," ",kind," Pvals.csv is missing.",
+              "\nExiting LODR estimation...\n"))
     return(exDat)
   }
    
@@ -127,10 +126,10 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
     
     grp<-which(pval.res$Ratio==FCcode$Ratio[i])  ### identify subgroup members
 
-    x<-pval.res$MnCnt[grp][pval.res$Pval[grp]!=0]; y<-pval.res$Pval[grp][pval.res$Pval[grp]!=0]
+    x<-pval.res$MnSignal[grp][pval.res$Pval[grp]!=0]; y<-pval.res$Pval[grp][pval.res$Pval[grp]!=0]
     
     fit<-locfit(log10(y)~lp(log10(x)))
-    #x.new<-log10(pval.res$MnCnt[grp])
+    #x.new<-log10(pval.res$MnSignal[grp])
     x.new<-seq(min(log10(x)),max(log10(x)),length.out=100)
     X<-preplot(fit,band="pred",newdata=x.new)
 
@@ -196,12 +195,12 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
   }
   if(exDat$sampleInfo$datType == "array"){
     xlabDE <- xlab("Average Fluorescence Intensity")
-    xrange <- c(min(pval.res$MnCnt),max(pval.res$MnCnt))
+    xrange <- c(min(pval.res$MnSignal),max(pval.res$MnSignal))
     legendPos <- theme(legend.justification=c(1,0), legend.position=c(1,0))
   }
   if(exDat$sampleInfo$datType == "count"){
     xlabDE <- xlab("Average Counts")
-    xrange <- c(1,max(pval.res$MnCnt))
+    xrange <- c(1,max(pval.res$MnSignal))
     legendPos <- theme(legend.justification=c(0,0), legend.position=c(0,0))
   }
   
@@ -222,7 +221,7 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
 #     yrange <- c(ymin, 1e1)
 #   }
   if(dim(arrowDat)[1]!=0){
-    LODRplot <- ggplot(pval.res, aes(x = MnCnt, y = Pval, colour = Ratio)) + 
+    LODRplot <- ggplot(pval.res, aes(x = MnSignal, y = Pval, colour = Ratio)) + 
       geom_point(size = 6) + 
       scale_x_log10(limits = xrange) + 
       #scale_y_log10(breaks = c(1e-12,1e-10,1e-8,1e-5,1e-4,1e-3,1e-2,1e-1,1e0), 
@@ -246,7 +245,7 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
                    lineend = "round", arrow = arrow(length =unit(0.5,"cm")), 
                    size = 2, alpha = 0.6) + theme_bw()+ legendPos  
   }else{
-      LODRplot <- ggplot(pval.res, aes(x = MnCnt, y = Pval, colour = Ratio)) + 
+      LODRplot <- ggplot(pval.res, aes(x = MnSignal, y = Pval, colour = Ratio)) + 
         geom_point(size = 6) + 
         scale_x_log10(limits = xrange) + 
         #scale_y_log10(breaks = c(1e-12,1e-10,1e-8,1e-5,1e-4,1e-3,1e-2,1e-1,1e0), 

@@ -5,16 +5,16 @@
 #' @details
 #' This function wraps the QuasiSeq differential expression testing package for
 #' datType = "count" or uses the limma package for differential expression 
-#' testing if datType = "array". Alternatively, for count data only, if a 
-#' correctly formatted csv file is provided with the necessary DE test results, 
-#' then geneExprTest will bypass DE testing (with reduced runtime). The function
-#' will look for a csv file with the name "filenameRoot.quasiSeq.res.csv" and 
-#' columns with names "Feature", "pvals", and "qvals" must be in the file
+#' testing if datType = "array". Alternatively, for count data only, if
+#' correctly formatted DE test results are provided,
+#' then geneExprTest will bypass DE testing (with reduced runtime).
 #' 
 #' @export
 
 geneExprTest <- function(exDat){
   datType <- exDat$sampleInfo$datType
+  isNorm <- exDat$sampleInfo$isNorm
+  #print(datType)
   if(datType == "array"){
     if(is.null(exDat$sampleInfo$choseFDR)){
       getPThresh<- function(){
@@ -50,7 +50,7 @@ geneExprTest <- function(exDat){
         cat(paste("\n Differential expression test results exist, will use  \n",
                   "existing P-values and Q-values for analysis.\n",
                   "Delete", qvalFile, "if you want to repeat differential \n",
-                  "differential expression testing or view dispersion plots\n"))
+                  "expression testing or view dispersion plots\n"))
         if(any(deRes$qvals<choseFDR)){
           p.thresh<-max(deRes$pvals[deRes$qvals<choseFDR])
         }
@@ -68,16 +68,29 @@ geneExprTest <- function(exDat){
     if(file.exists(qvalFile) == FALSE){
       pvalERCC = paste(sampleInfo$filenameRoot, "ERCC Pvals.csv",sep=" ")
       if(file.exists(pvalERCC)){
-        cat(paste("\n P-values exist for ERCCs, but Q-values are missing\n"))
-        # First three columns must be Feature, MnCnt, Pval
-        # Need to get Threshold p-value from user
-        getPThresh<- function(){
-          cat("\nTo continue with P-values for LODR estimation\n")
-          readline("Enter the threshold P-value: ")
+        cat(paste("\n Using existing ERCC DE test p-values for AUC and LODR\n"))
+        # First three columns must be Feature, MnSignal, Pval
+        pvalFile <- read.csv(pvalERCC)
+        pvalFile$qvals <- qvalue(pvalFile$Pval)$qvalues
+        if(any(pvalFile$qvals<choseFDR)){
+          p.thresh<-max(pvalFile$Pval[pvalFile$qvals<choseFDR])
         }
-        p.thresh <- as.numeric(getPThresh())
+        
+        # Need to get Threshold p-value from user
+        #getPThresh<- function(){
+        #  cat("\nTo continue with P-values for LODR estimation\n")
+        #  readline("Enter the threshold P-value: ")
+        #}
+        #p.thresh <- as.numeric(getPThresh())
         
       }else{
+        if (isNorm == T){
+          cat(paste0("\nQuasiSeq DE Testing requires count (integer) data.\n",
+                     "To estimate AUC and LODR for normalized RNA-Seq data\n",
+                     "the file '",sampleInfo$filenameRoot,
+                     " ERCC Pvals.csv' is required\n"))
+          return(exDat)
+        }
         cat("\nStarting differential expression tests\n")
         exDat <- suppressWarnings(testDECount(sampleInfo, exDat, cnt = cnt, 
                                           info = info ))  

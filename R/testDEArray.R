@@ -1,12 +1,12 @@
 testDEArray <- function(exDat){
-  library(limma)
+  #library(limma)
   y <- exDat$Transcripts
   choseFDR <- exDat$sampleInfo$choseFDR
   if(is.null(choseFDR)){
     p.thresh <- exDat$Results$p.thresh
   }
   
-  #normy <- sweep(y[-c(1)], 2, exDat$libeSize/1000,"/")
+  #normy <- sweep(y[-c(1)], 2, exDat$normFactor/1000,"/")
   #y <- cbind(y[c(1)],normy)
   erccInfo <- exDat$erccInfo
   sampleInfo <- exDat$sampleInfo
@@ -15,10 +15,16 @@ testDEArray <- function(exDat){
   
   
   ylog <- log2(y)
+  if(is.null(exDat$normFactor)&(exDat$sampleInfo$isNorm==TRUE)){
+    wts = NULL
+    cat("\nisNorm is TRUE, array data is already normalized\n")
+  }else{
+    wts <- log(exDat$normFactor)  
+  }
   
-  wts <- log(exDat$libeSize)
+  if(odd(ncol(y))) stop("\nUneven number of replicates for the two sample types\n")
   
-  design <- cbind(Grp1=1,Grp1vs2=c(1,1,1,0,0,0))
+  design <- cbind(Grp1=1,Grp1vs2=c(rep(x=1,times=ncol(y)/2), rep(x=0,times=ncol(y)/2)))
   
   fit <- lmFit(ylog,design,weights=wts)
   ###fit <- lmFit(ylog,design)
@@ -48,7 +54,7 @@ testDEArray <- function(exDat){
                        FC = round(erccInfo$idColsSRM$Conc1/
                                     erccInfo$idColsSRM$Conc2,digits=3))
   
-  pval.res <- data.frame( Feature = row.names(ERCCres), MnCnt = 2^(ERCCres$AveExpr), 
+  pval.res <- data.frame( Feature = row.names(ERCCres), MnSignal = 2^(ERCCres$AveExpr), 
                           Pval = ERCCres$adj.P.Val,
                           Fold = erccFC$FC[match(row.names(ERCCres), erccFC$Feature,
                                                  nomatch=0)])

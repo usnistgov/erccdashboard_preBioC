@@ -6,7 +6,11 @@ prepERCCDat <- function(expDat){
   expressDat = expressDat[c(grep("ERCC-0", expressDat$Feature)),]
   
   # Length normalize the Expected ERCC concentrations
-  lengthFactor = (idCols$Length)/(1000)
+  lengthnorm = F
+  if (lengthnorm == F){
+    lengthFactor = (idCols$Length)/(1000)  
+  }
+  
   
   # If length normalization of the expected concentrations is desired (default)
   idCols$Conc1 = (idCols$Conc1*lengthFactor)

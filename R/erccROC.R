@@ -4,11 +4,7 @@
 #' 
 #' @export
 #' 
-erccROC <- function(exDat,pValDat = NULL ){
-  
-  library("ROCR")
-  
-  cat("\nGenerating ROC curve and AUC statistics...\n")
+erccROC <- function(exDat){
   
   filenameRoot = exDat$sampleInfo$filenameRoot
   folds = exDat$erccInfo$FCcode
@@ -32,11 +28,15 @@ erccROC <- function(exDat,pValDat = NULL ){
   
   # Read in the p.values from the file
   #if (is.null(pValDat)){
+  if(file.exists(paste(filenameRoot,"ERCC","Pvals.csv")) == T){
     pValDat = read.csv(file=paste(filenameRoot,"ERCC","Pvals.csv"),header=T)  
-  #}
-  if(is.null(pValDat)){
-    stop("No P-values for ERCCs")
+  }else{
+    cat(paste0("\n",filenameRoot," ERCC Pvals.csv file is missing."))
+    cat("\nExiting ROC Curve analysis...\n")
+    return(exDat)
   }
+    
+  cat("\nGenerating ROC curve and AUC statistics...\n")
   names(pValDat)[1]= "Feature"
   pValDat <- pValDat[-2]
   

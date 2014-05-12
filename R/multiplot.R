@@ -1,5 +1,13 @@
+#' Multiplot function from R cookbook
+#'
+#' @param ...       comma separated list of plots to include
+#' @param plotlist  list, naming plots to include
+#' @param cols      number of columns for grid of plots
+#' 
+#' @export
+#' 
 multiplot <- function(..., plotlist=NULL, cols) {
-  require(grid)
+  #require(grid)
   # function from R cookbook: http://wiki.stdout.org/rcookbook/Graphs/Multiple%20graphs%20on%20one%20page%20(ggplot2)/
   
   # Make a list from the ... arguments and plotlist

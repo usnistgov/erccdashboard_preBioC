@@ -1,2 +1,2 @@
 ERCC: ERCCDef ERCCMix1and2
-SEQC.Example: COH.array.UHRR.HBRR COH.RatTox.ILM.MET.CTL.countTable Lab5.ILM.UHRR.HBRR.countTable COH.RatTox.ILM.MET.CTL.totalReads Lab5.ILM.UHRR.HBRR.totalReads
+SEQC.Example: Lab11.array.UHRR.HBRR COH.RatTox.ILM.MET.CTL.countTable Lab5.ILM.UHRR.HBRR.countTable COH.RatTox.ILM.MET.CTL.totalReads Lab5.ILM.UHRR.HBRR.totalReads

@@ -1,31 +1,30 @@
 erccdashboard
 =============
-This is the source code for the erccdashboard R packge (v. 0.9.7)
+This is the source code for the erccdashboard R packge (v. 0.9.8)
 
-Note that the erccdashboard package has other packages as dependencies. These packages will need to be installed and loaded by the user. Once the erccdashboard package is on a remote repository (e.g. CRAN or Bioconductor) the package dependencies will automatically be addressed during installation and loading of the erccdashboard package. All package dependencies are on CRAN except for edgeR and qvalue which are both on Bioconductor. Use the following R commands to install edgeR and qvalue: 
+Note that the erccdashboard package has other packages as dependencies. 
+These packages will need to be installed and loaded by the user. 
+Once the erccdashboard package is on a remote repository (e.g. CRAN or Bioconductor) 
+the package dependencies will automatically be addressed during installation and 
+loading of the erccdashboard package. All package dependencies are on CRAN except
+for edgeR, limma, and qvalue which are both on Bioconductor. 
+ 
+Installation of Package Dependencies:
+============================================================
+ 
+1. Use the following R commands to install qvalue and edgeR (limma will also be installed with edgeR)
+from Bioconductor: 
 
 source("http://bioconductor.org/biocLite.R")
 biocLite("edgeR")
 biocLite("qvalue")
 
-The full list of packages that must be installed and loaded are:
-ggplot2
-reshape2
-plyr
-scales
-edgeR
-locfit
-QuasiSeq
-grid
-gridExtra
-stringr
-ROCR
-gtools
-qvalue
+2. Use the following R command to install packages from CRAN
 
-Packages can be installed and loaded with the use of install.package() and library() functions.
+install.packages(pkgs=c("ggplot2","reshape2","plyr","scales","locfit","MASS","QuasiSeq","grid", "gridExtra","stringr","ROCR","gtools"))
 
 Instructions for erccdashboard Installation and Quick Start:
+============================================================
 
 Installation:
 
@@ -33,7 +32,7 @@ Installation:
 
 2. At R prompt install the package with:
 
-  > install.packages(pkgs="path_to_package/erccdashboard_0.9.7")
+  > install.packages(pkgs="path_to_package/erccdashboard_0.9.7.tar.tgz")
 
 3. Load the package with
 
@@ -51,8 +50,8 @@ Quick Start:
 
 2. Run the dashboard demo on rat toxicogenomics data:
 
-	> expDat <- runDashboard(datType = "count",
-                       expTable = COH.RatTox.ILM.MET.CTL.countTable,
+	> exDat <- runDashboard(datType = "count", isNorm = FALSE,
+                       exTable = COH.RatTox.ILM.MET.CTL.countTable,
                        filenameRoot = "COH.ILM",sample1Name = "MET",
                        sample2Name = "CTL",erccmix = "RatioPair",
                        erccdilution = 1/100, spikeVol = 1,

@@ -2,7 +2,7 @@ Package: erccdashboard
 Type: Package
 Title: Assessment of Gene Expression Measurement Technical Performance with
     External Spike-in RNA Controls
-Version: 0.9.7
+Version: 0.9.8
 Author: Sarah Munro, Steve Lund
 Maintainer: Sarah Munro <sarah.munro@nist.gov>
 Description: erccdashboard produces graphs and performance metrics for gene
@@ -18,6 +18,8 @@ Imports:
     edgeR,
     qvalue,
     locfit,
+    MASS,
+    limma,
     QuasiSeq,
     grid,
     stringr,
@@ -25,11 +27,10 @@ Imports:
     gtools
 License: GPL (>=2)
 Collate:
-    compareReps.R dashboardFile.R dynRangePlot.R
-    dynRangePlotLODR.R erccROC.R estLODR.R estMnLibeFactor.R est_r_m.R 
-    geneExprTest.R getDesignMat.R initDat.R libeSizeNorm.R loadERCCInfo.R 
-    loadExpMeas.R loadExpMeasFromRaw.R maConcPlot.R meltExpDat.R multiplot.R 
-    prepERCCDat.R printLODRres.R saveInputs.R saveResults.R saveERCCPlots.R 
-    sumTechReps.R testDECount.R testDEArray.R annotLODR.R plotAdjust.R 
-    maSignalNew.R belowLODR.R runDashboard.R withinMixRatios.R 
-    withinMixRatiosPairwise.R
+    runDashboard.R initDat.R dashboardFile.R plotAdjust.R
+    loadERCCInfo.R loadExpMeas.R getDesignMat.R normalizeDat.R
+    prepERCCDat.R est_r_m.R dynRangePlot.R geneExprTest.R 
+    testDECount.R testDEArray.R erccROC.R estLODR.R multiplot.R 
+    printLODRres.R saveERCCPlots.R maSignal.R
+    annotLODR.R withinMixRatiosPairwise.R
+Roxygen: list(wrap = FALSE)

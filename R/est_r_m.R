@@ -40,11 +40,17 @@ est_r_m <- function(exDat){
                            each=ncol(dat)/2),c(1:(ncol(dat)/2),
                                                1:(ncol(dat)/2)),sep="")
 
+  if (sampleInfo$isNorm == T){
+    cat("\nData is normalized, no r_m estimation\n")
+    exDat$Results$r_m.res <- list(r_m.mn = NULL, r_m.mnse =NULL)
+    exDat$Results$r_mDat <- NULL
+    return(exDat)
+  }  
   if (sampleInfo$datType == "array"){
-    cat("\n datType is array, using 1:1 ERCC controls for r_m estimate\n")
-    # Pull out all ERCCs from dat except for the 1:1 ERCCs
-    ERCCcut <- idCols$Feature[idCols$Ratio != "1:1"]
-    dat <- dat[-(which(rownames(dat) %in% as.character(ERCCcut))),]
+      cat("\ndatType is array, using 1:1 ERCC controls for r_m estimate\n")
+      # Pull out all ERCCs from dat except for the 1:1 ERCCs
+      ERCCcut <- idCols$Feature[idCols$Ratio != "1:1"]
+      dat <- dat[-(which(rownames(dat) %in% as.character(ERCCcut))),]
   }
   ## Get ERCC names
   ERCC<-rownames(dat[substr(rownames(dat),1,5)=="ERCC-",])
@@ -57,11 +63,11 @@ est_r_m <- function(exDat){
   # in future to enable other methods
   #log.offset<-log(colSums(dat))
   log.offset <- NULL
- # if(sampleInfo$totalSeqReads == T){
-#      log.offset = log(exDat$totalReads)
- # }else{
-      log.offset = log(exDat$libeSize)
-#  }
+  if(sampleInfo$isNorm == T){
+      log.offset = NULL
+  }else{
+      log.offset = log(exDat$normFactor)
+  }
   
   ######################################################
   #### Estimate r_m from each ERCC using NegBin GLM ####
@@ -77,14 +83,7 @@ est_r_m <- function(exDat){
   
   ERCC.FC = ERCC.FC[-c(2)]
   
-  library(MASS)
-  if(!is.null(log.offset)){
-    cat("\nlog.offset\n")
-    cat(log.offset,"\n")
-  }else{
-    cat("\nNo offset used for GLM\n")
-  }
-  
+  #library(MASS)
   
   r_m<-NULL
   cat("\nNumber of ERCC Controls Used in r_m estimate\n")
@@ -93,14 +92,16 @@ est_r_m <- function(exDat){
   for( i in (1:nrow(dat))[substr(rownames(dat),1,5)=="ERCC-"]){ 
   
 #Obtain estimated log fold-change and standard error for each ERCC
-    if(!is.null(log.offset)){
+   # if(!is.null(log.offset)){
       r_m<-rbind(r_m,summary(suppressWarnings(glm.nb(dat[i,]~as.factor(trt) +
                                                        offset(log.offset)
                                                      )))$coefficients[2,1:2])  
-    }else{
-      r_m<-rbind(r_m,summary(suppressWarnings(glm.nb(dat[i,]~as.factor(trt))))$coefficients[2,1:2]) 
-    }
-    
+#     }else{
+#       if (i == 1) 
+#       
+#       #r_m<-rbind(r_m,summary(suppressWarnings(glm(dat[i,]~as.factor(trt))))$coefficients[2,1:2]) 
+#     }
+#     
     
   }
 

@@ -1,7 +1,7 @@
 testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
-  library(QuasiSeq)
+  #library(QuasiSeq)
   #library(DESeq)
-  library(edgeR)
+  #library(edgeR)
   erccInfo <- exDat$erccInfo
   plotInfo <- exDat$plotInfo
   filenameRoot = sampleInfo$filenameRoot
@@ -13,7 +13,7 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
   idCols = exDat$idColsAdj
   r_m.mn = exDat$Results$r_m.res$r_m.mn 
   repNormFactor = sampleInfo$repNormFactor 
-  libeSize <- exDat$libeSize
+  normFactor <- exDat$normFactor
   sample1 = exDat$sampleNames[1]
   sample2 = exDat$sampleNames[2]
   
@@ -26,6 +26,8 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
   Features = gsub(".","-", Features, fixed = T)
   rownames(cnt)<-Features
   cnt<-as.matrix(cnt[,-1])
+  
+  if(odd(ncol(cnt))) stop("Uneven number of replicates for the two sample types")
   
   colnames(cnt)<-paste(rep(c(sample1,sample2),
                            each=ncol(cnt)/2),
@@ -41,19 +43,23 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
   design.list<-list(trt,rep(1,ncol(cnt)))
   
   ## Compute offset (e.g. total counts, 75% quantile, TMM, etc)
-  if(is.null(libeSize)){
-    stop(cat("\nlibe size normalization is missing\n"))
+  if(is.null(normFactor)){
+    log.offset <- c(rep(0,ncol(cnt)))
+    #stop(cat("\nlibe size normalization is missing\n"))
+    
     #log.offset<-log(colSums(cnt))
     #cat("\nUsing Mapped Reads\n")
     #cat(colSums(cnt),"\n")  
   }else{
     #log.offset<- log(repNormFactor)
-    log.offset<- log(libeSize)
+    log.offset<- log(normFactor)
     #cat("\nUsing repNormFactor\n")
     #cat(repNormFactor,"\n")
-    cat("\nShow libe sizes\n")
-    cat(libeSize,"\n")
+    
   }
+  
+  cat("\nShow log.offset\n")
+  cat(log.offset,"\n")
   
   ERCC.FC = idCols[c(1,4)];rownames(ERCC.FC)<-ERCC.FC[,1]
   
@@ -128,12 +134,13 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
   NBdisptrend<-d2$trended.dispersion
   names(NBdisptrend)<-rownames(rbind(cnt,simcnt))
   
-  ### Plot estimated dispersions 
-  dispcnt = data.frame(x = rowMeans(rbind(cnt,simcnt)), y = NBdisp)
+  ### Plot estimated dispersions
+  xdat = ydat = xsim = ysim = xERCC = yERCC = NULL
+  dispcnt = data.frame(xdat = rowMeans(rbind(cnt,simcnt)), ydat = NBdisp)
   dispSimcnt = data.frame(xsim = rowMeans(simcnt), ysim = NBdisp[-c(1:nrow(cnt))])
   dispERCCcnt = data.frame(xERCC = rowMeans(cnt)[ERCC],yERCC = NBdisp[ERCC])
   
-  dispPlot = ggplot(dispcnt) + geom_point(aes(x = x, y = y)) + 
+  dispPlot = ggplot(dispcnt) + geom_point(aes(x = xdat, y = ydat)) + 
     scale_x_log10() + xlab("Average Count") + ylab("Estimated Dispersion") +
     geom_point(data = dispSimcnt,aes(x = xsim, y = ysim),colour = 3) + 
     geom_point(data = dispERCCcnt, aes(x = xERCC, y = yERCC),colour = 2) + 
@@ -157,15 +164,15 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
 #                       rep(unique(ERCC.FC[!is.na(ERCC.FC[,2]),2]),each=49),
 #                       rep(use.res$d0[2],nrow(simcnt)))
   Feature <- row.names(simcnt)
-  MnCnt <- as.numeric(rowMeans(simcnt))
+  MnSignal <- as.numeric(rowMeans(simcnt))
   Pval <- use.res$P.values$QLSpline[-(1:nrow(cnt))]
   LogPval <- use.res$log.P.values$QLSpline[-(1:nrow(cnt))]
   F.stat <- use.res$F.stat$QLSpline[-(1:nrow(cnt))]
   Fold <- rep(unique(ERCC.FC[!is.na(ERCC.FC[,2]),2]),each=49)
   Den.df <- rep(use.res$d0[2],nrow(simcnt))
-  sim.pval.res <- data.frame(Feature, MnCnt, Pval, LogPval, F.stat, Fold, 
+  sim.pval.res <- data.frame(Feature, MnSignal, Pval, LogPval, F.stat, Fold, 
                              Den.df)
-  #colnames(sim.pval.res)<-c("Feature","MnCnt","Pval","LogPval","F.stat","Fold",
+  #colnames(sim.pval.res)<-c("Feature","MnSignal","Pval","LogPval","F.stat","Fold",
   #                          "Den.df")
   #rownames(sim.pval.res)<-rownames(simcnt)
 
@@ -224,7 +231,7 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
                                 c2 = c(((totCol/2)+1):totCol))))
 
   colnames(ratioDat)<- "Log2Rat"
-  quasiSeq.res = data.frame(Feature = names(pvals),MnCnt = rowMeans(cnt), Log2Rat = ratioDat$Log2Rat, pvals = pvals, qvals = qvals, log.pvals=log.pvals, F.stat=F.stat, den.df=rep(use.res.adj$d0[2], length(pvals)))  
+  quasiSeq.res = data.frame(Feature = names(pvals),MnSignal = rowMeans(cnt), Log2Rat = ratioDat$Log2Rat, pvals = pvals, qvals = qvals, log.pvals=log.pvals, F.stat=F.stat, den.df=rep(use.res.adj$d0[2], length(pvals)))  
 
   write.csv(quasiSeq.res, file = paste(filenameRoot,"quasiSeq.res.csv",sep="."),row.names = F)
   
@@ -234,7 +241,7 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
 
   ### Collect results for ERCCs; to be passed along to LODR function
   pval.res<-data.frame(row.names(cnt[ERCC,]),rowMeans(cnt[ERCC,]),ERCC.pvals.adj,ERCC.log.pvals.adj,ERCC.F.stat.adj,ERCC.FC[ERCC,2],rep(use.res.adj$d0[2],length(ERCC.pvals.adj)))
-  colnames(pval.res)<-c("Feature","MnCnt","Pval","LogPval","F.stat","Fold",
+  colnames(pval.res)<-c("Feature","MnSignal","Pval","LogPval","F.stat","Fold",
                         "Den.df")
   #print(str(pval.res))
   row.names(pval.res) <- NULL
@@ -313,46 +320,25 @@ shrink <- shrink.phi(y2, den.df)
 D0 <- shrink[[2]]
 phi0 <- shrink[[3]]
 print(paste("Spline scaling factor:", phi0))
-#if (Plot) {
-# dev.new(height = 9)
-# nf <- layout(matrix(1:2, 2, 1), heights = c(7, 2))
-# par(mai = c(1, 1.2, 1, 0.2))
-# suppressWarnings(plot(log(mn.cnt), y, xlab = expression(log(bar(y)[phantom() %.% 
-#                                                                      phantom()] * phantom()[phantom() %.% phantom()])), 
-#                       ylab = expression(log(hat(Phi))), main = "Estimated Dispersion\n versus Average Count", 
-#                       pch = 1, cex.lab = 2, cex.axis = 2, cex.main = 2))
-# lines(sort(log(mn.cnt)), spline.pred[order(mn.cnt)], 
-#       col = 2, lwd = 3)
-# RR <- NULL
-# sort.mn <- log(sort(mn.cnt))
-# qq <- c(0.05, 0.95)
-# ord.F <- y[order(mn.cnt)]
-# bins <- c(1 + round(length(y) * (0:19)/20), length(y))
-# for (ii in 1:(length(bins) - 1)) {
-#   ind <- bins[ii]:bins[ii + 1]
-#   RR <- rbind(RR, c(quantile(ord.F[ind], qq), median(sort.mn[ind])))
-# }
-# lines(sort(log(mn.cnt)), spline.pred[order(mn.cnt)] + 
-#         log(phi0 * qf(0.95, den.df, D0)), col = 4, lwd = 3)
-# lines(sort(log(mn.cnt)), spline.pred[order(mn.cnt)] + 
-#         log(phi0 * qf(0.05, den.df, D0)), col = 4, lwd = 3)
-# lines(RR[, 3], RR[, 2], col = 3, lwd = 3)
-# lines(RR[, 3], RR[, 1], col = 3, lwd = 3)
-# par(mai = rep(0, 4))
-# plot(19, 19, col = "white", axes = FALSE)
-# suppressWarnings(legend("top", legend = c(paste("Fitted", 
-#                                                 fit.method, "with", signif(spline.fit$df, 2), "df"), 
-#                                           "0.05 & 0.95 Quantiles from Empirical Distribution", 
-#                                           "0.05 & 0.95 Quantiles from Scaled F-Distribution"), 
-#                         lwd = 3, lty = 1, col = 2:4, cex = 1.5))
+
   mean = mn.cnt
   names(y)<-rownames(cnt)
+  
   dispcnt = data.frame(mean = mean,y = y)
+  
+  xsort = NULL
+  ysort = NULL
+  dispcntSort = data.frame(xsort = sort(mean), ysort = spline.pred[order(mn.cnt)]) # original
+  
+  mean <- mean[ERCC]
+  y <- y[ERCC]
+  Ratio <- NULL
   dispERCC = data.frame(mean = mean[ERCC],y = y[ERCC], 
-                      Ratio= ERCC.Ratio$Ratio[match(ERCC,ERCC.Ratio$Feature)] )
+                      Ratio = ERCC.Ratio$Ratio[match(ERCC,ERCC.Ratio$Feature)] )
   
   dispERCC$Ratio <- as.factor(dispERCC$Ratio) 
-  dispcntSort = data.frame(xsort = sort(mean), ysort = spline.pred[order(mn.cnt)]) # original
+  
+  
   quasiDispPlot = ggplot() + geom_point(data = dispcnt, aes(x = mean, y = y),
                                         colour = "grey80", size = 5,
                                         alpha = 0.6) +
@@ -366,117 +352,10 @@ print(paste("Spline scaling factor:", phi0))
   exDat$Figures$dispPlot <- quasiDispPlot
   exDat$Results$simcnt <- simcnt 
 
-#   #################################################
-#   ###Examine ERCC blending with endogenous genes###
-#   #################################################
-#   
-#   ### Plot estimated dispersions and central trend estimates ###
-#   
-#   NBdisp1 <- d1$tagwise.dispersion;names(NBdisp1)<-rownames(cnt) # use tagwise
-#   NBdisp2<-d1$trended.dispersion;names(NBdisp2)<-rownames(cnt) # use trended?
-# 
-#   dispcnt = data.frame(Feature = rownames(cnt), x = rowMeans(cnt), y = NBdisp1)
-#   dispcntSort = data.frame(xsort = sort(rowMeans(cnt)), ysort = NBdisp2[order(rowMeans(cnt))])
-#     
-#   dispERCCcnt = data.frame(meanCnt = rowMeans(cnt)[ERCC],disp = NBdisp1[ERCC], Ratio = ERCC.Ratio$Ratio[match(ERCC,ERCC.Ratio$Feature)] )
-#   dispERCCcnt$Ratio <- as.factor(dispERCCcnt$Ratio) 
-#   
-#   dispPlot = ggplot(dispcnt) +  geom_point(data = dispcnt, aes(x = x, y = y),colour = "grey80",size = 5, alpha = 0.6) + geom_point(data = dispERCCcnt, aes(x = meanCnt, y = disp, colour = Ratio), size = 5, alpha = 0.6) + xlab("Mean Counts") + ylab("Negative Binomial Dispersion") + stat_smooth(data = dispcntSort,aes(x = xsort, y = ysort),colour = "black", alpha = 0.8)  + colScale + scale_x_log10() + theme(legend.justification=c(1,1), legend.position=c(1,1))
-#   print(dispPlot)
-#   
-#   
-#   phi.hat<-use.fit$phi.hat.dev[1:nrow(cnt)]
-#   mn.cnt<-rowMeans(cnt);den.df=length(trt)-length(unique(trt))
-#   y<-log(phi.hat);names(y)<-rownames(cnt); y[y==-Inf]<-min(y[y!=-Inf]); y[y==Inf]<-max(y[y!=Inf])
-#   ### start Edit Sarah Munro 20140216
-#   spline.fit<-sreg(log(mn.cnt), y) # original
-#   #spline.fit<-smooth.spline(log(mn.cnt),y) # edit 
-#   
-#   fit.method<-"spline"
-#   
-#   if(spline.fit$eff.df==0){ #original
-#   #if(spline.fit$df==0){ #edit
-#     fit.method<-"locfit curve"
-#     print("Spline fitting failed.  Using locfit instead.")
-#     fit<-locfit(y~lp(log(mn.cnt)))
-#     spline.fit<-list(fitted.values=predict(fit,newdata=log(mn.cnt)),eff.df=fit$dp["df1"]) # original
-#     #spline.fit<-list(y=predict(fit,newdata=log(mn.cnt)),df=fit$dp["df1"]) # edit
-#   }
-#  
-# 
-#   ### We use Smyth's (2004) approach from LIMMA to estimate parameters for prior distributions 
-#   ### of gene specific dispersion estimates. The function below also provides resulting 
-#   ### shrunken point estimates of dispersion 
-#   
-#   #### Code for implementing Smyth's approach begins here ####
-#   shrink.phi<-function(phi.hat,den.df){
-#     phi.hat[phi.hat<=0]<-min(phi.hat[phi.hat>0])
-#     z<-log(phi.hat); z[z==Inf]<-max(z[z!=Inf]); z[z==-Inf]<-min(z[z!=-Inf]);mnz<-mean(z)
-#     
-#     ## solve for d0 and phi0
-#     d0arg<-var(z)-trigamma((den.df)/2)
-#     if(d0arg>0){
-#       dif<-function(x,y) abs(trigamma(x)-y)
-#       inverse.trigamma<-function(y) optimize(dif,interval=c(0,10000),y=y)$minimum
-#       d0<-2*inverse.trigamma(d0arg)
-#       phi0<-exp(mnz-digamma((den.df)/2)+digamma(d0/2)- log(d0/(den.df)))
-#       
-#       ## compute shrunken phi's
-#       phi.shrink<-((den.df)*phi.hat+d0*phi0)/(den.df+d0)  }
-#     else{phi.shrink<-rep(exp(mnz),length(z)); d0<-Inf; phi0<-exp(mnz) }
-#     return(list(phi.shrink=phi.shrink,d0=d0,phi0=phi0))  }
-#   #### Code for implementing Smyth's approach ends here ####
-#   
-#   ### Obtain estimate for prior degrees of freedom and scaling factor after adjusting for cubic spline fit
-#   y2<-phi.hat/exp(spline.fit$fitted.values) # original
-#   #y2<-phi.hat/exp(spline.fit$y) # edit
-#   shrink<-shrink.phi(y2,den.df)
-#   D0<-shrink[[2]]; 
-#   phi0<-shrink[[3]]; print(paste("Spline scaling factor:",phi0))
-#   
-#   ### plot the resulting cubic spline fit
-#   #mean = log(mn.cnt)
-#   mean = mn.cnt
-#   dispcnt = data.frame(mean = mean,y = y)
-#   dispcntSort = data.frame(xsort = sort(mean), ysort = spline.fit$fitted.values[order(mn.cnt)]) # original
-#   #dispcntSort = data.frame(xsort = sort(mean), ysort = spline.fit$y[order(mn.cnt)]) # edit
-#   dispERCC = data.frame(mean = mean[ERCC],y = y[ERCC], Ratio= ERCC.Ratio$Ratio[match(ERCC,ERCC.Ratio$Feature)] )
-#   dispERCC$Ratio <- as.factor(dispERCC$Ratio) 
-#   
-#   ###Compare quantiles from estimated theoretical and empirical dispersion distributions
-#   RR<-NULL
-#   sort.mn<-log(sort(mn.cnt))
-#   qq<-c(.05,.95)
-#   ord.F<-y[order(mn.cnt)]
-#   bins<-c(1+round(length(y)*(0:19)/20),length(y))
-#   for(ii in 1:(length(bins)-1)){
-#     ind<-bins[ii]:bins[ii+1]
-#     RR<-rbind(RR,c(quantile(ord.F[ind],qq),median(sort.mn[ind])))
-#   }
-#   dispcntInterval = data.frame(x=sort(log(mn.cnt)), 
-#                                upperY = spline.fit$fitted.values[order(mn.cnt)]+ # original
-#                                #upperY = spline.fit$y[order(mn.cnt)]+ # edit
-#                                  log(phi0*qf(.95,den.df,D0)),
-#                                lowerY =spline.fit$fitted.values[order(mn.cnt)]+ # original
-#                                #lowerY =spline.fit$y[order(mn.cnt)]+ # edit
-#                                  log(phi0*qf(.05,den.df,D0)) )
-#   
-#   dispcntRR = data.frame(x = RR[,3], upperY = RR[,2], lowerY = RR[,1])
-#   
-#   quasiDispPlot = ggplot() + geom_point(data = dispcnt, aes(x = mean, y = y),
-#                                         colour = "grey80", size = 5,
-#                                         alpha = 0.6) + 
-#   geom_point(data = dispERCC, aes(x = mean, y = y,colour = Ratio), 
-#              size = 5, alpha = 0.6) + xlab("Mean Counts") + 
-#   ylab("log(Quasi Dispersion)") + 
-#   stat_smooth(data = dispcntSort,aes(x = xsort, y = ysort),colour = "black") + 
-#   scale_x_log10() + colScale + 
-#   theme(legend.justification=c(1,1), legend.position=c(1,1)) + theme_bw()
-
-   exDat$Figures$dispPlot <- quasiDispPlot
-   exDat$Results$simcnt <- simcnt 
+  exDat$Figures$dispPlot <- quasiDispPlot
+  exDat$Results$simcnt <- simcnt 
 #   #save(quasiDispPlot, file=paste(filenameRoot,"DispPlot.RData", sep = "."))
-   cat("\nFinished examining dispersions\n")
+  cat("\nFinished examining dispersions\n")
   
   return(exDat)
 ### end Edit Sarah Munro 20140216
