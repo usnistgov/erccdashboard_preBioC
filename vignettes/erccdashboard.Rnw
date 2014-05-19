@@ -57,7 +57,7 @@ data(SEQC.Example)
 The R workspace should now contain 5 objects
 Three of these objects are gene expression experiment expression measures:
 \begin{itemize}
-  \item Lab10.array.UHRR.HBRR - Fluorescent signal data from an Illumina 
+  \item Lab13.array.UHRR.HBRR - Fluorescent signal data from an Illumina 
         beadarray microarray experiment with UHRR and HBRR
   \item COH.RatTox.ILM.MET.CTL.countTable - RNA-Seq count data from a
         rat toxicogenomics experiment
@@ -90,7 +90,7 @@ erccdilution = 1/100 # dilution factor used for Ambion spike-in mixtures
 spikeVol = 1 # volume (in microliters) of diluted spike-in mixture added to 
              #   total RNA mass
 totalRNAmass = 0.500 # mass (in micrograms) of total RNA 
-choseFDR = 0.1 # user defined false discovery rate (FDR), default is 0.05
+choseFDR = 0.05 # user defined false discovery rate (FDR), default is 0.05
 @
 
 The first input argument, datType, indicates whether that data is integer count 
@@ -142,8 +142,10 @@ spiked with the diluted ERCC mix is totalRNAmass (units are $\mu$g).
 
 The final required input parameter, choseFDR, is the False Discovery Rate (FDR) 
 for differential expression testing. A typical choice would be 0.05 (5\% FDR), 
-so this is the default choseFDR value. For the rat data sets a more liberal FDR 
-was used, choseFDR = 0.1.
+so this is the default choseFDR value. For the rat data since most genes are not
+differentially expressed a less conservative FDR is chosen (FDR = 0.1) and for the
+UHRR and HBRR reference RNA samples FDR = 0.01 is chosen, because there is a large 
+number of differentially expressed genes for this pair of samples. 
 
 The function runDashboard.R is provided for convenient default erccdashboard 
 analysis. Execution of the runDashboard function calls the default functions for
@@ -220,8 +222,8 @@ exDat$Figures$maPlot
 An MA plot (Ratio of Signals vs Average Signals) shows the ratio measurements of
 transcripts in the pair of samples as a function of abundance. The ERCC control 
 ratios measurements are coded to indicate which controls are above a given LODR 
-(solid circles) or below the LODR (open circles). This plot also shows the v
-ariability in ratio measurements as a function of dynamic range and the bias in 
+(solid circles) or below the LODR (open circles). This plot also shows the 
+variability in ratio measurements as a function of dynamic range and the bias in 
 control ratio measurements (r$_m$), which is influenced by the mRNA fraction difference
 between the pair of samples.
 
@@ -315,8 +317,8 @@ replicate is normalized by the 75th quantile fluoresence intensity
 value of that array.
 <<SEQCMainArray, keep.source=TRUE>>=
 exDat <- runDashboard(datType="array", isNorm = F,
-                      exTable=Lab10.array.UHRR.HBRR,
-                      filenameRoot = "Lab10.array",
+                      exTable=Lab13.array.UHRR.HBRR,
+                      filenameRoot = "Lab13.array",
                       sample1Name = "UHRR", sample2Name="HBRR",
                       erccmix = "RatioPair", erccdilution = 1, 
                       spikeVol = 50, totalRNAmass = 2.5*10^(3), choseFDR=0.01)
@@ -350,11 +352,10 @@ exDat$Figures$lodrERCCPlot
 \end{center}
 
 LODR estimates for microarray data are derived from the intersection with the 
-threshold p-value at the lowest signal. The same FDR was chosed for the RNA-Seq 
-and microarray measurements of the UHRR/HBRR samples, it is interesting to note 
-that different threshold p-values were derived for each type of experiment using
-the same FDR = 0.01, p.thresh = 0.1518 for RNA-Seq at Lab 5 and 
-p.thresh = 0.0430 for the microarray experiment.
+threshold p-value at the lowest signal. For the RNA-Seq 
+and microarray measurements of the UHRR/HBRR samples, different threshold 
+p-values were derived for each type of experiment using
+the same FDR = 0.01.
 \clearpage
 \begin{center}
 <<seqcArrayPlotD,fig=TRUE >>=
@@ -388,18 +389,22 @@ testing package for datType = "count" or uses the limma package for differential
 expression testing if datType = "array". The function uses the DE testing 
 p-value results and choseFDR parameter to select a threshold p-value for LODR 
 estimation.
-In the case of count data if QuasiSeq DE testing has already been done and 
-a correctly formatted quasiseq results csv file is provided with the
+In the case of count data if DE testing has already been done and 
+a correctly formatted filenameRoot.All.Pvals.csv file is provided with the
 necessary DE test results, then geneExprTest will have 
 reduced runtime. The function will look for a csv file with the name 
-"filenameRoot.quasiSeq.res.csv" and columns with names "Feature", "pvals", and 
-"qvals" must be in the file.
+"filenameRoot.All.Pvals.csv" and column names "Feature", "MnSignal", Pval", and 
+"Fold" must be in the file. "Feature" is a column of transcript names including ERCC controls
+and endogenous transcripts, "MnSignal" is the mean signal across sample replicates, 
+"Pval" are the unadjusted P-values from differential expression testing (Q-values will be automatically
+estimated for the P-values, and take into account multiple hypothesis testing), 
+and "Fold" are the numeric fold changes for the ERCC controls (0.5, 4, 1, and 0.667)
+and for endogenous transcripts the "Fold" is NA.
 
-To use results from another DE testing tool (instead of QuasiSeq) a csv file with
-the name "filenameRoot ERCC pvals.csv" and correct column headers should be in the working directory.
-For RNA-Seq ("count") data, this ERCC pvals file is required to complete analysis without 
-QuasiSeq DE testing or if the input data (exTable) is already normalized 
-(isNorm = TRUE).
+To use results from another DE testing tool (instead of QuasiSeq) the csv file with
+the name "filenameRoot.All.Pvals.csv" and correct column headers should be in the working directory.
+This file is required if the input data (exTable) is RNA-Seq data (datType = "count")
+and if the data is already normalized (isNorm = TRUE).
 If isNorm is TRUE, then the software asks for user input about length normalization.
 Type Y at the command line in the R console if the data is length normalized (e.g. FPKM or RPKM data) otherwise type N.
 
@@ -447,7 +452,7 @@ experiment.
 
 \section{Notes on R version and session information}
 The results shown in this R vignette are the same as the results shown in our
-manuscript and were obtained in R version 3.0.2 with the following session 
+manuscript and were obtained with the following R session 
 information.
 <<sessionData>>=
 sessionInfo()

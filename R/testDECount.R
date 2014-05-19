@@ -176,7 +176,7 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
   #                          "Den.df")
   #rownames(sim.pval.res)<-rownames(simcnt)
 
-  write.csv(sim.pval.res,file=paste(filenameRoot,"Sim Pvals.csv"),row.names = F)
+  write.csv(sim.pval.res[-c(4,5,7)],file=paste(filenameRoot,"Sim Pvals.csv"),row.names = F)
   
   ## remove results for simulated data
   use.fit2<-use.fit
@@ -231,21 +231,31 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
                                 c2 = c(((totCol/2)+1):totCol))))
 
   colnames(ratioDat)<- "Log2Rat"
-  quasiSeq.res = data.frame(Feature = names(pvals),MnSignal = rowMeans(cnt), Log2Rat = ratioDat$Log2Rat, pvals = pvals, qvals = qvals, log.pvals=log.pvals, F.stat=F.stat, den.df=rep(use.res.adj$d0[2], length(pvals)))  
+  quasiSeq.res = data.frame(Feature = names(pvals),
+                            MnSignal = rowMeans(cnt), 
+                            Fold = c(ERCC.FC[ERCC,2], 
+                                     rep(x=NA,
+                                         length.out=(length(pvals) - 
+                                                       (length(ERCC.FC[ERCC,2]))))), 
+                            Log2Rat = ratioDat$Log2Rat, Pval = pvals,
+                            qvals = qvals, log.pvals=log.pvals, F.stat=F.stat, 
+                            den.df=rep(use.res.adj$d0[2], length(pvals)))
 
-  write.csv(quasiSeq.res, file = paste(filenameRoot,"quasiSeq.res.csv",sep="."),row.names = F)
+  write.csv(quasiSeq.res[c(1,2,5,3)], file = paste0(filenameRoot,".All.Pvals.csv"),row.names = F)
   
   ERCC.pvals.adj<-pvals[ERCC]
   ERCC.F.stat.adj<-F.stat[ERCC]
   ERCC.log.pvals.adj<-log.pvals[ERCC]
 
   ### Collect results for ERCCs; to be passed along to LODR function
-  pval.res<-data.frame(row.names(cnt[ERCC,]),rowMeans(cnt[ERCC,]),ERCC.pvals.adj,ERCC.log.pvals.adj,ERCC.F.stat.adj,ERCC.FC[ERCC,2],rep(use.res.adj$d0[2],length(ERCC.pvals.adj)))
+  pval.res<-data.frame(row.names(cnt[ERCC,]),rowMeans(cnt[ERCC,]),
+                       ERCC.pvals.adj,ERCC.log.pvals.adj,ERCC.F.stat.adj,
+                       ERCC.FC[ERCC,2],rep(use.res.adj$d0[2],length(ERCC.pvals.adj)))
   colnames(pval.res)<-c("Feature","MnSignal","Pval","LogPval","F.stat","Fold",
                         "Den.df")
   #print(str(pval.res))
   row.names(pval.res) <- NULL
-  write.csv(pval.res,file=paste(filenameRoot,"ERCC Pvals.csv"), row.names = F)
+  write.csv(pval.res[-c(4,5,7)],file=paste(filenameRoot,"ERCC Pvals.csv"), row.names = F)
   print("Finished DE testing")
   
   exDat$Results$quasiSeq.res <- quasiSeq.res
@@ -348,9 +358,6 @@ print(paste("Spline scaling factor:", phi0))
   stat_smooth(data = dispcntSort,aes(x = xsort, y = ysort),colour = "black") + 
   scale_x_log10() + colScale + theme_bw() +
   theme(legend.justification=c(1,1), legend.position=c(1,1)) 
-
-  exDat$Figures$dispPlot <- quasiDispPlot
-  exDat$Results$simcnt <- simcnt 
 
   exDat$Figures$dispPlot <- quasiDispPlot
   exDat$Results$simcnt <- simcnt 

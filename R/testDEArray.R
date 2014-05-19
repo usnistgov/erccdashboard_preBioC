@@ -13,20 +13,32 @@ testDEArray <- function(exDat){
   row.names(y) <- y$Feature
   y <- y[-c(1)]
   
+  yERCC <- y[grep("ERCC-",row.names(y)),]
+  yAll <- y[-grep("ERCC-",row.names(y)),]
   
-  ylog <- log2(y)
+  # adjust for r_m before hypothesis testing
+  adj <- exp(exDat$Results$r_m.res$r_m.mn)
+  
+  yERCC[c(1:(ncol(yERCC)/2))] <- yERCC[c(1:(ncol(yERCC)/2))]*adj
+  
+  y <- rbind(yERCC, yAll)
+  
+  #y <- yERCC
   if(is.null(exDat$normFactor)&(exDat$sampleInfo$isNorm==TRUE)){
-    wts = NULL
     cat("\nisNorm is TRUE, array data is already normalized\n")
+    ynorm <- y
   }else{
-    wts <- log(exDat$normFactor)  
-  }
+    ynorm <- sweep(y, 2, exDat$normFactor, "/")
+    
+  }  
   
-  if(odd(ncol(y))) stop("\nUneven number of replicates for the two sample types\n")
+  ylog <- log2(ynorm)
   
-  design <- cbind(Grp1=1,Grp1vs2=c(rep(x=1,times=ncol(y)/2), rep(x=0,times=ncol(y)/2)))
+  if(odd(ncol(ynorm))) stop("\nUneven number of replicates for the two sample types\n")
   
-  fit <- lmFit(ylog,design,weights=wts)
+  design <- cbind(Grp1=1,Grp1vs2=c(rep(x=1,times=ncol(ynorm)/2), rep(x=0,times=ncol(ynorm)/2)))
+  
+  fit <- lmFit(ylog,design)
   ###fit <- lmFit(ylog,design)
   
   fit <- eBayes(fit)
@@ -36,17 +48,17 @@ testDEArray <- function(exDat){
   ### generate qvals
   if(!is.null(choseFDR)){
     
-    pval <- res$adj.P.Val
-    qobj <- qvalue(pval)
-    res$qvals <- qobj$qvalues
+    pval <- res$P.Value
+    print(head(res))
+    res$qvals <- qvalue(pval)$qvalues
+    
     
     if(any(res$qvals<choseFDR)){
-      p.thresh<-max(res$adj.P.Val[res$qvals<choseFDR])
+      p.thresh<-max(res$P.Value[res$qvals<choseFDR])
     }
   }
   res$Feature <- row.names(res)
   
-  ERCCres<- res[grep("ERCC-",row.names(res)),]
   
   #plot(ERCCres$AveExpr,ERCCres$logFC)
   
@@ -54,15 +66,39 @@ testDEArray <- function(exDat){
                        FC = round(erccInfo$idColsSRM$Conc1/
                                     erccInfo$idColsSRM$Conc2,digits=3))
   
-  pval.res <- data.frame( Feature = row.names(ERCCres), MnSignal = 2^(ERCCres$AveExpr), 
-                          Pval = ERCCres$adj.P.Val,
-                          Fold = erccFC$FC[match(row.names(ERCCres), erccFC$Feature,
-                                                 nomatch=0)])
-  write.csv(pval.res, paste(sampleInfo$filenameRoot, "ERCC Pvals.csv"),
+#   pval.res <- data.frame( Feature = row.names(ERCCres), MnSignal = 2^(ERCCres$AveExpr), 
+#                           Pval = ERCCres$adj.P.Val,
+#                           Fold = erccFC$FC[match(row.names(ERCCres), erccFC$Feature,
+#                                                  nomatch=0)])
+  yMns <- data.frame(Feature = row.names(y), MnSignal = rowMeans(y))
+  mergedRes <- merge(res,yMns,by="Feature")
+
+  ERCCres<- mergedRes[grep("ERCC-",mergedRes$Feature),]
+  Endores <- mergedRes[-grep("ERCC-",mergedRes$Feature),]
+
+  ercc.pval.res <- data.frame( Feature = ERCCres$Feature,
+                               MnSignal = ERCCres$MnSignal,
+                               Pval = ERCCres$P.Value,
+                               Fold = erccFC$FC[match(ERCCres$Feature, 
+                                                      erccFC$Feature,nomatch=0)])
+    
+  write.csv(ercc.pval.res, paste(sampleInfo$filenameRoot, "ERCC Pvals.csv"),
             row.names = F)
   
-  exDat$Results$limma.res <- res
-  exDat$Results$ERCC.pval <- pval.res
+  
+  endo.pval.res <- data.frame( Feature = Endores$Feature, 
+                               #MnSignal = rowMeans(yERCC[match(row.names(yERCC),
+                               #                            erccFC$Feature,nomatch=0),]),
+                               MnSignal = Endores$MnSignal, 
+                               Pval = Endores$P.Value,
+                               Fold = NA)
+  
+  all.pval.res <- rbind(ercc.pval.res, endo.pval.res)
+  
+  write.csv(all.pval.res, paste0(sampleInfo$filenameRoot, ".All.Pvals.csv"),
+            row.names = F)
+  exDat$Results$limma.res <- all.pval.res
+  exDat$Results$ERCC.pval <- ercc.pval.res
   exDat$Results$p.thresh <- p.thresh
   return(exDat)
 }

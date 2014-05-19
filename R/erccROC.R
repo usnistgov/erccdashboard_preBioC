@@ -12,14 +12,8 @@ erccROC <- function(exDat){
   idCols = exDat$erccInfo$idColsSRM
   
   idCols <- idCols[-which(is.na(idCols$Ratio)),]
-  #Create a custom color scale
-  #myColors <- c("#CC3333", "#339900","#FF9933","#66CC99")
-#   myColors <- c("#FF9900","#339966", "#6699CC", "#CC6666")
-#   names(myColors) <- folds$Ratio
-   #myColorsDiff <- myColors[-(which(folds$FC == 1))]
-   legendLabelsDiff <- legendLabels[-(which(folds$FC == 1))]
-# colScale <- scale_colour_manual(name = "Ratio",values = myColorsDiff, labels = legendLabelsDiff)
-# fillScale <- scale_fill_manual(name = "Ratio", values = myColorsDiff, labels = legendLabelsDiff)
+  
+  legendLabelsDiff <- legendLabels[-(which(folds$FC == 1))]
   
   plotInfo <- exDat$plotInfo
   colScale <- plotInfo$colScale
@@ -28,8 +22,14 @@ erccROC <- function(exDat){
   
   # Read in the p.values from the file
   #if (is.null(pValDat)){
-  if(file.exists(paste(filenameRoot,"ERCC","Pvals.csv")) == T){
+  erccPval <- file.exists(paste(filenameRoot,"ERCC","Pvals.csv"))
+  allPval <- file.exists(paste0(filenameRoot, ".All.Pvals.csv"))
+  if((erccPval == T)&(allPval==T)){
     pValDat = read.csv(file=paste(filenameRoot,"ERCC","Pvals.csv"),header=T)  
+  }
+  if(allPval == T){
+    pValDat = read.csv(file = paste0(filenameRoot, ".All.Pvals.csv"), header = T)
+    pValDat <- pValDat[grep("ERCC-",pValDat$Feature),]
   }else{
     cat(paste0("\n",filenameRoot," ERCC Pvals.csv file is missing."))
     cat("\nExiting ROC Curve analysis...\n")
@@ -63,7 +63,10 @@ erccROC <- function(exDat){
     AUC = unlist(pool.auc@y.values)
     #print(paste("Ratio",as.character(FCcodeC$FC[i])))
     #print(paste("AUC",as.character(AUC)))
-    AUCdatnew = data.frame(Ratio = legendLabelsDiff[i],AUC = round(AUC,digits = 3), Detected = length(pValDat$Fold[(pValDat$Fold == FCcodeC$FC[i])]), Spiked = length(idCols$Ratio[idCols$Ratio == FCcodeC$Ratio[i]]))
+    AUCdatnew = data.frame(Ratio = legendLabelsDiff[i],
+                           AUC = round(AUC,digits = 3), 
+                           Detected = length(pValDat$Fold[(pValDat$Fold == FCcodeC$FC[i])]), 
+                           Spiked = length(idCols$Ratio[idCols$Ratio == FCcodeC$Ratio[i]]))
     AUCdat = rbind(AUCdat,AUCdatnew)
     FPR = c( unlist(pool.perf@x.values)) 
     TPR = c( unlist(pool.perf@y.values))

@@ -14,112 +14,104 @@
 geneExprTest <- function(exDat){
   datType <- exDat$sampleInfo$datType
   isNorm <- exDat$sampleInfo$isNorm
-  #print(datType)
+  choseFDR <- exDat$sampleInfo$choseFDR
+  cnt <- exDat$Transcripts
+  designMat <- exDat$designMat
+  sampleInfo <- exDat$sampleInfo
+  info <- designMat
+  
+  allpvalFile <- paste(sampleInfo$filenameRoot,"All.Pvals.csv",sep=".")
+  pvalERCC <- paste(sampleInfo$filenameRoot, "ERCC Pvals.csv",sep=" ")
+  
   if(datType == "array"){
-    if(is.null(exDat$sampleInfo$choseFDR)){
+    if(is.null(choseFDR)){
       getPThresh<- function(){
-        cat("\nFDR is NULL, to continue with P-values for LODR estimation\n")
+        cat("\nFDR is NULL, to continue with LODR estimation\n")
         readline("Enter the threshold P-value: ")
       }
       exDat$Results$p.thresh <- as.numeric(getPThresh())  
     }
     
-    exDat <- testDEArray(exDat)
-    cat("\nFinished DE testing\n")
+    if (file.exists(allpvalFile) == TRUE){
+      deRes <- read.csv(allpvalFile)
+      #if (!("qvals" %in% names(deRes))){
+      deRes$qvals <- qvalue(deRes$Pval)$qvalues
+       # print(summary(deRes$qvals))
+      #}
+      if(any(deRes$qvals<choseFDR)){
+        p.thresh<-max(deRes$Pval[deRes$qvals<choseFDR])
+      }
+      cat(paste("\n Will use existing differential expression test results",
+                "for analysis.\n",
+                "Delete", allpvalFile, "if you want to repeat differential \n",
+                "expression testing\n"))
+    }else{
+      exDat <- testDEArray(exDat)
+      cat("\nFinished DE testing\n")
+      p.thresh <- exDat$Results$p.thresh  
+    }
+    
+    
   }
   if(datType == "count"){
-    cnt <- exDat$Transcripts
-    designMat <- exDat$designMat
-    sampleInfo <- exDat$sampleInfo
-    info <- designMat
-    choseFDR <- sampleInfo$choseFDR
     
     # set initial p.thresh
     p.thresh<-.1
-    # First 3 columns of qvalFile must contain Feature, pvals, and qvals
-    
-    qvalFile <- paste(sampleInfo$filenameRoot,"quasiSeq.res.csv",sep=".")
-    pvalERCC <- paste(sampleInfo$filenameRoot, "ERCC Pvals.csv",sep=" ")
-    #dispPlotFile = paste(sampleInfo$filenameRoot, ".DispPlot.RData",sep = "")
-    
+    # First 3 columns of allpvalFile must contain Feature, Pval, and qvals
     # Decide to reuse results or run testDE
-    if (file.exists(qvalFile) == TRUE){
-      deRes <- read.csv(qvalFile)
-      stopifnot("qvals" %in% names(deRes))
-      if (file.exists(pvalERCC) == TRUE){
-        cat(paste("\n Differential expression test results exist, will use  \n",
-                  "existing P-values and Q-values for analysis.\n",
-                  "Delete", qvalFile, "if you want to repeat differential \n",
-                  "expression testing or view dispersion plots\n"))
-        if(any(deRes$qvals<choseFDR)){
-          p.thresh<-max(deRes$pvals[deRes$qvals<choseFDR])
-        }
-      }else{
-        cat("\nStarting differential expression tests\n")
-        exDat <- suppressWarnings(testDECount(sampleInfo, exDat, cnt = cnt, 
-                                          info = info ))  
-        deRes <- read.csv(qvalFile)
-        if(any(deRes$qvals<choseFDR)){
-          p.thresh<-max(deRes$pvals[deRes$qvals<choseFDR])
-        }
+    
+    if (file.exists(allpvalFile) == TRUE){
+      deRes <- read.csv(allpvalFile)
+      #if (("qvals" %in% names(deRes)) == FALSE){
+      deRes$qvals <- qvalue(deRes$Pval)$qvalues
+      #}
+      if(any(deRes$qvals<choseFDR)){
+          p.thresh<-max(deRes$Pval[deRes$qvals<choseFDR])
       }
-      
-    }
-    if(file.exists(qvalFile) == FALSE){
-      pvalERCC = paste(sampleInfo$filenameRoot, "ERCC Pvals.csv",sep=" ")
-      if(file.exists(pvalERCC)){
-        cat(paste("\n Using existing ERCC DE test p-values for AUC and LODR\n"))
-        # First three columns must be Feature, MnSignal, Pval
-        pvalFile <- read.csv(pvalERCC)
-        pvalFile$qvals <- qvalue(pvalFile$Pval)$qvalues
-        if(any(pvalFile$qvals<choseFDR)){
-          p.thresh<-max(pvalFile$Pval[pvalFile$qvals<choseFDR])
-        }
-        
-        # Need to get Threshold p-value from user
-        #getPThresh<- function(){
-        #  cat("\nTo continue with P-values for LODR estimation\n")
-        #  readline("Enter the threshold P-value: ")
-        #}
-        #p.thresh <- as.numeric(getPThresh())
-        
+      cat(paste("\n Found differential expression test results, will use  \n",
+                "existing P-values and Q-values for analysis.\n",
+                "Delete", allpvalFile, "if you want to repeat differential \n",
+                "expression testing or view dispersion plots\n"))
+    }else{
+      if (isNorm == T){
+        cat(paste0("\nQuasiSeq DE Testing for RNA-Seq requires count (integer) data.\n",
+                   "To estimate AUC and LODR for normalized RNA-Seq data\n",
+                   "the file '",sampleInfo$filenameRoot,
+                   ".All.Pvals.csv' is required with columns for\n",
+                   "'Feature','MnSignal','Pval', and 'Fold'\n"))
+        return(exDat)
       }else{
-        if (isNorm == T){
-          cat(paste0("\nQuasiSeq DE Testing requires count (integer) data.\n",
-                     "To estimate AUC and LODR for normalized RNA-Seq data\n",
-                     "the file '",sampleInfo$filenameRoot,
-                     " ERCC Pvals.csv' is required\n"))
-          return(exDat)
-        }
         cat("\nStarting differential expression tests\n")
         exDat <- suppressWarnings(testDECount(sampleInfo, exDat, cnt = cnt, 
-                                          info = info ))  
-        deRes <- read.csv(qvalFile)
+                                              info = info ))  
+        deRes <- read.csv(allpvalFile)
+        deRes$qvals <- qvalue(deRes$Pval)$qvalues
         if(any(deRes$qvals<choseFDR)){
-          p.thresh<-max(deRes$pvals[deRes$qvals<choseFDR])
+          p.thresh<-max(deRes$Pval[deRes$qvals<choseFDR])
         } 
       }
+    }    
+    
       
     }
-    
-    
-    if(is.null(exDat$Figures$dispPlot)){
-      cat(paste("\nDE testing results supplied without companion dispersion\n",
-                "plot. Dispersion plot is unavailable to print.\n"))
-    }  
-    cat("\nThreshold P-value\n")
-    cat(p.thresh,"\n")
-    
-    if (p.thresh > .1){
-      cat(paste("Threshold P-value is high for the chosen FDR of ", 
-                as.character(choseFDR)))
-      cat(paste("\nThe sample comparison indicates a large amount of \n",
-                "differential expression in the measured transcript \n",
-                "populations\n"))
-    }
-    exDat$Results$p.thresh <- p.thresh
-  }
+
+  if(is.null(exDat$Figures$dispPlot)){
+    cat(paste("\nDE testing results supplied without companion dispersion\n",
+              "plot. Dispersion plot is unavailable to print.\n"))
+  }  
+  cat("\nThreshold P-value\n")
+  cat(p.thresh,"\n")
   
+  if (p.thresh > .1){
+    cat(paste("Threshold P-value is high for the chosen FDR of ", 
+              as.character(choseFDR)))
+    cat(paste("\nThe sample comparison indicates a large amount of \n",
+              "differential expression in the measured transcript \n",
+              "populations\n"))
+  }
+  exDat$Results$p.thresh <- p.thresh  
+  
+
   return(exDat)
   
 }

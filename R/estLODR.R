@@ -36,13 +36,32 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
   ### Modify this file path to work with other ERCC data
   ### Note that you must format your provided data in the same manner as the provided example
   ### i.e. the column headings of your selected datamust match those of the provided examples
-  if(file.exists(paste(filenameRoot,kind,"Pvals.csv"))){
-    pval.res<-read.csv(paste(filenameRoot,kind,"Pvals.csv"),header=TRUE)  
-  }else{
-    cat(paste0("\n",filenameRoot," ",kind," Pvals.csv is missing.",
-              "\nExiting LODR estimation...\n"))
-    return(exDat)
+  
+  if(kind == "ERCC"){
+    erccPval <- file.exists(paste(filenameRoot,"ERCC","Pvals.csv"))
+    allPval <- file.exists(paste0(filenameRoot, ".All.Pvals.csv"))
+    if((erccPval == T)&(allPval==T)){
+      pval.res = read.csv(file=paste(filenameRoot,"ERCC","Pvals.csv"),header=T)  
+    }
+    if(allPval == T){
+      pval.res = read.csv(file = paste0(filenameRoot, ".All.Pvals.csv"), header = T)
+      pval.res <- pval.res[grep("ERCC-",pval.res$Feature),]
+    }else{
+      cat(paste0("\n",filenameRoot," ERCC Pvals.csv file is missing."))
+      cat("\nExiting LODR estimation...\n")
+      return(exDat)
+    }
   }
+  if (kind == "Sim"){
+    if(file.exists(paste(filenameRoot,"Sim Pvals.csv"))){
+      pval.res<-read.csv(paste(filenameRoot,kind,"Pvals.csv"),header=TRUE)  
+    }else{
+      cat(paste0("\n",filenameRoot," Sim Pvals.csv is missing.",
+                 "\nExiting LODR estimation...\n"))
+      return(exDat)
+    }  
+  }
+  
    
   names(pval.res)[1]= "Feature"
   
