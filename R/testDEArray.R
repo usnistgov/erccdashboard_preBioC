@@ -17,9 +17,12 @@ testDEArray <- function(exDat){
   yAll <- y[-grep("ERCC-",row.names(y)),]
   
   # adjust for r_m before hypothesis testing
-  adj <- exp(exDat$Results$r_m.res$r_m.mn)
+  if(!is.null(exDat$Results$r_m.res$r_m.mn)){
+      adj <- exp(exDat$Results$r_m.res$r_m.mn)
+      
+      yERCC[c(1:(ncol(yERCC)/2))] <- yERCC[c(1:(ncol(yERCC)/2))]*adj
+  }
   
-  yERCC[c(1:(ncol(yERCC)/2))] <- yERCC[c(1:(ncol(yERCC)/2))]*adj
   
   y <- rbind(yERCC, yAll)
   
