@@ -1,6 +1,6 @@
 erccdashboard
 =============
-This is the source code for the erccdashboard R packge (v. 0.9.9)
+This is the source code for the erccdashboard R packge (v. 0.9.10)
 
 Note that the erccdashboard package has other packages as dependencies. 
 These packages will need to be installed and loaded by the user. 
@@ -32,7 +32,7 @@ Installation:
 
 2. At R prompt install the package with:
 
-  > install.packages(pkgs="path_to_package/erccdashboard_0.9.9.tar.tgz")
+  > install.packages(pkgs="path_to_package/erccdashboard_0.9.10.tar.tgz")
 
 3. Load the package with
 

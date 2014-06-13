@@ -277,7 +277,7 @@ maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
   #exDat$Results$modRatVar <- stdevCoef
   exDat$Results$maDatAll <- maDatAll
   #exDat$Figures$ratioSDPlot <- sdRatioplotFit
-  exDat$Figures$ratioSDPlot <- ratioVarPlot
+  #exDat$Figures$ratioSDPlot <- ratioVarPlot
   
   return(exDat)
 }

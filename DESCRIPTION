@@ -2,7 +2,7 @@ Package: erccdashboard
 Type: Package
 Title: Assessment of Gene Expression Measurement Technical Performance with
     External Spike-in RNA Controls
-Version: 0.9.9
+Version: 0.9.10
 Author: Sarah Munro, Steve Lund
 Maintainer: Sarah Munro <sarah.munro@nist.gov>
 Description: erccdashboard produces graphs and performance metrics for gene
@@ -32,5 +32,5 @@ Collate:
     prepERCCDat.R est_r_m.R dynRangePlot.R geneExprTest.R 
     testDECount.R testDEArray.R erccROC.R estLODR.R multiplot.R 
     printLODRres.R saveERCCPlots.R maSignal.R
-    annotLODR.R withinMixRatiosPairwise.R
+    annotLODR.R
 Roxygen: list(wrap = FALSE)
