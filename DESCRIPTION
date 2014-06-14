@@ -10,7 +10,9 @@ Description: erccdashboard produces graphs and performance metrics for gene
     Control Consortium (ERCC) spike-in controls.
 URL: http://nist.gov/erccControls
 Depends:
-    R (>= 3.0), ggplot2, gridExtra
+    R (>= 3.0),
+    ggplot2,
+    gridExtra
 Imports:
     reshape2,
     plyr,
@@ -27,10 +29,9 @@ Imports:
     gtools
 License: GPL (>=2)
 Collate:
-    runDashboard.R initDat.R dashboardFile.R plotAdjust.R
-    loadERCCInfo.R loadExpMeas.R getDesignMat.R normalizeDat.R
-    prepERCCDat.R est_r_m.R dynRangePlot.R geneExprTest.R 
-    testDECount.R testDEArray.R erccROC.R estLODR.R multiplot.R 
-    printLODRres.R saveERCCPlots.R maSignal.R
-    annotLODR.R
+  runDashboard.R initDat.R dashboardFile.R plotAdjust.R
+  loadERCCInfo.R loadExpMeas.R getDesignMat.R normalizeDat.R
+  prepERCCDat.R est_r_m.R dynRangePlot.R geneExprTest.R
+  testDECount.R testDEArray.R erccROC.R estLODR.R multiplot.R
+  printLODRres.R saveERCCPlots.R maSignal.R annotLODR.R
 Roxygen: list(wrap = FALSE)
