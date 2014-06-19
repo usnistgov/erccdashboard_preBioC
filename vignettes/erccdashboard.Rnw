@@ -57,18 +57,18 @@ data(SEQC.Example)
 The R workspace should now contain 5 objects
 Three of these objects are gene expression experiment expression measures:
 \begin{itemize}
-  \item Lab13.array.UHRR.HBRR - Fluorescent signal data from an Illumina 
-        beadarray microarray experiment with UHRR and HBRR
-  \item COH.RatTox.ILM.MET.CTL.countTable - RNA-Seq count data from a
+  \item UHRR.HBRR.arrayDat - Fluorescent signal data from an Illumina 
+        beadarray microarray experiment with UHRR and HBRR in the SEQC interlaboratory study
+  \item MET.CTL.countDat - RNA-Seq count data from a
         rat toxicogenomics experiment
-  \item Lab5.ILM.UHRR.HBRR.countTable - RNA-Seq count data from Lab 5 in the SEQC
+  \item UHRR.HBRR.countDat - RNA-Seq count data from Lab 5 in the SEQC
         interlaboratory study with UHRR and HBRR
 \end{itemize}
 The other two objects are vectors of total reads for the 2 sequencing experiments
 \begin{itemize}
-  \item COH.RatTox.ILM.MET.CTL.totalReads - total sequenced reads factors for 
+  \item MET.CTL.totalReads - total sequenced reads factors for 
         each column in the corresponding rat experiment count table
-  \item Lab5.ILM.UHRR.HBRR.totalReads - total sequenced reads factors for 
+  \item UHRR.HBRR.totalReads - total sequenced reads factors for 
         each column in the corresponding UHRR/HBRR count table
 \end{itemize}
 
@@ -81,7 +81,7 @@ toxicogenomics RNA-Seq experiment, the following input arguments are required:
 datType = "count" # "count" for RNA-Seq data, "array" for microarray data
 isNorm = FALSE # flag to indicate if input expression measures are already
                # normalized, default is FALSE 
-exTable = COH.RatTox.ILM.MET.CTL.countTable # the expression measure table
+exTable = MET.CTL.countDat # the expression measure table
 filenameRoot = "COH.ILM" # user defined filename prefix for results files
 sample1Name = "MET" # name for sample 1 in the experiment
 sample2Name = "CTL" # name for sample 2 in the experiment
@@ -106,7 +106,7 @@ The third argument, exTable, is the expression measure table.
 
 Take a look at the RatTox experiment count table.
 <<inspectRatCount,keep.source=TRUE>>=
-head(COH.RatTox.ILM.MET.CTL.countTable)
+head(MET.CTL.countDat)
 @
 The first column of the expression measure table, Feature, contains unique names for all
 the transcripts that were quantified in this experiment. The remaining columns 
@@ -161,7 +161,7 @@ Use the following command to run the default runDashboard script:
 
 <<runDashboardSEQCcount, keep.source=TRUE>>=
 exDat <- runDashboard(datType = "count", isNorm = FALSE,
-                       exTable = COH.RatTox.ILM.MET.CTL.countTable,
+                       exTable = MET.CTL.countDat,
                        filenameRoot = "COH.ILM",sample1Name = "MET",
                        sample2Name = "CTL",erccmix = "RatioPair",
                        erccdilution = 1/100, spikeVol = 1,
@@ -236,7 +236,7 @@ using the same original UHRR and HBRR samples.
 \subsection{RNA-Seq UHRR vs. HBRR experiment analysis}
 <<SEQCMainCount keep.source=TRUE>>=
 exDat <- runDashboard(datType="count", isNorm = FALSE,
-                      exTable=Lab5.ILM.UHRR.HBRR.countTable,
+                      exTable=UHRR.HBRR.countDat,
                       filenameRoot="Lab5", sample1Name = "UHRR", 
                       sample2Name = "HBRR", erccmix = "RatioPair",
                       erccdilution = 1, spikeVol = 50, 
@@ -256,8 +256,8 @@ instrument) compared to the MET-CTL rat toxicogenomics experiment. This
 difference is apparent in the total reads vectors for the two different 
 experiments:
 <<totalReadsCompare>>=
-COH.RatTox.ILM.MET.CTL.totalReads
-Lab5.ILM.UHRR.HBRR.totalReads
+MET.CTL.totalReads
+UHRR.HBRR.totalReads
 @
 \clearpage
 \begin{center}
@@ -317,7 +317,7 @@ replicate is normalized by the 75th quantile fluoresence intensity
 value of that array.
 <<SEQCMainArray, keep.source=TRUE>>=
 exDat <- runDashboard(datType="array", isNorm = F,
-                      exTable=Lab13.array.UHRR.HBRR,
+                      exTable=UHRR.HBRR.arrayDat,
                       filenameRoot = "Lab13.array",
                       sample1Name = "UHRR", sample2Name="HBRR",
                       erccmix = "RatioPair", erccdilution = 1, 

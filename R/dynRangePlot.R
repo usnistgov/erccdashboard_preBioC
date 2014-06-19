@@ -53,7 +53,7 @@ dynRangePlot <- function(exDat){
   dynRangeDatMix1_l = melt(dynRangeDatMix1, id.vars=c("Feature", "Ratio","Conc") ) 
   
   # Create data.frame of the experimental design factors
-  designVar = colsplit(dynRangeDatMix1_l$variable,pattern = "_", name = names(designMat)[-1])
+  designVar = colsplit(dynRangeDatMix1_l$variable,pattern = "_", names = names(designMat)[-1])
   designVar <- as.data.frame(lapply(designVar,as.factor))  
   
   # Bind Mix 1 data and experimental design factors
@@ -68,7 +68,7 @@ dynRangePlot <- function(exDat){
   dynRangeDatMix2_l = melt(dynRangeDatMix2, id.vars=c("Feature", "Ratio","Conc") )
   
   # Create data.frame of the experimental design factors
-  designVar = colsplit(dynRangeDatMix2_l$variable,pattern = "_", name = names(designMat)[-1])
+  designVar = colsplit(dynRangeDatMix2_l$variable,pattern = "_", names = names(designMat)[-1])
   designVar <- as.data.frame(lapply(designVar,as.factor))
   
   # Bind Mix 2 data and experimental design factors
@@ -211,6 +211,10 @@ dynRangePlot <- function(exDat){
   dataFit$wtSet = wtSet
   
   if(errorBars == FALSE) AandBAveSD$value.SD <- 0
+  
+  # Appease R CMD Check
+  Sample <- Conc <- value.SD <- value.Ave <- Ratio <- ERCC.effect <- Feature <- NULL
+  
   
   dynRange = ggplot() + 
     geom_pointrange(data = subset(AandBAveSD,Sample == sampleNames[1]),

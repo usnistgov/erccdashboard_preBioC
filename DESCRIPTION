@@ -34,4 +34,5 @@ Collate:
   prepERCCDat.R est_r_m.R dynRangePlot.R geneExprTest.R
   testDECount.R testDEArray.R erccROC.R estLODR.R multiplot.R
   printLODRres.R saveERCCPlots.R maSignal.R annotLODR.R
+LazyData: yes
 Roxygen: list(wrap = FALSE)

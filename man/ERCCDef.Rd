@@ -7,7 +7,6 @@ ERCCDef dataframe
 \description{
 ERCC transcript lengths and GC content
 }
-\usage{data(ERCCDef)}
 \format{
   A data frame with 96 observations on the following 3 variables.
   \describe{

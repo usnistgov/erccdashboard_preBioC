@@ -23,7 +23,6 @@ testDEArray <- function(exDat){
       yERCC[c(1:(ncol(yERCC)/2))] <- yERCC[c(1:(ncol(yERCC)/2))]*adj
   }
   
-  
   y <- rbind(yERCC, yAll)
   
   #y <- yERCC
@@ -42,28 +41,23 @@ testDEArray <- function(exDat){
   design <- cbind(Grp1=1,Grp1vs2=c(rep(x=1,times=ncol(ynorm)/2), rep(x=0,times=ncol(ynorm)/2)))
   
   fit <- lmFit(ylog,design)
-  ###fit <- lmFit(ylog,design)
   
   fit <- eBayes(fit)
   
   res <- topTable(fit,sort.by="none",number = dim(ylog)[1],coef = 2)
-  #print(head(res))
+ 
   ### generate qvals
   if(!is.null(choseFDR)){
     
     pval <- res$P.Value
-    print(head(res))
+ 
     res$qvals <- qvalue(pval)$qvalues
-    
     
     if(any(res$qvals<choseFDR)){
       p.thresh<-max(res$P.Value[res$qvals<choseFDR])
     }
   }
   res$Feature <- row.names(res)
-  
-  
-  #plot(ERCCres$AveExpr,ERCCres$logFC)
   
   erccFC <- data.frame(Feature = erccInfo$idColsSRM$Feature, 
                        FC = round(erccInfo$idColsSRM$Conc1/
@@ -90,8 +84,6 @@ testDEArray <- function(exDat){
   
   
   endo.pval.res <- data.frame( Feature = Endores$Feature, 
-                               #MnSignal = rowMeans(yERCC[match(row.names(yERCC),
-                               #                            erccFC$Feature,nomatch=0),]),
                                MnSignal = Endores$MnSignal, 
                                Pval = Endores$P.Value,
                                Fold = NA)

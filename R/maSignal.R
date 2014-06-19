@@ -195,7 +195,8 @@ maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
     #ratVarDat <- subset(ratVarDat, A > 0)
     #ratVarDat$A <- log2((2^(ratVarDat$A.Ave))/(spikeFraction))
 
-    
+    # set null values to appease R CMD Check
+    Ratio <- A <- M.Ave <- M.SD <- LODR <- Nominal <- Empirical <- NULL
     if (length(cutoffs)>0){
       maData$LODR = "below"
       FCcodeC = FCcode[-c(which(FCcode$FC == 1)),]

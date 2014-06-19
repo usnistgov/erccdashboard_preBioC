@@ -7,7 +7,6 @@ ERCCMix1and2 dataframe
 \description{
 Ambion RatioPair ERCC Mixtures 
 }
-\usage{data(ERCCMix1and2)}
 \format{
   A data frame with 96 observations on the following 4 variables.
   \describe{
@@ -18,15 +17,7 @@ Ambion RatioPair ERCC Mixtures
     \item{\code{Mix2Conc.Attomoles_ul}}{a numeric vector of the ERCC concentrations in Mix 2}
   }
 }
-\details{
-
-}
 \source{
 http://www.lifetechnologies.com/order/catalog/product/4456739
-}
-\references{
-
-}
-\examples{
 }
 \keyword{datasets}

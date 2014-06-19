@@ -1,9 +1,11 @@
 loadERCCInfo <- function(expDat, erccmix = NULL, userMixFile=NULL){
   # Get the ERCC Mix definition file provided by user and combine it with the package ERCCDef file
-  data(ERCC)
+  ERCCMix1and2 <- NULL
+  data(ERCC, envir = environment())
   #   load(file = system.file("data/ERCC.RData", 
 #                           package = "erccdashboard"))
-   if (is.null(userMixFile)){
+  
+  if (is.null(userMixFile)){
     MixDef <- ERCCMix1and2
   }else{
     MixDef <- read.csv(userMixFile)

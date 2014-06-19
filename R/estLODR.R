@@ -239,6 +239,9 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
 #     ymin <- min(pval.res$Pval)/1e5
 #     yrange <- c(ymin, 1e1)
 #   }
+  # Appease R CMD Check
+  MnSignal <- Pval <- Ratio <- xend <- yend <- NULL
+
   if(dim(arrowDat)[1]!=0){
     LODRplot <- ggplot(pval.res, aes(x = MnSignal, y = Pval, colour = Ratio)) + 
       geom_point(size = 6) + 

@@ -190,7 +190,9 @@ est_r_m <- function(exDat){
   #cat("\nGLM r_m weighted s.e.\n")
   #cat(exp(r_m.mnse),"\n")
   
-  
+  # appease CMD check
+
+  Ratio <- r_m.hat <- nominal <- r_m.se <- AveConc <- ymin <- ymax <- Feature <- NULL
   if (nrow(textDat)>1){
     plotSiter_m = ggplot(r_m, aes(x = AveConc, y = r_m.hat - nominal, 
                                   colour =  Ratio)) + 
