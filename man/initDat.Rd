@@ -3,7 +3,7 @@
 \alias{initDat}
 \title{Initialize the exDat list}
 \usage{
-initDat(datType = NULL, isNorm = F, exTable = NULL,
+initDat(datType = NULL, isNorm = FALSE, exTable = NULL,
   repNormFactor = NULL, filenameRoot = NULL, sample1Name = NULL,
   sample2Name = NULL, erccmix = "RatioPair", erccdilution = 1,
   spikeVol = 1, totalRNAmass = 1, choseFDR = 0.05, ratioLim = c(-4, 4),
@@ -60,10 +60,20 @@ mixtures}
 \item{signalLim}{Limits for signal axis on dynamic range plot, default is c(-14,14)}
 
 \item{userMixFile}{optional filename input, default is NULL, if ERCC
-                     control ratio mixtures other than the Ambion product
-                     were used then a userMixFile can be used for the analysis}
+control ratio mixtures other than the Ambion product
+were used then a userMixFile can be used for the analysis}
 }
 \description{
 Initialize the exDat list
+}
+\examples{
+data(SEQC.Example)
+
+exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat,
+                 filenameRoot = "testRun",sample1Name = "MET",
+                 sample2Name = "CTL", erccmix = "RatioPair",
+                 erccdilution = 1/100, spikeVol = 1, totalRNAmass = 0.500,
+                 choseFDR = 0.1)
+summary(exDat)
 }
 

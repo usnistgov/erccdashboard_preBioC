@@ -8,6 +8,28 @@
 #' This is the function to estimate a limit of detection of ratios (LODR) for a
 #' a chosen probability and threshold p-value for the fold changes in the ERCC
 #' control ratio mixtures.
+#' 
+#' @examples
+#' data(SEQC.Example)
+#' #testDat <- MET.CTL.countDat[sample(1:length(MET.CTL.countDat$Feature),
+#' #                                           size=5000),]
+#' 
+#' exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat, 
+#'                  filenameRoot = "testRun",sample1Name = "MET",
+#'                  sample2Name = "CTL", erccmix = "RatioPair", 
+#'                  erccdilution = 1/100, spikeVol = 1, totalRNAmass = 0.500,
+#'                  choseFDR = 0.1)
+#'                  
+#' exDat <- est_r_m(exDat)
+#'                   
+#' exDat <- dynRangePlot(exDat)
+#' 
+#' exDat <- geneExprTest(exDat)
+#' 
+#' exDat <- estLODR(exDat, kind = "ERCC", prob = 0.9)
+#' 
+#' exDat$Figures
+#' 
 #' @export
 #' 
 estLODR <- function(exDat,kind = "ERCC", prob=0.9){
@@ -40,11 +62,11 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
   if(kind == "ERCC"){
     erccPval <- file.exists(paste(filenameRoot,"ERCC","Pvals.csv"))
     allPval <- file.exists(paste0(filenameRoot, ".All.Pvals.csv"))
-    if((erccPval == T)&(allPval==T)){
-      pval.res = read.csv(file=paste(filenameRoot,"ERCC","Pvals.csv"),header=T)  
+    if((erccPval == TRUE)&(allPval==TRUE)){
+      pval.res = read.csv(file=paste(filenameRoot,"ERCC","Pvals.csv"),header=TRUE)  
     }
-    if(allPval == T){
-      pval.res = read.csv(file = paste0(filenameRoot, ".All.Pvals.csv"), header = T)
+    if(allPval == TRUE){
+      pval.res = read.csv(file = paste0(filenameRoot, ".All.Pvals.csv"), header = TRUE)
       pval.res <- pval.res[grep("ERCC-",pval.res$Feature),]
     }else{
       cat(paste0("\n",filenameRoot," ERCC Pvals.csv file is missing."))
@@ -65,13 +87,18 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
    
   names(pval.res)[1]= "Feature"
   
+  #Check number of data points, throw warning if too few
+  oneSet <- pval.res[which(pval.res$Fold == 1),]
+  sizeP <- dim(oneSet)[1]
+  if(!(sizeP > 5)) stop("Not enough data points for LODR estimation")
+  
   #library(locfit)
   #library(gridExtra)
   cat(paste("\nEstimating",kind,"LODR\n"))
   #### Function used to estimate LODR and its uncertainty
   LODR<-function(pval,mn,cutoff,prob){
     cutoff<-log10(cutoff)
-    fit<-locfit(log10(pval)~lp(log10(mn)))
+    fit<-locfit(log10(pval)~lp(log10(mn)),maxk=300)
     X<-preplot(fit,band="pred",newdata=log10(mn))
     
     ### See plot of fit
@@ -117,7 +144,7 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
     for(ii in 1:500){
       y.boot<-X$fit+sample(residuals(fit),length(mn))
       #if(ii %in%c(20*(1:5))){points(log10(mn),y.boot,col=j); j<-j+1}
-      fit.boot<-locfit(y.boot~lp(log10(mn)))
+      fit.boot<-locfit(y.boot~lp(log10(mn)),maxk=300)
       lodr.boot<-c(lodr.boot,segmented.search(fit.boot)$minimum)
       if (ii %% 100 == 0){
         cat ("...")
@@ -147,7 +174,7 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
 
     x<-pval.res$MnSignal[grp][pval.res$Pval[grp]!=0]; y<-pval.res$Pval[grp][pval.res$Pval[grp]!=0]
     
-    fit<-locfit(log10(y)~lp(log10(x)))
+    fit<-locfit(log10(y)~lp(log10(x)),maxk=300)
     #x.new<-log10(pval.res$MnSignal[grp])
     x.new<-seq(min(log10(x)),max(log10(x)),length.out=100)
     X<-preplot(fit,band="pred",newdata=x.new)
@@ -225,7 +252,7 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
   
   ## create inset table
   my_table <- tableGrob(d=annoTable,
-                        show.rownames=F,
+                        show.rownames=FALSE,
                         gpar.coretext =gpar(fontsize=14),
                         gpar.coltext=gpar(fontsize=14),
                         gpar.rowtext=gpar(fontsize=14),
@@ -253,10 +280,10 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
                                       y = fitLine, 
                                       ymin=fitLower, 
                                       ymax=fitUpper,
-                                      fill = Ratio), alpha = 0.3,colour = NA,show_guide =F) + 
+                                      fill = Ratio), alpha = 0.3,colour = NA,show_guide =FALSE) + 
       geom_line(data = lineDat,aes(x = x.new,
                                    y=fitLine, 
-                                   colour = Ratio),show_guide = F) + 
+                                   colour = Ratio),show_guide = FALSE) + 
       colScale + fillScale + xlabDE + ylab("DE Test P-values") + 
       geom_hline(yintercept = pval.cutoff, linetype = 2, size = 2 ) + 
       geom_segment(data = arrowDat, aes(x = x,
@@ -277,10 +304,10 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
                                         y = fitLine, 
                                         ymin=fitLower, 
                                         ymax=fitUpper,
-                                        fill = Ratio), alpha = 0.3,colour = NA,show_guide =F) + 
+                                        fill = Ratio), alpha = 0.3,colour = NA,show_guide =FALSE) + 
         geom_line(data = lineDat,aes(x = x.new,
                                      y=fitLine, 
-                                     colour = Ratio),show_guide = F) + 
+                                     colour = Ratio),show_guide = FALSE) + 
         colScale + fillScale + xlabDE + ylab("DE Test P-values") + 
         geom_hline(yintercept = pval.cutoff, linetype = 2, size = 2 ) +
 #         geom_segment(data = arrowDat, aes(x = x,

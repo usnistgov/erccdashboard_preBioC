@@ -3,7 +3,7 @@
 \alias{runDashboard}
 \title{Run default erccdashboard analysis of ERCC control ratio mixtures}
 \usage{
-runDashboard(datType = NULL, isNorm = F, exTable = NULL,
+runDashboard(datType = NULL, isNorm = FALSE, exTable = NULL,
   repNormFactor = NULL, filenameRoot = NULL, sample1Name = NULL,
   sample2Name = NULL, erccmix = "RatioPair", erccdilution = 1,
   spikeVol = 1, totalRNAmass = 1, choseFDR = 0.05, ratioLim = c(-4, 4),
@@ -64,18 +64,15 @@ mixtures}
 Run default erccdashboard analysis of ERCC control ratio mixtures
 }
 \examples{
-\dontrun{
-
 data(SEQC.Example)
 
-exDat = runDashboard(datType = "count",isNorm = F,
-                     exTable = COH.RatTox.ILM.MET.CTL.countTable,
+exDat = runDashboard(datType = "count",isNorm = FALSE,
+                     exTable = MET.CTL.countDat,
                      filenameRoot = "COH.ILM",
                      sample1Name = "MET", sample2Name = "CTL",
                      erccmix = "RatioPair", erccdilution = 1/100,
                      spikeVol = 1, totalRNAmass = 0.500,choseFDR = 0.1)
 
 summary(exDat)
-}
 }
 

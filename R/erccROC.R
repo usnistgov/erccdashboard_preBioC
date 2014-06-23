@@ -24,11 +24,11 @@ erccROC <- function(exDat){
   #if (is.null(pValDat)){
   erccPval <- file.exists(paste(filenameRoot,"ERCC","Pvals.csv"))
   allPval <- file.exists(paste0(filenameRoot, ".All.Pvals.csv"))
-  if((erccPval == T)&(allPval==T)){
-    pValDat = read.csv(file=paste(filenameRoot,"ERCC","Pvals.csv"),header=T)  
+  if((erccPval == TRUE)&(allPval==TRUE)){
+    pValDat = read.csv(file=paste(filenameRoot,"ERCC","Pvals.csv"),header=TRUE)  
   }
-  if(allPval == T){
-    pValDat = read.csv(file = paste0(filenameRoot, ".All.Pvals.csv"), header = T)
+  if(allPval == TRUE){
+    pValDat = read.csv(file = paste0(filenameRoot, ".All.Pvals.csv"), header = TRUE)
     pValDat <- pValDat[grep("ERCC-",pValDat$Feature),]
   }else{
     cat(paste0("\n",filenameRoot," ERCC Pvals.csv file is missing."))
@@ -89,8 +89,8 @@ erccROC <- function(exDat){
     geom_point(size = 5, aes(colour = Ratio), alpha = 0.7) + 
     colScale + geom_abline(intercept = 0, slope = 1, linetype = 2) + theme_bw() +
     annotation_custom(grob=
-                        tableGrob(AUCAnnot, show.rownames=F, equal.width=T, 
-                                  equal.height=T,
+                        tableGrob(AUCAnnot, show.rownames=FALSE, equal.width=TRUE, 
+                                  equal.height=TRUE,
                                   gpar.corefill = gpar(fill = "grey85",
                                                        col = "white"), 
                                   gpar.rowfill = gpar(fill = "grey80",
@@ -104,9 +104,9 @@ erccROC <- function(exDat){
 #     geom_path(size = 2, aes(colour = Ratio), alpha = 0.7) + 
 #     geom_point(size = 5, aes(colour = Ratio), alpha = 0.7) + 
 #     colScale + geom_abline(intercept = 0, slope = 1, linetype = 2) + 
-#     theme_bw() + annotation_custom(grob=tableGrob(AUCAnnot, show.rownames=F, 
-#                                                   equal.width=T,
-#                                                   equal.height=T),
+#     theme_bw() + annotation_custom(grob=tableGrob(AUCAnnot, show.rownames=FALSE, 
+#                                                   equal.width=TRUE,
+#                                                   equal.height=TRUE),
 #                                    xmin=0.375,xmax=1.0,ymin = 0,ymax = 0.25) +
 #     theme(legend.position=c(0.75,0.5))
   

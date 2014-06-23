@@ -10,7 +10,21 @@
 #' similar mRNA fractions of total RNA. The r_m estimate is used to adjusted 
 #' the expected ERCC mixture ratios in this analysis and may indicate a need for
 #' a different sample normalization approach.
-
+#' 
+#' @examples
+#' #data(SEQC.Example)
+#' 
+#' testDat <- MET.CTL.countDat[sample(1:length(MET.CTL.countDat$Feature),
+#'                                             size=5000),]
+#' 
+#' exDat <- initDat(datType="count", isNorm = FALSE, exTable=testDat, 
+#'                  filenameRoot = "testRun",sample1Name = "MET",
+#'                  sample2Name = "CTL", erccmix = "RatioPair", 
+#'                  erccdilution = 1/100, spikeVol = 1, totalRNAmass = 0.500,
+#'                  choseFDR = 0.1)
+#'
+#' exDat <- est_r_m(exDat)
+#' 
 #' @export
 
 est_r_m <- function(exDat){
@@ -32,15 +46,15 @@ est_r_m <- function(exDat){
   fillScale <- plotInfo$fillScale
   
   dat = unique(cnt)
-  Features = make.names(dat$Feature,unique=T)
-  Features = gsub(".","-", Features, fixed = T)
+  Features = make.names(dat$Feature,unique=TRUE)
+  Features = gsub(".","-", Features, fixed = TRUE)
   rownames(dat)<-Features; dat<-as.matrix(dat[,-1])
     
   colnames(dat)<-paste(rep(c(exDat$sample1,exDat$sample2),
                            each=ncol(dat)/2),c(1:(ncol(dat)/2),
                                                1:(ncol(dat)/2)),sep="")
 
-  if (sampleInfo$isNorm == T){
+  if (sampleInfo$isNorm == TRUE){
     cat("\nData is normalized, no r_m estimation\n")
     exDat$Results$r_m.res <- list(r_m.mn = NULL, r_m.mnse =NULL)
     exDat$Results$r_mDat <- NULL
@@ -63,7 +77,7 @@ est_r_m <- function(exDat){
   # in future to enable other methods
   #log.offset<-log(colSums(dat))
   log.offset <- NULL
-  if(sampleInfo$isNorm == T){
+  if(sampleInfo$isNorm == TRUE){
       log.offset = NULL
   }else{
       log.offset = log(exDat$normFactor)
@@ -202,7 +216,7 @@ est_r_m <- function(exDat){
       ylab(expression(log(r[m]))) + 
       geom_text(data = textDat, aes(x = AveConc, y = (r_m.hat - nominal),
                                     label = gsub("ERCC-00","",Feature)),
-                colour = "black", size = 6,show_guide = F,angle = 90) + 
+                colour = "black", size = 6,show_guide = FALSE,angle = 90) + 
       geom_hline(yintercept = r_m.mn) + colScale + theme_bw()
       theme(legend.justification=c(1,0), legend.position=c(1,0))  
   }else{

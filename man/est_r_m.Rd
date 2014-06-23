@@ -21,4 +21,18 @@ similar mRNA fractions of total RNA. The r_m estimate is used to adjusted
 the expected ERCC mixture ratios in this analysis and may indicate a need for
 a different sample normalization approach.
 }
+\examples{
+#data(SEQC.Example)
+
+testDat <- MET.CTL.countDat[sample(1:length(MET.CTL.countDat$Feature),
+                                            size=5000),]
+
+exDat <- initDat(datType="count", isNorm = FALSE, exTable=testDat,
+                 filenameRoot = "testRun",sample1Name = "MET",
+                 sample2Name = "CTL", erccmix = "RatioPair",
+                 erccdilution = 1/100, spikeVol = 1, totalRNAmass = 0.500,
+                 choseFDR = 0.1)
+
+exDat <- est_r_m(exDat)
+}
 

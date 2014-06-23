@@ -22,8 +22,8 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
   
   ## Organize the count table
   cnt = unique(cnt)
-  Features = make.names(cnt$Feature,unique=T)
-  Features = gsub(".","-", Features, fixed = T)
+  Features = make.names(cnt$Feature,unique=TRUE)
+  Features = gsub(".","-", Features, fixed = TRUE)
   rownames(cnt)<-Features
   cnt<-as.matrix(cnt[,-1])
   
@@ -152,7 +152,7 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
                   log.offset=log.offset, 
                   NBdisp=NBdisptrend)# using trended dispersion from edgeR
   
-  use.res<-QL.results(use.fit, Plot = F)
+  use.res<-QL.results(use.fit, Plot = FALSE)
   
   # <- data.frame(use.res$P.values) ### added to allow next command to access the Spline P-values
   
@@ -176,7 +176,7 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
   #                          "Den.df")
   #rownames(sim.pval.res)<-rownames(simcnt)
 
-  write.csv(sim.pval.res[-c(4,5,7)],file=paste(filenameRoot,"Sim Pvals.csv"),row.names = F)
+  write.csv(sim.pval.res[-c(4,5,7)],file=paste(filenameRoot,"Sim Pvals.csv"),row.names = FALSE)
   
   ## remove results for simulated data
   use.fit2<-use.fit
@@ -188,7 +188,7 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
   use.fit2$fitted.values<-use.fit2$fitted.values[1:nrow(cnt),]
   use.fit2$coefficients<-use.fit2$coefficients[1:nrow(cnt),]
   
-  use.res2<-QL.results(use.fit2, Plot = F)
+  use.res2<-QL.results(use.fit2, Plot = FALSE)
   
   ###################################
   #### Examine results for ERCCs ####
@@ -211,7 +211,7 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
   rownames(use.fit3$LRT)<-rownames(cnt)
   use.fit3$LRT[ERCC,]<-use.fit.adj$LRT # substitute the r_m adjusted LRT for the ERCCs
   
-  use.res.adj<-QL.results(use.fit3, Plot = F)
+  use.res.adj<-QL.results(use.fit3, Plot = FALSE)
 
   pvals<-use.res.adj$P.values$QLSpline
   log.pvals<-use.res.adj$log.P.values$QLSpline
@@ -241,7 +241,7 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
                             qvals = qvals, log.pvals=log.pvals, F.stat=F.stat, 
                             den.df=rep(use.res.adj$d0[2], length(pvals)))
 
-  write.csv(quasiSeq.res[c(1,2,5,3)], file = paste0(filenameRoot,".All.Pvals.csv"),row.names = F)
+  write.csv(quasiSeq.res[c(1,2,5,3)], file = paste0(filenameRoot,".All.Pvals.csv"),row.names = FALSE)
   
   ERCC.pvals.adj<-pvals[ERCC]
   ERCC.F.stat.adj<-F.stat[ERCC]
@@ -255,7 +255,7 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
                         "Den.df")
   #print(str(pval.res))
   row.names(pval.res) <- NULL
-  write.csv(pval.res[-c(4,5,7)],file=paste(filenameRoot,"ERCC Pvals.csv"), row.names = F)
+  write.csv(pval.res[-c(4,5,7)],file=paste(filenameRoot,"ERCC Pvals.csv"), row.names = FALSE)
   print("Finished DE testing")
   
   exDat$Results$quasiSeq.res <- quasiSeq.res

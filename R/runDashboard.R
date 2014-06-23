@@ -39,22 +39,22 @@
 #' 
 #' @export
 #' @examples
-#' \dontrun{
+#' 
 #' 
 #' data(SEQC.Example)
 #'      
-#' exDat = runDashboard(datType = "count",isNorm = F,
-#'                      exTable = COH.RatTox.ILM.MET.CTL.countTable, 
+#' exDat = runDashboard(datType = "count",isNorm = FALSE,
+#'                      exTable = MET.CTL.countDat, 
 #'                      filenameRoot = "COH.ILM",
 #'                      sample1Name = "MET", sample2Name = "CTL", 
 #'                      erccmix = "RatioPair", erccdilution = 1/100, 
 #'                      spikeVol = 1, totalRNAmass = 0.500,choseFDR = 0.1)
 #'                  
 #' summary(exDat)
-#' }
+#' 
 #' 
 
-runDashboard <- function(datType=NULL, isNorm = F, 
+runDashboard <- function(datType=NULL, isNorm = FALSE, 
                          exTable=NULL, repNormFactor=NULL,
                          filenameRoot = NULL,
                          sample1Name = NULL,sample2Name = NULL, 

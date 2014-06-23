@@ -80,7 +80,7 @@ testDEArray <- function(exDat){
                                                       erccFC$Feature,nomatch=0)])
     
   write.csv(ercc.pval.res, paste(sampleInfo$filenameRoot, "ERCC Pvals.csv"),
-            row.names = F)
+            row.names = FALSE)
   
   
   endo.pval.res <- data.frame( Feature = Endores$Feature, 
@@ -91,7 +91,7 @@ testDEArray <- function(exDat){
   all.pval.res <- rbind(ercc.pval.res, endo.pval.res)
   
   write.csv(all.pval.res, paste0(sampleInfo$filenameRoot, ".All.Pvals.csv"),
-            row.names = F)
+            row.names = FALSE)
   exDat$Results$limma.res <- all.pval.res
   exDat$Results$ERCC.pval <- ercc.pval.res
   exDat$Results$p.thresh <- p.thresh

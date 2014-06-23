@@ -1,0 +1,5 @@
+install.github()
+library(devtools)
+install.github()
+install_github()
+install_github("munrosa/erccdashboard")

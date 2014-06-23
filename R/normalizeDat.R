@@ -6,19 +6,19 @@ normalizeDat <- function(expDat){
   datType <- sampleInfo$datType
   repNormFactor <- sampleInfo$repNormFactor
   #print(sampleInfo$repNormFactor)
-  normVec = T
+  normVec = TRUE
   if(sampleInfo$datType == "count"){
     if (is.null(sampleInfo$repNormFactor)){
-      normVec = F
+      normVec = FALSE
     }
    # print(normVec)
   }
   if(sampleInfo$datType == "array"){
-    normVec = F
+    normVec = FALSE
   }
   
   # Library size normalize the data
-  if (sampleInfo$isNorm == F){
+  if (sampleInfo$isNorm == FALSE){
     if(sampleInfo$datType == "array"){
       #cat("\nUsing median intensity for ERCC 1:1 controls\n")
       #cat("\nUse median intensity from each array for normalization\n")
@@ -37,13 +37,13 @@ normalizeDat <- function(expDat){
       expressDat = cbind(expressDat[c(1)], libAdjust)
     }
     if(sampleInfo$datType == "count"){
-      if (normVec == F){
+      if (normVec == FALSE){
         cat(paste("\nrepNormFactor is NULL,\n",
                   "Using Default Upper Quartile Normalization Method",
                   " - 75th percentile\n"))
         TranscriptsAll = expressDat
         normFactor = apply(expressDat[-c(1)],MARGIN=2,FUN=quantile,probs=0.75)
-        #TranscriptMappedReadSums = colSums(TranscriptsAll[-c(1)],na.rm = T)
+        #TranscriptMappedReadSums = colSums(TranscriptsAll[-c(1)],na.rm = TRUE)
         #normFactor = TranscriptMappedReadSums
         datCols = expressDat[-c(1)]
         normFactor = normFactor#/(10^6) #per million mapped reads
@@ -52,7 +52,7 @@ normalizeDat <- function(expDat){
         expressDat = cbind(expressDat[c(1)], libAdjust)
       }
       
-      if (normVec == T){
+      if (normVec == TRUE){
         cat("\nUsing read depth normalization factors provided in repNormFactor\n")
         TranscriptsAll = expressDat
         normFactor = repNormFactor

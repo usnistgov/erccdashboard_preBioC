@@ -21,10 +21,10 @@ If plotsPerPg = "single" then each plot is placed on an
 individual page in one pdf file. If plotlist is not defined (plotlist = NULL)
  then all plots in exDat$Figures are printed to the file.
 
-# to print 4 plots from manuscript to a single page pdf file
+#to print 4 plots from manuscript to a single page pdf file
 saveERCCPlots(exDat, plotsPerPg = "manuscript")
 
-# to create a multiple page pdf of all plots produced
+#to create a multiple page pdf of all plots produced
 saveERCCPlots(exDat, plotsPerPg = "single", plotlist = exDat$Figures)
 }
 

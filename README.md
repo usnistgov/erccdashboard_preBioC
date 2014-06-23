@@ -1,48 +1,24 @@
 erccdashboard
 =============
-This is the source code for the erccdashboard R packge (v. 0.9.10)
+This is the development version of the erccdashboard R package (v. 0.9.10).
+Information will be posted here when the stable released version of the package
+is available.
+Feel free to use the development version of the code.
 
-Note that the erccdashboard package has other packages as dependencies. 
-These packages will need to be installed and loaded by the user. 
-Once the erccdashboard package is on a remote repository (e.g. CRAN or Bioconductor) 
-the package dependencies will automatically be addressed during installation and 
-loading of the erccdashboard package. All package dependencies are on CRAN except
-for edgeR, limma, and qvalue which are both on Bioconductor. 
- 
-Installation of Package Dependencies:
-============================================================
- 
-1. Use the following R commands to install qvalue and edgeR (limma will also be installed with edgeR)
-from Bioconductor: 
+To install the erccdashboard locally in R:
+1. Install devtools:
+    library("devtools")
+2. Use devtools to install this development version: 
+    install_github("munrosa/erccdashboard")
+Note that the installation may take some time, because of the examples that need
+to be run to build the user manual (vignette). 
 
-source("http://bioconductor.org/biocLite.R")
-biocLite("edgeR")
-biocLite("qvalue")
+Once the package is installed, the package vignette can be viewed, which 
+provides detailed examples. Open the vignette pdf file with the command:
+    vignette("erccdashboard")
 
-2. Use the following R command to install packages from CRAN
-
-install.packages(pkgs=c("ggplot2","reshape2","plyr","scales","locfit","MASS","QuasiSeq","grid", "gridExtra","stringr","ROCR","gtools"))
-
-Instructions for erccdashboard Installation and Quick Start:
-============================================================
-
-Installation:
-
-1. Download the source zip archive to your system.
-
-2. At R prompt install the package with:
-
-  > install.packages(pkgs="path_to_package/erccdashboard_0.9.10.tar.tgz")
-
-3. Load the package with
-
-	> library(erccdashboard)
-
-   Errors will occur if any of the above package dependencies are missing.
-
-4. You can review the package vignette for an explanation of how to run the dashboard or follow this quick start:
-
-Quick Start:
+Reading the vignette is a good first step, but you can also use the following
+steps as a quick start to test the package:
 
 1. Load the example data
 
@@ -60,4 +36,4 @@ Quick Start:
 3. Review the results of the analysis in the COH.ILM.MET.CTL.RData and
    COH.ILM.MET.CTL.PDF file of the main diagnostic plots
 
-4. Analysis of different example data sets is described in the package vignette.
+4. Analysis of additional example data sets is described in the package vignette.

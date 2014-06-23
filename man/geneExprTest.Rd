@@ -18,4 +18,19 @@ testing if datType = "array". Alternatively, for count data only, if
 correctly formatted DE test results are provided,
 then geneExprTest will bypass DE testing (with reduced runtime).
 }
+\examples{
+data(SEQC.Example)
+
+exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat,
+                 filenameRoot = "testRun",sample1Name = "MET",
+                 sample2Name = "CTL", erccmix = "RatioPair",
+                 erccdilution = 1/100, spikeVol = 1, totalRNAmass = 0.500,
+                 choseFDR = 0.1)
+
+exDat <- est_r_m(exDat)
+
+exDat <- dynRangePlot(exDat)
+
+exDat <- geneExprTest(exDat)
+}
 

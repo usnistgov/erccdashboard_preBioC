@@ -13,5 +13,7 @@ RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
 BuildType: Package
-PackageBuildArgs: --resave-data
+PackageInstallArgs: --no-build-vignettes
+PackageBuildArgs: --resave-data --no-build-vignettes
+PackageCheckArgs: --no-build-vignettes
 PackageRoxygenize: rd

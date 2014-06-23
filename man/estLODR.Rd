@@ -20,4 +20,25 @@ This is the function to estimate a limit of detection of ratios (LODR) for a
 a chosen probability and threshold p-value for the fold changes in the ERCC
 control ratio mixtures.
 }
+\examples{
+data(SEQC.Example)
+#testDat <- MET.CTL.countDat[sample(1:length(MET.CTL.countDat$Feature),
+#                                           size=5000),]
+
+exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat,
+                 filenameRoot = "testRun",sample1Name = "MET",
+                 sample2Name = "CTL", erccmix = "RatioPair",
+                 erccdilution = 1/100, spikeVol = 1, totalRNAmass = 0.500,
+                 choseFDR = 0.1)
+
+exDat <- est_r_m(exDat)
+
+exDat <- dynRangePlot(exDat)
+
+exDat <- geneExprTest(exDat)
+
+exDat <- estLODR(exDat, kind = "ERCC", prob = 0.9)
+
+exDat$Figures
+}
 

@@ -13,12 +13,11 @@
 #' individual page in one pdf file. If plotlist is not defined (plotlist = NULL)
 #'  then all plots in exDat$Figures are printed to the file.
 #' 
-#' # to print 4 plots from manuscript to a single page pdf file
+#' #to print 4 plots from manuscript to a single page pdf file
 #' saveERCCPlots(exDat, plotsPerPg = "manuscript")
 #' 
-#' # to create a multiple page pdf of all plots produced
+#' #to create a multiple page pdf of all plots produced
 #' saveERCCPlots(exDat, plotsPerPg = "single", plotlist = exDat$Figures)
-#' 
 #' @export
 
 saveERCCPlots<-function(exDat,plotsPerPg = "manuscript", plotlist = NULL){
@@ -58,7 +57,7 @@ cat("\nSaving main dashboard plots to pdf file...")
     if (is.null(plotlist)){
       plotlist = exDat$Figures
     } 
-    pdf(file = paste(filenameUse,"pdf",sep="."),onefile=T,width=7,height = 7)
+    pdf(file = paste(filenameUse,"pdf",sep="."),onefile=TRUE,width=7,height = 7)
     print(plotlist)
     dev.off()
   }

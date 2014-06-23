@@ -12,7 +12,7 @@
 #' @export
 
 # Plots with target ratios and R adjusted ratios, MA plots and Ratio Summaries
-maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
+maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = TRUE, replicate = TRUE){
   
   #ReplicateName = "Rep"
   # Melt the data
@@ -64,7 +64,7 @@ maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
   }
 
   #idx1 <- match( exDat$idColsAdj$Feature, dat$Feature,
-  #               nomatch=F)
+  #               nomatch=FALSE)
   #dat$Ratio[idx1] <- as.character(exDat$idColsAdj[idx1,c(4)])
   dat$Ratio <- as.factor(dat$Ratio)
   
@@ -98,7 +98,7 @@ maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
   r_m.mnse = r_m.res$r_m.mnse
   
   if(is.null(r_m.mn)) {
-    r_mAdjust = F
+    r_mAdjust = FALSE
     
   }
   #theme_update(legend.justification=c(1,0), legend.position=c(1,0))
@@ -141,7 +141,7 @@ maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
   }
  
     
-  if(r_mAdjust == T){
+  if(r_mAdjust == TRUE){
     maData$Empirical = maData$Nominal/exp(r_m.mn)  
   }else{
     maData$Empirical = maData$Nominal
@@ -235,7 +235,7 @@ maSignal <-function(exDat, alphaPoint = 0.8, r_mAdjust = T, replicate = T){
                    size = 1, linetype = "longdash") + 
         ylab(ymalabel) + xlabel + 
         coord_cartesian(xlim = myXLimMA, ylim = myYLim) + colScale + 
-        annotation_custom(tableGrob(rm_dat,parse=T, 
+        annotation_custom(tableGrob(rm_dat,parse=TRUE, 
                                     gpar.corefill = gpar(fill = "grey85",
                                                         col = "white"), 
                                     gpar.rowfill = gpar(fill = "grey80",

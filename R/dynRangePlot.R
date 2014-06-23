@@ -2,8 +2,22 @@
 #'
 #' @param exDat    list, contains input data and stores analysis results
 #' 
+#' @examples
+#' data(SEQC.Example)
+#' 
+#' exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat, 
+#'                  filenameRoot = "testRun",sample1Name = "MET",
+#'                  sample2Name = "CTL", erccmix = "RatioPair", 
+#'                  erccdilution = 1/100, spikeVol = 1, totalRNAmass = 0.500,
+#'                  choseFDR = 0.1)
+#'                  
+#' exDat <- est_r_m(exDat)
+#'                   
+#' exDat <- dynRangePlot(exDat)
+#' 
+#' exDat$Figures$dynRangePlot
+#' 
 #' @export
-
 dynRangePlot <- function(exDat){
   
   sampleInfo <- exDat$sampleInfo
@@ -231,7 +245,7 @@ dynRangePlot <- function(exDat){
   showlmGeomSmooth = dynRange + geom_smooth(data = dataFit, method=lm,
                                              aes(x = Conc, y = value.Ave, 
                                                  weight = wtSet),
-                                             colour = "black",se = F)
+                                             colour = "black",se = FALSE)
   
    ### Serial model approach
 
@@ -281,7 +295,7 @@ dynRangePlot <- function(exDat){
                                      (1.5)*IQR(ERCC.effect))),
               aes(x = AveConc, y = ERCC.effect, label = gsub("ERCC-00","",
                                                              Feature)),
-              colour = "black",show_guide = F,angle = 45,hjust = -0.25, 
+              colour = "black",show_guide = FALSE,angle = 45,hjust = -0.25, 
               position = position_jitter(width=0.5)) + theme_bw() + 
     theme(legend.justification=c(0,0), legend.position = c(0,0))
   }else{
