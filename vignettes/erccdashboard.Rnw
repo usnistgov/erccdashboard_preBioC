@@ -86,7 +86,7 @@ datType = "count" # "count" for RNA-Seq data, "array" for microarray data
 isNorm = FALSE # flag to indicate if input expression measures are already
                # normalized, default is FALSE 
 exTable = MET.CTL.countDat # the expression measure table
-filenameRoot = "COH.ILM" # user defined filename prefix for results files
+filenameRoot = "RatTox" # user defined filename prefix for results files
 sample1Name = "MET" # name for sample 1 in the experiment
 sample2Name = "CTL" # name for sample 2 in the experiment
 erccmix = "RatioPair" # name of ERCC mixture design, "RatioPair" is default
@@ -168,12 +168,12 @@ user.
 Use the following command to run the default runDashboard script:
 
 <<runDashboardSEQCcount, keep.source=TRUE >>=
-exDat <- runDashboard(datType = "count", isNorm = FALSE,
-                       exTable = MET.CTL.countDat,
-                       filenameRoot = "COH.ILM",sample1Name = "MET",
-                       sample2Name = "CTL",erccmix = "RatioPair",
-                       erccdilution = 1/100, spikeVol = 1,
-                       totalRNAmass = 0.500, choseFDR = 0.1)
+exDat <- runDashboard(datType="count", isNorm = FALSE,
+                       exTable=MET.CTL.countDat,
+                       filenameRoot="RatTox", sample1Name="MET",
+                       sample2Name="CTL", erccmix="RatioPair",
+                       erccdilution=1/100, spikeVol=1,
+                       totalRNAmass=0.500, choseFDR=0.1)
 @
 
 \subsection{Results of dashboard analysis}
