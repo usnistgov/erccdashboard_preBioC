@@ -57,11 +57,13 @@ mixtures}
 
 \item{ratioLim}{Limits for ratio axis on MA plot, default is c(-4,4)}
 
-\item{signalLim}{Limits for signal axis on dynamic range plot, default is c(-14,14)}
+\item{signalLim}{Limits for signal axis on dynamic range plot, default
+is c(-14,14)}
 
 \item{userMixFile}{optional filename input, default is NULL, if ERCC
 control ratio mixtures other than the Ambion product
-were used then a userMixFile can be used for the analysis}
+were used then a userMixFile can be used for the
+analysis}
 }
 \description{
 Initialize the exDat list

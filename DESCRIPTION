@@ -1,6 +1,6 @@
 Package: erccdashboard
 Type: Package
-Title: Assessment of Gene Expression Measurement Technical Performance with
+Title: Assessment of Gene Expression Measurement Technical Performance with 
     External Spike-in RNA Controls
 Version: 0.9.10
 Author: Sarah Munro, Steve Lund
@@ -29,10 +29,14 @@ Imports:
     gtools
 License: GPL (>=2)
 Collate:
-  runDashboard.R initDat.R dashboardFile.R plotAdjust.R
-  loadERCCInfo.R loadExpMeas.R getDesignMat.R normalizeDat.R
-  prepERCCDat.R est_r_m.R dynRangePlot.R geneExprTest.R
-  testDECount.R testDEArray.R erccROC.R estLODR.R multiplot.R
-  printLODRres.R saveERCCPlots.R maSignal.R annotLODR.R
+    runDashboard.R initDat.R dashboardFile.R plotAdjust.R
+    loadERCCInfo.R loadExpMeas.R getDesignMat.R normalizeDat.R
+    prepERCCDat.R est_r_m.R dynRangePlot.R geneExprTest.R
+    testDECount.R testDEArray.R erccROC.R estLODR.R multiplot.R
+    printLODRres.R saveERCCPlots.R maSignal.R annotLODR.R
+biocViews: GeneExpression, Transcription, AlternativeSplicing,
+    DifferentialExpression, DifferentialSplicing, GeneSetEnrichment, DataImport,
+    Genetics, Microarray, mRNAMicroarray, RNASeq, BatchEffect, 
+    MultipleComparison, Normalization, QualityControl
 LazyData: yes
 Roxygen: list(wrap = FALSE)

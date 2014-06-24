@@ -21,45 +21,49 @@
 #' @export
 
 saveERCCPlots<-function(exDat,plotsPerPg = "manuscript", plotlist = NULL){
-  #Options are either the default of printing the plots as shown in publication
-  # plotsPerPg = "manuscript" and plotlist is NULL or plotsPerPg = "single" and
-  # any combination of the plots can be printed, one per page
-  # Open PDF file to write results
-  filenameUse <- exDat$sampleInfo$filenameRoot 
-#   if (plotsPerPg == "manuscript"){
-#     cols = 2
-#     pwidth = 7*cols
-#     pheight = 7*6/cols
-#     pdf(file = paste(filenameUse,"pdf",sep="."),title=filenameUse, 
-#         width=pwidth,height = pheight)
-#     
-#     multiplot(exDat$Figures$rocPlot,exDat$Figures$dynRangePlot, 
-#               exDat$Figures$lodrERCCPlot,exDat$Figures$rangeResidPlot, 
-#               exDat$Figures$dispPlot,exDat$Figures$maPlot,cols=2)
-#     dev.off()
-#   } 
-
-cat("\nSaving main dashboard plots to pdf file...")
-  if (plotsPerPg == "manuscript"){
-    cols = 2
-    nFigs = 4
-    pwidth = 7*cols
-    pheight = 7*nFigs/cols
-    pdf(file = paste(filenameUse,"pdf",sep="."),title=filenameUse,
-        width=pwidth,height = pheight)
-    #pdf(file =  paste(filenameUse,"pdf",sep="."),title=filenameUse,
-    #    paper = "letter")
-    multiplot(exDat$Figures$dynRangePlot, exDat$Figures$rocPlot,
-              exDat$Figures$maPlot, exDat$Figures$lodrERCCPlot, cols=cols)
-    dev.off()
-  }
-  if (plotsPerPg == "single"){
-    if (is.null(plotlist)){
-      plotlist = exDat$Figures
-    } 
-    pdf(file = paste(filenameUse,"pdf",sep="."),onefile=TRUE,width=7,height = 7)
-    print(plotlist)
-    dev.off()
-  }
-  
+    # Options are either the default of printing the plots as shown in 
+    ## publication (plotsPerPg = "manuscript" and plotlist is NULL) or 
+    # to print plots one per page choose (plotsPerPg = "single" and provide any
+    # list of plots as the plotlist arguement
+    
+    
+    # Open PDF file to write results
+    filenameUse <- exDat$sampleInfo$filenameRoot 
+    #   if (plotsPerPg == "manuscript"){
+    #     cols = 2
+    #     pwidth = 7*cols
+    #     pheight = 7*6/cols
+    #     pdf(file = paste(filenameUse,"pdf",sep="."),title=filenameUse, 
+    #         width=pwidth,height = pheight)
+    #     
+    #     multiplot(exDat$Figures$rocPlot,exDat$Figures$dynRangePlot, 
+    #               exDat$Figures$lodrERCCPlot,exDat$Figures$rangeResidPlot, 
+    #               exDat$Figures$dispPlot,exDat$Figures$maPlot,cols=2)
+    #     dev.off()
+    #   } 
+    
+    cat("\nSaving main dashboard plots to pdf file...")
+    if (plotsPerPg == "manuscript"){
+        cols = 2
+        nFigs = 4
+        pwidth = 7*cols
+        pheight = 7*nFigs/cols
+        pdf(file = paste(filenameUse,"pdf",sep="."),title=filenameUse,
+            width=pwidth,height = pheight)
+        #pdf(file =  paste(filenameUse,"pdf",sep="."),title=filenameUse,
+        #    paper = "letter")
+        multiplot(exDat$Figures$dynRangePlot, exDat$Figures$rocPlot,
+                  exDat$Figures$maPlot, exDat$Figures$lodrERCCPlot, cols=cols)
+        dev.off()
+    }
+    if (plotsPerPg == "single"){
+        if (is.null(plotlist)){
+            plotlist = exDat$Figures
+        } 
+        pdf(file = paste(filenameUse,"pdf",sep="."),onefile=TRUE,width=7,
+            height = 7)
+        print(plotlist)
+        dev.off()
+    }
+    
 }

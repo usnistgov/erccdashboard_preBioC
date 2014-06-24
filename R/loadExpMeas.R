@@ -94,8 +94,8 @@ loadExpMeas<- function(exDat, exTable, repNormFactor){
   
   
   # write Transcript csv file to directory
-  #write.csv(Transcripts, paste(sampleInfo$filenameRoot,"Transcripts.csv",sep="."),
-  #          row.names = F)
+  #write.csv(Transcripts, paste(sampleInfo$filenameRoot,"Transcripts.csv",
+  ##        sep="."), row.names = F)
   # collect everything to add to exDat
   exDat = append(exDat, list(Transcripts = Transcripts,
                                designMat = designMat,

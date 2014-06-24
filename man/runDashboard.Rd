@@ -23,8 +23,8 @@ it is expected that the data is already normalized}
 
 \item{exTable}{data frame, the first column contains names of
 genes or transcripts (Feature) and the remaining columns
-are expression measures for sample replicates spiked with ERCC
-controls}
+are expression measures for sample replicates spiked
+with ERCC controls}
 
 \item{repNormFactor}{optional vector of normalization factors for each
 replicate, default value is NULL and 75th percentile

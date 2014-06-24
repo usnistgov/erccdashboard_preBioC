@@ -5,13 +5,14 @@
 #' @export
 #' 
 annotLODR <- function(exDat){
-  #filenamePval <- paste0(exDat$sampleInfo$filenameRoot,".quasiSeq.res.csv")
-  
-  LODR.annot.ERCC <- printLODRres(exDat)
-
-  exDat$Results$LODR.annot.ERCC <- LODR.annot.ERCC
-
-  exDat <- maSignal(exDat)
-  
-  return(exDat)
+    
+    ## Assign LODR results to object in exDat
+    LODR.annot.ERCC <- printLODRres(exDat)
+    
+    exDat$Results$LODR.annot.ERCC <- LODR.annot.ERCC
+    
+    ## Produce MA plots
+    exDat <- maSignal(exDat)
+    
+    return(exDat)
 }
