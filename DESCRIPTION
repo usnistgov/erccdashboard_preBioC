@@ -14,20 +14,20 @@ Depends:
     ggplot2,
     gridExtra
 Imports:
-    reshape2,
-    plyr,
-    scales,
     edgeR,
-    qvalue,
+    gplots,
+    grid,
+    gtools,
+    limma,
     locfit,
     MASS,
-    limma,
+    plyr,
     QuasiSeq,
-    grid,
-    stringr,
+    qvalue,
+    reshape2,
     ROCR,
-    gtools,
-    gplots
+    scales,
+    stringr    
 License: GPL (>=2)
 Collate:
     runDashboard.R initDat.R dashboardFile.R plotAdjust.R

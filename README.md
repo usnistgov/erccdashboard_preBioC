@@ -13,11 +13,18 @@ To install the erccdashboard locally in R:
 if you don't already have devtools on your local machine:
 
     library("devtools")
+    
+2. Ensure that the three bioconductor packages that are erccdashboard
+dependencies are installed using biocLite:
+    
+    source("http://bioconductor.org/biocLite.R")
+    biocLite(c("edgeR","limma","qvalue"))
 
-2. Use devtools to install this development version:
+2. Use devtools to install the erccdashboard package development version:
 
     install_github("munrosa/erccdashboard")
-
+    
+All remaining erccdashboard package dependencies should be downloaded from CRAN.
 
 Note that the installation may take some time, because of the examples that 
 need to be run to build the user manual (vignette). Please be patient.
