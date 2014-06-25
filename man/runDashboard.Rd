@@ -64,6 +64,7 @@ mixtures}
 Run default erccdashboard analysis of ERCC control ratio mixtures
 }
 \examples{
+\dontrun{
 data(SEQC.Example)
 
 exDat = runDashboard(datType = "count",isNorm = FALSE,
@@ -74,5 +75,6 @@ exDat = runDashboard(datType = "count",isNorm = FALSE,
                      spikeVol = 1, totalRNAmass = 0.500,choseFDR = 0.1)
 
 summary(exDat)
+}
 }
 

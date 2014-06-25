@@ -2,6 +2,27 @@
 #'
 #' @param exDat    list, contains input data and stores analysis results
 #' 
+#' #' @examples
+#' data(SEQC.Example)
+#'  
+#' exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat, 
+#'                  filenameRoot = "testRun",sample1Name = "MET",
+#'                  sample2Name = "CTL", erccmix = "RatioPair", 
+#'                  erccdilution = 1/100, spikeVol = 1, totalRNAmass = 0.500,
+#'                  choseFDR = 0.1)
+#'                  
+#' exDat <- est_r_m(exDat)
+#'                   
+#' exDat <- dynRangePlot(exDat)
+#' \dontrun{
+#' exDat <- geneExprTest(exDat)
+#' 
+#' exDat <- estLODR(exDat, kind = "ERCC", prob = 0.9)
+#' 
+#' exDat <- annotLODR(exDat)
+#' 
+#' exDat$Figures$maPlot
+#' }
 #' @export
 #' 
 annotLODR <- function(exDat){

@@ -289,7 +289,7 @@ the MA plots for each experiment.
  
 \clearpage
 \begin{center}
-<<seqcCountPlotC,fig=TRUE>>=
+<<seqcCountPlotC, fig=TRUE>>=
 exDat$Figures$lodrERCCPlot
 @
 \end{center}
@@ -300,7 +300,7 @@ much smaller than those in the rat experiment due to the large amount of
 differentially expressed transcripts in the UHRR/HBRR comparison.
 \clearpage
 \begin{center}
-<<seqcCountPlotD,fig=TRUE,pdf=FALSE,png=TRUE>>=
+<<seqcCountPlotD, fig=TRUE, pdf=FALSE, png=TRUE>>=
 exDat$Figures$maPlot
 @
 \end{center}

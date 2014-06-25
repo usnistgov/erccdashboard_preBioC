@@ -233,22 +233,22 @@ testDECount<- function(sampleInfo, exDat, cnt = cnt, info = info){
     if(odd(totCol)) stop("Uneven number of replicates for the two sample types")
     
     ratioDat <- data.frame(t(apply(cnt,1,logRatio, 
-                                   c1 = c(1:(totCol/2)),
-                                   c2 = c(((totCol/2)+1):totCol))))
+                                   c1=c(1:(totCol/2)),
+                                   c2=c(((totCol/2)+1):totCol))))
     
     colnames(ratioDat)<- "Log2Rat"
     quasiSeq.res <- data.frame(Feature = names(pvals),
-                              MnSignal = rowMeans(cnt), 
-                              Fold = 
-                                  c(ERCC.FC[ERCC,2], rep(x=NA, length.out=
-                                                             (length(pvals) -
-                                                                  (length
-                                                                   (ERCC.FC[
-                                                                       ERCC,2]
+                               MnSignal = rowMeans(cnt), 
+                               Fold = 
+                                   c(ERCC.FC[ERCC,2], rep(x=NA, length.out=
+                                                              (length(pvals) -
+                                                                   (length
+                                                                    (ERCC.FC[
+                                                                        ERCC,2]
                                                                     ))))), 
-                              Log2Rat = ratioDat$Log2Rat, Pval = pvals,
-                              qvals = qvals, log.pvals=log.pvals, F.stat=F.stat, 
-                              den.df=rep(use.res.adj$d0[2], length(pvals)))
+                               Log2Rat=ratioDat$Log2Rat, Pval=pvals,
+                               qvals=qvals, log.pvals=log.pvals, F.stat=F.stat, 
+                               den.df=rep(use.res.adj$d0[2], length(pvals)))
     
     write.csv(quasiSeq.res[c(1,2,5,3)],
               file=paste0(filenameRoot, ".All.Pvals.csv"), row.names = FALSE)

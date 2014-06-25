@@ -40,7 +40,7 @@
 #' @export
 #' @examples
 #' 
-#' 
+#' \dontrun{
 #' data(SEQC.Example)
 #'      
 #' exDat = runDashboard(datType = "count",isNorm = FALSE,
@@ -51,7 +51,7 @@
 #'                      spikeVol = 1, totalRNAmass = 0.500,choseFDR = 0.1)
 #'                  
 #' summary(exDat)
-#' 
+#' }
 #' 
 
 runDashboard <- function(datType=NULL, isNorm = FALSE, 

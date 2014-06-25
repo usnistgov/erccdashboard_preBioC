@@ -1,3 +1,21 @@
+erccdashboard 0.9.11
+----------------------------------------------------------------
+
+NEW FEATURES
+
+* 
+
+BUG FIXES AND MINOR IMPROVEMENTS
+
+* Added examples to several functions including "dontrun" to minimize
+installation time
+
+* Updated Namespace to include gplots
+
+REMOVED FUNCTIONALITY
+
+*
+
 erccdashboard 0.9.10
 ----------------------------------------------------------------
 
@@ -7,7 +25,7 @@ NEW FEATURES
 
 BUG FIXES AND MINOR IMPROVEMENTS
 
-*
+* 
 
 REMOVED FUNCTIONALITY
 

@@ -22,8 +22,6 @@ control ratio mixtures.
 }
 \examples{
 data(SEQC.Example)
-#testDat <- MET.CTL.countDat[sample(1:length(MET.CTL.countDat$Feature),
-#                                           size=5000),]
 
 exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat,
                  filenameRoot = "testRun",sample1Name = "MET",
@@ -34,11 +32,12 @@ exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat,
 exDat <- est_r_m(exDat)
 
 exDat <- dynRangePlot(exDat)
-
+\dontrun{
 exDat <- geneExprTest(exDat)
 
 exDat <- estLODR(exDat, kind = "ERCC", prob = 0.9)
 
-exDat$Figures
+exDat$Figures$lodrERCCPlot
+}
 }
 

@@ -1,6 +1,6 @@
 erccdashboard
 =============
-This is the development version of the erccdashboard R package (v. 0.9.10).
+This is the development version of the erccdashboard R package (v. 0.9.11).
 Information will be posted here when the stable released version of the package
 is available.
 Feel free to use the development version of the code.
@@ -9,7 +9,7 @@ Installation
 ------------
 To install the erccdashboard locally in R:
 
-1. Load devtools. You may need to run install.packages("devtools"") 
+1. Load devtools. You may need to run install.packages("devtools") 
 if you don't already have devtools on your local machine:
 
     library("devtools")
