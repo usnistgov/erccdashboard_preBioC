@@ -18,6 +18,7 @@ if you don't already have devtools on your local machine:
 dependencies are installed using biocLite:
     
     source("http://bioconductor.org/biocLite.R")
+    
     biocLite(c("edgeR","limma","qvalue"))
 
 2. Use devtools to install the erccdashboard package development version:
@@ -46,7 +47,7 @@ steps as a quick start to test the package:
 2. Run the dashboard demo on rat toxicogenomics data:
 
     exDat <- runDashboard(datType="count", isNorm=FALSE,
-                           exTable=MET.CTL.countTable,
+                           exTable=MET.CTL.countDat,
                            filenameRoot="RatTox", sample1Name="MET",
                            sample2Name="CTL", erccmix="RatioPair",
                            erccdilution=1/100, spikeVol=1,
