@@ -14,16 +14,17 @@ Produce Receiver Operator Characteristic (ROC) Curves and AUC statistics
 \examples{
 data(SEQC.Example)
 
-exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat,
-                 filenameRoot = "testRun",sample1Name = "MET",
-                 sample2Name = "CTL", erccmix = "RatioPair",
-                 erccdilution = 1/100, spikeVol = 1, totalRNAmass = 0.500,
-                 choseFDR = 0.1)
+exDat <- initDat(datType="count", isNorm=FALSE, exTable=MET.CTL.countDat,
+                 filenameRoot="testRun",sample1Name="MET",
+                 sample2Name="CTL", erccmix="RatioPair",
+                 erccdilution=1/100, spikeVol=1, totalRNAmass=0.500,
+                 choseFDR=0.1)
 
 exDat <- est_r_m(exDat)
 
 exDat <- dynRangePlot(exDat)
 \dontrun{
+## this part of example not run during installation
 exDat <- geneExprTest(exDat)
 
 exDat <- erccROC(exDat)

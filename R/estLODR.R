@@ -22,6 +22,7 @@
 #'                   
 #' exDat <- dynRangePlot(exDat)
 #' \dontrun{
+#' ## this part of example not run during installation
 #' exDat <- geneExprTest(exDat)
 #' 
 #' exDat <- estLODR(exDat, kind = "ERCC", prob = 0.9)
@@ -225,7 +226,9 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
     colnames(annoTable) <- c("Ratio",expression("LODR Estimate"), 
                              expression("90% CI Lower Bound"), 
                              expression("90% CI Upper Bound"))
-    annoTable <- annoTable[-which(annoTable$Ratio == "1:1"),]
+    #### fix this need to get rid of the "1:1" hard coding...
+    #annoTable <- annoTable[-which(annoTable$Ratio == "1:1"),]
+    ####
     cat("\n")
     print(annoTable)
     
@@ -233,7 +236,9 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
                           x = lodr.resPlot[,3], y = pval.cutoff, 
                           xend = lodr.resPlot[,3], yend = 0)
     arrowDat$x[grep('<',lodr.resLess[,3])] <- Inf
+    
     arrowDat = arrowDat[-which(arrowDat$FC == "1"),]
+   
     arrowDat = arrowDat[which(is.finite(arrowDat$x)),]
     
     if(dim(arrowDat)[1] == 0){

@@ -33,6 +33,7 @@ exDat <- est_r_m(exDat)
 
 exDat <- dynRangePlot(exDat)
 \dontrun{
+## this part of example not run during installation
 exDat <- geneExprTest(exDat)
 
 exDat <- estLODR(exDat, kind = "ERCC", prob = 0.9)

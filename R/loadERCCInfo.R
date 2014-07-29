@@ -24,7 +24,7 @@ loadERCCInfo <- function(expDat, erccmix = NULL, userMixFile=NULL){
     
     # Combine the Mix definition and ERCCdef data frames
     idCols <- merge(ERCCmatch,MixDef, by = "Feature")
-    
+    idCols$Ratio <- as.factor(idCols$Ratio)
     #FCcode <- data.frame(Ratio=c("a","b","c","d"),#Default for Ambion pool
     #                         FC =  c(4,1,.667,.5))
     #legendLabels = c("4:1","1:1","1:1.5","1:2")#Default for Ambion pool

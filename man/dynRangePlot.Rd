@@ -15,7 +15,7 @@ Produce signal-abundance plot to evaluate dynamic range
 data(SEQC.Example)
 
 exDat <- initDat(datType="count", isNorm=FALSE, exTable=MET.CTL.countDat,
-                 filenameRoot="testRun",sample1Name="MET",
+                 filenameRoot="testRun", sample1Name="MET",
                  sample2Name="CTL", erccmix="RatioPair",
                  erccdilution=1/100, spikeVol=1, totalRNAmass=0.500,
                  choseFDR=0.1)

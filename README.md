@@ -1,6 +1,6 @@
 erccdashboard
 =============
-This is the development version of the erccdashboard R package (v. 0.9.11).
+This is the development version of the erccdashboard R package (v. 0.9.12).
 Information will be posted here when the stable released version of the package
 is available.
 Feel free to use the development version of the code.
