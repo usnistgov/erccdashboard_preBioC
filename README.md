@@ -1,9 +1,22 @@
 erccdashboard
 =============
-This is the development version of the erccdashboard R package (v. 0.9.12).
-Information will be posted here when the stable released version of the package
-is available.
-Feel free to use the development version of the code.
+This is the development version of the erccdashboard R package (v. 0.99.0). 
+Use this package for analysis of the ERCC spike-in controls in differential 
+gene expression experiments on any technology platform (including RNA-Seq or 
+microarray experiments). The software automatically outputs performance 
+measures derived from ERCC controls. These performance measures are output in 
+a summary pdf file, results are also saved as Rdata for further analysis and to
+enable "reproducible research"! These performance measures serve as an 
+ERCC "dashboard" to enable scientists to understand technical performance of any 
+differential gene expression experiment and to also compare experiments across
+space and time.
+
+The preprint of our manuscript describing this package is available here:
+http://arxiv.org/abs/1406.4893
+
+Please note that this is the development version of the code and it may change
+frequently. Information will be posted here when the stable released version of
+the package is available through an R repository.
 
 Installation
 ------------
@@ -28,9 +41,13 @@ dependencies are installed using biocLite:
 All remaining erccdashboard package dependencies should be downloaded from CRAN.
 
 Note that the installation may take some time, because of the examples that 
-need to be run to build the user manual (vignette). Please be patient.
+need to be run to build the user manual (vignette). Please be patient
 
-3. Once the package is installed, the package vignette can be viewed, which 
+3. Load the erccdashboard package
+    
+    library("erccdashboard")
+
+4. Once the package is installed, the package vignette can be viewed, which 
 provides detailed examples. Open the vignette pdf file with the command:
     
     vignette("erccdashboard")
