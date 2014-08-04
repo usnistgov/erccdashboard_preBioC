@@ -35,7 +35,7 @@ prepERCCDat <- function(expDat){
     
     ### Calculate the per ERCC amount spiked attomoles of nt / ug total RNA
     ### ERCCdilution = 1; spikeVol = 50; totalRNAmass = 2.5*10^(3)
-    spikeFraction <- with(sampleInfo,(erccdilution*spikeVol)/(totalRNAmass))
+    spikeFraction <- (sampleInfo$erccdilution*sampleInfo$spikeVol)/(sampleInfo$totalRNAmass)
     idCols$Conc1 <- idCols$Conc1*spikeFraction
     idCols$Conc2 <- idCols$Conc2*spikeFraction
     

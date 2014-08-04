@@ -7,7 +7,7 @@ NEW FEATURES
 
 BUG FIXES AND MINOR IMPROVEMENTS
 
-* Shortened vignette to reduce installation time
+* Shortened vignette to reduce installation time 
 
 * Fixed userMixFile as.factor bug
 
@@ -16,6 +16,11 @@ BUG FIXES AND MINOR IMPROVEMENTS
 REMOVED FUNCTIONALITY
 
 *
+
+ISSUES
+
+* CMD check still takes too long (> 5 minutes), probably due to differential 
+expression testing in underlying package. This will be difficult to change.
 
 erccdashboard 0.9.11
 ----------------------------------------------------------------

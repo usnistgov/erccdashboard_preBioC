@@ -10,6 +10,7 @@
 #' then geneExprTest will bypass DE testing (with reduced runtime).
 #' 
 #' @examples
+#' \dontrun{
 #' data(SEQC.Example)
 #' 
 #' exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat, 
@@ -23,7 +24,7 @@
 #' exDat <- dynRangePlot(exDat)
 #' 
 #' exDat <- geneExprTest(exDat)
-#' 
+#' }
 #' @export
 
 geneExprTest <- function(exDat){

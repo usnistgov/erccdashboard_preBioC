@@ -252,7 +252,7 @@ from experiments using the same original UHRR and HBRR samples.
 
 \subsection{Analysis of an UHRR vs. HBRR RNA-Seq experiment}
 The following command can be used to analyze the example RNA-Seq:
-<<SEQCMainCount,eval=FALSE, keep.source=TRUE>>=
+<<SEQCMainCount,eval=FALSE>>=
 exDat <- runDashboard(datType="count", isNorm = FALSE,
                       exTable=UHRR.HBRR.countDat,
                       filenameRoot="Lab5", sample1Name = "UHRR", 
@@ -264,7 +264,7 @@ exDat <- runDashboard(datType="count", isNorm = FALSE,
 \subsection{Analysis of an UHRR vs. HBRR Microarray experiment}
 To analyze the example reference RNA experiment microarray data use the 
 following command:
-<<SEQCMainArray,eval=FALSE, keep.source=TRUE>>=
+<<SEQCMainArray,eval=FALSE>>=
 exDat <- runDashboard(datType="array", isNorm = FALSE,
                       exTable=UHRR.HBRR.arrayDat,
                       filenameRoot = "Lab13.array",
