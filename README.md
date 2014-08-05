@@ -4,9 +4,9 @@ This is the development version of the erccdashboard R package (v. 0.99.0).
 Use this package for analysis of the ERCC spike-in controls in differential 
 gene expression experiments on any technology platform (including RNA-Seq or 
 microarray experiments). The software automatically outputs performance 
-measures derived from ERCC controls. These performance measures are output in 
-a summary pdf file, results are also saved as Rdata for further analysis and to
-enable "reproducible research"! These performance measures serve as an 
+measures derived from ERCC controls to a summary pdf file and the 
+results are also saved in an Rdata file for further analysis and to enable 
+"reproducible research"! These ERCC-derived performance measures serve as an 
 ERCC "dashboard" to enable scientists to understand technical performance of any 
 differential gene expression experiment and to also compare experiments across
 space and time.
@@ -36,7 +36,7 @@ dependencies are installed using biocLite:
 
 3. Use devtools to install the erccdashboard package development version:
 
-    install_github("munrosa/erccdashboard")
+    install_github("usnistgov/erccdashboard")
     
 All remaining erccdashboard package dependencies should be downloaded from CRAN.
 
