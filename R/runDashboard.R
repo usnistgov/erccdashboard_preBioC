@@ -114,9 +114,9 @@ runDashboard <- function(datType=NULL, isNorm = FALSE,
     assign(nam,exDat)
     
     to.save <- ls()
-    
-    save(list = to.save[grepl(pattern = nam,x=to.save)],
-         file=paste0(exDat$sampleInfo$filenameRoot,".RData"))
+    saveName <- paste0(exDat$sampleInfo$filenameRoot,".RData")
+    save(list = to.save[grepl(pattern = nam,
+                              x=to.save)],file = saveName)
     
     # End analysis and return exDat to global environ. / workspace
     cat("\nAnalysis completed.")
