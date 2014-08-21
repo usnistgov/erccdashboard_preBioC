@@ -9,19 +9,19 @@ prepERCCDat <- function(expDat){
     kNorm = sampleInfo$kNorm
     if (kNorm %in% c("N","n","no","No")){
         lengthFactor = (idCols$Length) #/(1000)
-        ERCCxlabelIndiv = expression(paste("Log2 ERCC Spike",
-                                           "Amount(attomol nt/",
+        ERCCxlabelIndiv = expression(paste("Log2 ERCC Spike ",
+                                           "Amount (attomol nt/",
                                            mu,"g total RNA)",sep = ""))
-        ERCCxlabelAve <- expression(paste("Log2 Average ERCC Spike",
-                                          "Amount(attomol nt/",
+        ERCCxlabelAve <- expression(paste("Log2 Average ERCC Spike ",
+                                          "Amount (attomol nt/",
                                           mu,"g total RNA)",sep = ""))
     }
     if(kNorm %in% c("Y","y","yes","Yes")){
         lengthFactor = 1
-        ERCCxlabelIndiv = expression(paste("Log2 ERCC Spike",
+        ERCCxlabelIndiv = expression(paste("Log2 ERCC Spike ",
                                            "Amount(attomol/",
                                            mu,"g total RNA)",sep = ""))
-        ERCCxlabelAve = expression(paste("Log2 Average ERCC Spike",
+        ERCCxlabelAve = expression(paste("Log2 Average ERCC Spike ",
                                          "Amount(attomol/",
                                          mu,"g total RNA)",sep = ""))
         

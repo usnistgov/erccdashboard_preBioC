@@ -8,7 +8,31 @@
 #' @param replicate   default is TRUE, if FALSE then error bars will not be
 #'                    produced
 #'                    
+#' @examples
+#' \donttest{
+#' data(SEQC.Example)
 #' 
+#' exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat, 
+#'                  filenameRoot = "testRun",sample1Name = "MET",
+#'                  sample2Name = "CTL", erccmix = "RatioPair", 
+#'                  erccdilution = 1/100, spikeVol = 1, totalRNAmass = 0.500,
+#'                  choseFDR = 0.1)
+#'                  
+#' exDat <- est_r_m(exDat)
+#'                   
+#' exDat <- dynRangePlot(exDat)
+#' 
+#' exDat <- geneExprTest(exDat)
+#' # generate MA plot without LODR annotation
+#' exDat <- maSignal(exDat)
+#' 
+#' exDat$Figures$maPlot
+#' 
+#' # Include LODR annotation
+#' exDat <- annotLODR(exDat)
+#' 
+#' exDat$Figures$maPlot
+#' }
 #' @export
 
 # Plots with target ratios and R adjusted ratios, MA plots and Ratio Summaries

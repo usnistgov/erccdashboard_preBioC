@@ -15,7 +15,7 @@
 #' exDat <- est_r_m(exDat)
 #'                   
 #' exDat <- dynRangePlot(exDat)
-#' \dontrun{
+#' \donttest{
 #' ## this part of example not run during installation
 #' exDat <- geneExprTest(exDat)
 #' 
@@ -52,7 +52,7 @@ erccROC <- function(exDat){
     if(allPval == TRUE){
         pValDat <- read.csv(file=paste0(filenameRoot, ".All.Pvals.csv"),
                             header=TRUE)
-        pValDat <- pValDat[grep("ERCC-",pValDat$Feature),]
+        pValDat <- pValDat[grep("ERCC-00",pValDat$Feature),]
     }else{
         cat(paste0("\n",filenameRoot," ERCC Pvals.csv file is missing."))
         cat("\nExiting ROC Curve analysis...\n")

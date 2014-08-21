@@ -1,6 +1,6 @@
 erccdashboard
 =============
-This is the development version of the erccdashboard R package (v. 0.99.0). 
+This is the development version of the erccdashboard R package (v. 0.99.1). 
 Use this package for analysis of the ERCC spike-in controls in differential 
 gene expression experiments on any technology platform (including RNA-Seq or 
 microarray experiments). The software automatically outputs performance 

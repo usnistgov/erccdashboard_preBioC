@@ -3,7 +3,8 @@
 \alias{saveERCCPlots}
 \title{Save erccdashboard plots to a pdf file}
 \usage{
-saveERCCPlots(exDat, plotsPerPg = "manuscript", plotlist = NULL)
+saveERCCPlots(exDat, plotsPerPg = "manuscript", saveas = "pdf", res = 180,
+  plotlist = NULL)
 }
 \arguments{
 \item{exDat}{list, contains input data and stores analysis results}
@@ -11,6 +12,10 @@ saveERCCPlots(exDat, plotsPerPg = "manuscript", plotlist = NULL)
 \item{plotsPerPg}{string, if "manuscript" then the 4 main plots are printed
 to one page, if "single" then each plot is printed to page
 in the pdf file}
+
+\item{saveas}{}
+
+\item{res}{}
 
 \item{plotlist}{list, contains plots to print}
 }
@@ -20,11 +25,32 @@ is the 4 manuscript figures to a single page (plotsPerPg = "manuscript").
 If plotsPerPg = "single" then each plot is placed on an
 individual page in one pdf file. If plotlist is not defined (plotlist = NULL)
  then all plots in exDat$Figures are printed to the file.
+}
+\examples{
+\donttest{
+data(SEQC.Example)
+
+exDat <- initDat(datType="count", isNorm=FALSE, exTable=MET.CTL.countDat,
+                 filenameRoot="testRun", sample1Name="MET",
+                 sample2Name="CTL", erccmix="RatioPair",
+                 erccdilution=1/100, spikeVol=1, totalRNAmass=0.500,
+                 choseFDR=0.1)
+
+exDat <- est_r_m(exDat)
+
+exDat <- dynRangePlot(exDat)
+
+exDat <- geneExprTest(exDat)
+
+exDat <- estLODR(exDat, kind="ERCC", prob=0.9)
+
+exDat <- annotLODR(exDat)
 
 #to print 4 plots from manuscript to a single page pdf file
 saveERCCPlots(exDat, plotsPerPg = "manuscript")
 
-#to create a multiple page pdf of all plots produced
+# or to create a multiple page pdf of all plots produced
 saveERCCPlots(exDat, plotsPerPg = "single", plotlist = exDat$Figures)
+}
 }
 

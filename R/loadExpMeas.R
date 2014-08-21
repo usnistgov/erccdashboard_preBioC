@@ -3,7 +3,7 @@ loadExpMeas<- function(exDat, exTable, repNormFactor){
   designFactors <- c("Sample","Rep")
   datType <- exDat$sampleInfo$datType
   isNorm <- exDat$sampleInfo$isNorm
-  # Check for countable input errors
+  # Check for exTable input errors
   for (i in 2:length(colnames(exTable))){
       if (str_count(colnames(exTable[c(i)]),"_") != 1){
         stop("Check exTable column names for use of underscore (_)")

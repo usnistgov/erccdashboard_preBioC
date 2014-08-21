@@ -64,6 +64,19 @@ initDat <- function(datType=NULL, isNorm=FALSE, exTable=NULL,
                     userMixFile=NULL){
     cat("\nInitializing the exDat list structure...\n")
     
+    if (missing(datType))
+        stop("Need to specify datType.")
+    if (missing(isNorm))
+        stop("Need to specify isNorm.")
+    if (missing(exTable))
+        stop("Need to specify exTable.")
+    if(missing(filenameRoot))
+        stop("Need to specify filenameRoot.")
+    if(missing(sample1Name))
+        stop("Need to specify sample1Name.")
+    if(missing(sample2Name))
+        stop("Need to specify sample2Name.")
+    
     myYLimMA <- ratioLim
     myXLimMA <- signalLim
     xlimEffects <- c(-15,15)
@@ -129,11 +142,11 @@ initDat <- function(datType=NULL, isNorm=FALSE, exTable=NULL,
     
     exDat <- list(sampleInfo = sampleInfo,plotInfo = plotInfo)
     
-    if (exists("filenameRoot")){
+    #if (exists("filenameRoot")){
         exDat <- dashboardFile(exDat=exDat,filenameRoot=filenameRoot)  
-    }else{
-        stop("The filenameRoot character string has not been defined!")
-    }
+    #}else{
+    #    stop("The filenameRoot character string has not been defined!")
+    #}
     
     
     ############################################################################

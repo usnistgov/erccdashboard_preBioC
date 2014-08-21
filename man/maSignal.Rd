@@ -20,4 +20,30 @@ used to offset dashed lines for empirical ratios on figure}
 \description{
 Generate MA plots with or without annotation using LODR estimates
 }
+\examples{
+\donttest{
+data(SEQC.Example)
+
+exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat,
+                 filenameRoot = "testRun",sample1Name = "MET",
+                 sample2Name = "CTL", erccmix = "RatioPair",
+                 erccdilution = 1/100, spikeVol = 1, totalRNAmass = 0.500,
+                 choseFDR = 0.1)
+
+exDat <- est_r_m(exDat)
+
+exDat <- dynRangePlot(exDat)
+
+exDat <- geneExprTest(exDat)
+# generate MA plot without LODR annotation
+exDat <- maSignal(exDat)
+
+exDat$Figures$maPlot
+
+# Include LODR annotation
+exDat <- annotLODR(exDat)
+
+exDat$Figures$maPlot
+}
+}
 

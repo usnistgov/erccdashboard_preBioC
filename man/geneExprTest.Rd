@@ -19,7 +19,7 @@ correctly formatted DE test results are provided,
 then geneExprTest will bypass DE testing (with reduced runtime).
 }
 \examples{
-\dontrun{
+\donttest{
 data(SEQC.Example)
 
 exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat,

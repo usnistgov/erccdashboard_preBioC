@@ -23,7 +23,7 @@ exDat <- initDat(datType="count", isNorm=FALSE, exTable=MET.CTL.countDat,
 exDat <- est_r_m(exDat)
 
 exDat <- dynRangePlot(exDat)
-\dontrun{
+\donttest{
 ## this part of example not run during installation
 exDat <- geneExprTest(exDat)
 

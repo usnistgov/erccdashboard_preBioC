@@ -21,7 +21,7 @@
 #' exDat <- est_r_m(exDat)
 #'                   
 #' exDat <- dynRangePlot(exDat)
-#' \dontrun{
+#' \donttest{
 #' ## this part of example not run during installation
 #' exDat <- geneExprTest(exDat)
 #' 
@@ -70,7 +70,7 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
         if(allPval == TRUE){
             pval.res = read.csv(file = paste0(filenameRoot, ".All.Pvals.csv"),
                                 header = TRUE)
-            pval.res <- pval.res[grep("ERCC-",pval.res$Feature),]
+            pval.res <- pval.res[grep("ERCC-00",pval.res$Feature),]
         }else{
             cat(paste0("\n",filenameRoot," ERCC Pvals.csv file is missing."))
             cat("\nExiting LODR estimation...\n")
@@ -201,7 +201,7 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
                               signif(min(x),2)]<-paste("<",
                                                        signif(min(x),2),sep="")
             t.res[-1][t.res[-1]==signif(min(x),2)] <- Inf
-        }
+        
         if(FCcode$FC[i]==1){
             t.res<-rep(NA,4)
             t.resLess<-rep(NA,4)
@@ -210,7 +210,7 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
                                            t.res))
         lodr.resLess <- rbind(lodr.resLess,c(round(abs(log2(FCcode$FC[i])),3),
                                              t.resLess))
-        
+        }
     }
     pval.res = subset(pval.res,pval.res$Pval != 0)
     
@@ -218,11 +218,16 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
     
     colnames(lodr.resPlot)[1:3]<-c("Ratio","MinError","Estimate")
     colnames(lodr.resLess)[1:3]<-c("Ratio","MinError","Estimate")
+    
     lodr.resPlot <- as.data.frame(lodr.resPlot)
     lodr.resLess <- as.data.frame(lodr.resLess)
-    lodr.resPlot$Ratio <- as.character(legendLabels)
-    lodr.resLess$Ratio <- as.character(legendLabels) 
-    annoTable = lodr.resLess[-c(2)]
+   
+    print(lodr.resLess)
+    print(lodr.resPlot)
+    lodr.resPlot$Ratio <- as.character(legendLabels[-which(FCcode$FC == 1)])
+    lodr.resLess$Ratio <- as.character(legendLabels[-which(FCcode$FC == 1)]) 
+    annoTable <- lodr.resLess[-c(2)]
+   
     colnames(annoTable) <- c("Ratio",expression("LODR Estimate"), 
                              expression("90% CI Lower Bound"), 
                              expression("90% CI Upper Bound"))
@@ -232,12 +237,12 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
     cat("\n")
     print(annoTable)
     
-    arrowDat = data.frame(Ratio = FCcode$Ratio, FC = FCcode$FC, 
+    arrowDat = data.frame(Ratio = lodr.resPlot$Ratio, 
                           x = lodr.resPlot[,3], y = pval.cutoff, 
                           xend = lodr.resPlot[,3], yend = 0)
     arrowDat$x[grep('<',lodr.resLess[,3])] <- Inf
     
-    arrowDat = arrowDat[-which(arrowDat$FC == "1"),]
+    #arrowDat = arrowDat[-which(arrowDat$FC == "1"),]
    
     arrowDat = arrowDat[which(is.finite(arrowDat$x)),]
     

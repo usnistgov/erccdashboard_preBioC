@@ -14,9 +14,9 @@ printLODRres <- function(exDat){
     if(dim(lodr.res)[2]!=0){
         ### Fold = lodr.res[c(1)]
         Fold = as.numeric(exDat$erccInfo$FCcode$FC)
-        
+        Fold <- Fold[Fold != 1]
         Abund = as.numeric(gsub("<", "",lodr.res$Estimate))
-        Ratio = legendLabels
+        Ratio = legendLabels[which(exDat$erccInfo$FCcode$FC != 1)]
         
         if(is.null(mnLibeFactor)){
             # Convert LODR Abund estimate to library size normalized

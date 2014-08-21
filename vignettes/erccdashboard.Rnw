@@ -167,7 +167,7 @@ user.
 
 Use the following command to run the default runDashboard script:
 
-<<runDashboardSEQCcount, keep.source=TRUE >>=
+<<runDashboardRatcount, keep.source=TRUE >>=
 exDat <- runDashboard(datType="count", isNorm = FALSE,
                        exTable=MET.CTL.countDat,
                        filenameRoot="RatTox", sample1Name="MET",
@@ -244,27 +244,20 @@ the ERCC ratio measurements) can be used to assess performance between
 experiments within the same laboratory, or between different laboratories or 
 technology platforms.
 
-Experiments for the SEQC interlaboratory and interplatform analysis were 
-performed with aliquots from single large batches of commercially available 
+To illustrate the difference between technology platforms example data are also
+provided from the SEQC interlaboratory study. The interlaboratory experiments 
+were performed with aliquots from single large batches of commercially available 
 reference RNA samples, Universal Human Reference RNA (UHRR) and Human Brain 
-Reference RNA (HBRR). The count data and microarray data provided here are 
-from experiments using the same original UHRR and HBRR samples.
-
-\subsection{Analysis of an UHRR vs. HBRR RNA-Seq experiment}
-The following command can be used to analyze the example RNA-Seq:
-<<SEQCMainCount,eval=FALSE>>=
-exDat <- runDashboard(datType="count", isNorm = FALSE,
-                      exTable=UHRR.HBRR.countDat,
-                      filenameRoot="Lab5", sample1Name = "UHRR", 
-                      sample2Name = "HBRR", erccmix = "RatioPair",
-                      erccdilution = 1, spikeVol = 50, 
-                      totalRNAmass = 2.5*10^(3), choseFDR = 0.01)
-@
+Reference RNA (HBRR).To prepare these large batches of reference RNA samples, 
+50 $\mu$L of undiluted Ambion ERCC Mix 1 was spiked into 2500 $\mu$g of the 
+UHRR total RNA and 50 $\mu$L of undiluted Ambion ERCC Mix 2 was spiked into 
+2500 $\mu$g the HBRR sample before these samples were aliquoted and shared 
+amongst laboratories and across platforms. 
 
 \subsection{Analysis of an UHRR vs. HBRR Microarray experiment}
 To analyze the example reference RNA experiment microarray data use the 
 following command:
-<<SEQCMainArray,eval=FALSE>>=
+<<SEQCMainArray,results=hide>>=
 exDat <- runDashboard(datType="array", isNorm = FALSE,
                       exTable=UHRR.HBRR.arrayDat,
                       filenameRoot = "Lab13.array",
@@ -275,14 +268,22 @@ exDat <- runDashboard(datType="array", isNorm = FALSE,
 
 Note that unnormalized fluorescent signals are expected for erccdashboard 
 analysis of microarray data (with the argument isNorm = FALSE) and input data 
-should not belog transformed.
+should not be log transformed.
 
 As with RNA-Seq experiments for microarray experiments it is optional 
 to provide a vector of per replicate normalization factors 
 through the input argument repNormFactor.
 
 Normalized microarray data may be analyzed with the erccdashboard if 
-isNorm = TRUE. 
+isNorm = TRUE.
+
+\subsection{Analysis of an UHRR vs. HBRR RNA-Seq experiment}
+
+To analyze the RNA-Seq reference RNA experiment data simply repeat the same command
+that you used in the previous section with the microarray data, but change the 
+datType to "count", use UHRR.HBRR.countDat as your exTable, and change your 
+filenameRoot to a different character string, so that your microarray data is 
+not overwritten.
 
 \section{Analysis Details: Advanced Use of erccdashboard Functions}
 The analysis functions contained in the convenience wrapper function 
