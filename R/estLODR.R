@@ -233,7 +233,7 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
     #annoTable <- annoTable[-which(annoTable$Ratio == "1:1"),]
     ####
     cat("\n")
-    print(annoTable, quote = F, row.names = F)
+    print(annoTable, quote = FALSE, row.names = FALSE)
     
     arrowDat = data.frame(Ratio = lodr.resPlot$Ratio, 
                           x = lodr.resPlot[,3], y = pval.cutoff, 

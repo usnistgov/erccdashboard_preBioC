@@ -75,21 +75,21 @@ saveERCCPlots<-function(exDat,plotsPerPg = "manuscript", saveas = "pdf",
         pwidth = 7*cols
         pheight = 7*nFigs/cols
         if (saveas == "png"){
-            png(filename = paste(outName,"png",sep="."),title=outName,
+            png(filename = paste(outName,"png",sep="."),
                 width=pwidth,height = pheight, units = "in", res = res)
             multiplot(exDat$Figures$dynRangePlot, exDat$Figures$rocPlot,
                       exDat$Figures$maPlot, exDat$Figures$lodrERCCPlot, cols=cols)
             dev.off()
         }
         if (saveas == "pdf"){
-            pdf(file = paste(outName,"pdf",sep="."),title=outName,
+            pdf(file = paste(outName,"pdf",sep="."), title=outName,
                 width=pwidth,height = pheight)
             multiplot(exDat$Figures$dynRangePlot, exDat$Figures$rocPlot,
                       exDat$Figures$maPlot, exDat$Figures$lodrERCCPlot, cols=cols)
             dev.off()
         }
         if (saveas == "jpeg"){
-            jpeg(filename = paste(outName,"jpeg",sep="."),title=outName,
+            jpeg(filename = paste(outName,"jpeg",sep="."),
                 width=pwidth,height = pheight, units = "in", res = res)
             multiplot(exDat$Figures$dynRangePlot, exDat$Figures$rocPlot,
                       exDat$Figures$maPlot, exDat$Figures$lodrERCCPlot, cols=cols)
@@ -110,8 +110,9 @@ saveERCCPlots<-function(exDat,plotsPerPg = "manuscript", saveas = "pdf",
             dev.off()
         }
         if (saveas == "pdf"){
-            pdf(file = paste(outName,"pdf",sep="."),onefile=TRUE,width=7,
-                height = 7)
+            pdf(file=paste(outName,"pdf",sep="."), title=outName,
+                onefile=TRUE,width=7,
+                height=7)
             print(plotlist)
             dev.off()    
         }

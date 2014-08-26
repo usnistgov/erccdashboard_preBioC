@@ -112,7 +112,7 @@ erccROC <- function(exDat){
     
     AUCAnnot <- AUCdat
     cat("\nArea Under the Curve (AUC) Results:\n")
-    print(AUCAnnot, quote = F, row.names = F)
+    print(AUCAnnot, quote = FALSE, row.names = FALSE)
     
     AUCdat$xval <- 0.7
     AUCdat$yval <- seq(to=0.25, from=0.1, length.out=nrow(FCcodeC))
