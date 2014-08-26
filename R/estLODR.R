@@ -222,8 +222,6 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
     lodr.resPlot <- as.data.frame(lodr.resPlot)
     lodr.resLess <- as.data.frame(lodr.resLess)
    
-    print(lodr.resLess)
-    print(lodr.resPlot)
     lodr.resPlot$Ratio <- as.character(legendLabels[-which(FCcode$FC == 1)])
     lodr.resLess$Ratio <- as.character(legendLabels[-which(FCcode$FC == 1)]) 
     annoTable <- lodr.resLess[-c(2)]
@@ -235,7 +233,7 @@ estLODR <- function(exDat,kind = "ERCC", prob=0.9){
     #annoTable <- annoTable[-which(annoTable$Ratio == "1:1"),]
     ####
     cat("\n")
-    print(annoTable)
+    print(annoTable, quote = F, row.names = F)
     
     arrowDat = data.frame(Ratio = lodr.resPlot$Ratio, 
                           x = lodr.resPlot[,3], y = pval.cutoff, 
