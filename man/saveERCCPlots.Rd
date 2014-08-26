@@ -13,9 +13,9 @@ saveERCCPlots(exDat, plotsPerPg = "manuscript", saveas = "pdf", res = 180,
 to one page, if "single" then each plot is printed to page
 in the pdf file}
 
-\item{saveas}{}
+\item{saveas}{Choose file format from "pdf", "jpeg" or "png"}
 
-\item{res}{}
+\item{res}{Choose the file resolution}
 
 \item{plotlist}{list, contains plots to print}
 }

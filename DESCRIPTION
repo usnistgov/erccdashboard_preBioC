@@ -36,8 +36,8 @@ Collate:
     testDECount.R testDEArray.R erccROC.R estLODR.R multiplot.R
     printLODRres.R saveERCCPlots.R maSignal.R annotLODR.R
 biocViews: GeneExpression, Transcription, AlternativeSplicing,
-    DifferentialExpression, DifferentialSplicing, GeneSetEnrichment, DataImport,
+    DifferentialExpression, DifferentialSplicing,
     Genetics, Microarray, mRNAMicroarray, RNASeq, BatchEffect, 
-    MultipleComparison, Normalization, QualityControl
+    MultipleComparison, QualityControl
 LazyData: yes
 Roxygen: list(wrap = FALSE)

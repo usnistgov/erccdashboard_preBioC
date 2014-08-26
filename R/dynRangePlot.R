@@ -301,7 +301,7 @@ dynRangePlot <- function(exDat){
     if((any(minLabel))){
         effectsPlot <- ggplot(effects, aes(x=AveConc, y=ERCC.effect)) + 
             geom_point(aes(colour=Ratio), size=6, alpha=0.8) + xlabel +
-            ylab(paste("Per ERCC Differences from Linear Fit Standardized",
+            ylab(paste("Per ERCC Differences from Linear Fit (Standardized",
                        "by s.e., unitless)")) +
             coord_cartesian(ylim=xlimEffects, xlim=myXLim) + colScale + 
             geom_text(data=subset(effects,
@@ -315,7 +315,7 @@ dynRangePlot <- function(exDat){
     }else{
         effectsPlot <- ggplot(effects, aes(x=AveConc, y=ERCC.effect)) + 
             geom_point(aes(colour=Ratio), size=6, alpha=0.8) + xlabel + 
-            ylab(paste("Per ERCC Differences from Linear Fit Standardized",
+            ylab(paste("Per ERCC Differences from Linear Fit (Standardized",
                        "by s.e., unitless)")) +
             coord_cartesian(ylim= xlimEffects, xlim=myXLim) + 
             colScale + 

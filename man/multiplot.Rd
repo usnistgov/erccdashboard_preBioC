@@ -13,6 +13,24 @@ multiplot(..., plotlist = NULL, cols)
 \item{cols}{number of columns for grid of plots}
 }
 \description{
-Multiplot function from R cookbook
+# Function is originally from R Cookbook
+# http://wiki.stdout.org/rcookbook/Graphs/Multiple%20
+#          graphs%20on%20one%20page%20(ggplot2)/
+}
+\examples{
+data(SEQC.Example)
+
+exDat <- runDashboard(datType="array", isNorm=FALSE,
+                 exTable=UHRR.HBRR.arrayDat,
+                 filenameRoot="testRun", sample1Name="UHRR",
+                 sample2Name="HBRR", erccmix="RatioPair",
+                 erccdilution = 1, spikeVol = 50,
+                 totalRNAmass = 2.5*10^(3), choseFDR=0.01)
+
+# print 2 plots to page with 2 columns
+multiplot(exDat$Figures$lodrERCCPlot,exDat$Figures$rocPlot,cols = 2)
+
+# print 2 plots to page with 1 column
+multiplot(exDat$Figures$lodrERCCPlot,exDat$Figures$rocPlot,cols = 1)
 }
 

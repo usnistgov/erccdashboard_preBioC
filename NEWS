@@ -13,12 +13,11 @@ transcripts named with this prefix.
 
 REMOVED FUNCTIONALITY
 
-*
+* 
 
 ISSUES
 
-* CMD check still takes too long (> 5 minutes), probably due to differential 
-expression testing in underlying package. This will be difficult to change.
+* 
 
 ----------------------------------------------------------------
 erccdashboard 0.99.0

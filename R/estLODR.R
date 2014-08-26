@@ -12,23 +12,23 @@
 #' @examples
 #' data(SEQC.Example)
 #'  
-#' exDat <- initDat(datType="count", isNorm = FALSE, exTable=MET.CTL.countDat, 
-#'                  filenameRoot = "testRun",sample1Name = "MET",
-#'                  sample2Name = "CTL", erccmix = "RatioPair", 
-#'                  erccdilution = 1/100, spikeVol = 1, totalRNAmass = 0.500,
-#'                  choseFDR = 0.1)
+#' exDat <- initDat(datType="array", isNorm=FALSE, 
+#'                  exTable=UHRR.HBRR.arrayDat,
+#'                  filenameRoot="testRun", sample1Name="UHRR",
+#'                  sample2Name="HBRR", erccmix="RatioPair", 
+#'                  erccdilution = 1, spikeVol = 50, 
+#'                  totalRNAmass = 2.5*10^(3), choseFDR=0.01)
 #'                  
 #' exDat <- est_r_m(exDat)
 #'                   
 #' exDat <- dynRangePlot(exDat)
-#' \donttest{
-#' ## this part of example not run during installation
+#'
 #' exDat <- geneExprTest(exDat)
 #' 
 #' exDat <- estLODR(exDat, kind = "ERCC", prob = 0.9)
 #' 
 #' exDat$Figures$lodrERCCPlot
-#' }
+#'
 #' @export
 #' 
 estLODR <- function(exDat,kind = "ERCC", prob=0.9){

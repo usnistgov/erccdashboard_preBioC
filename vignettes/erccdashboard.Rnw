@@ -26,7 +26,7 @@ This vignette describes the use of the erccdashboard R package to analyze
 External RNA Control Consortium (ERCC) spike-in control ratio mixtures in gene
 expression experiments. If you use this package for method validation of your
 gene expression experiments please cite our manuscript that describes this R 
-package.
+package using citation("erccdashboard").
 
 In this vignette we demonstrate analysis of two types of gene expression 
 experiments from the SEQC project that used ERCC control ratio mixture 
