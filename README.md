@@ -22,12 +22,15 @@ Nat. Commun. 5:5125 doi: 10.1038/ncomms6125 (2014).
 ### To install this GitHub development version: 
    
 1. Get Bioconductor package dependencies
+    
     ```    
     source("http://bioconductor.org/biocLite.R")
     
     biocLite(c("edgeR","limma","qvalue"))
     ```
+
 2. Use the devtools command to install erccdashboard from github
+
     ```
     install_github("usnistgov/erccdashboard")
     ```
@@ -36,6 +39,7 @@ Nat. Commun. 5:5125 doi: 10.1038/ncomms6125 (2014).
 
 1. Run these Bioconductor installation commands (all Bioconductor and CRAN 
 dependencies will be automatically installed)
+
     ```
     source("http://bioconductor.org/biocLite.R")
     
@@ -45,14 +49,19 @@ dependencies will be automatically installed)
 ## Quick Start
 
 1. Load the erccdashboard package
+    
     ```
     library("erccdashboard")
     ```
+
 2. Load the example data
+
     ```
     data(SEQC.Example)
     ```
+
 3. Run the dashboard demo on rat toxicogenomics data:
+
     ```
     exDat <- runDashboard(datType="count", isNorm=FALSE,
                            exTable=MET.CTL.countDat,
@@ -61,11 +70,13 @@ dependencies will be automatically installed)
                            erccdilution=1/100, spikeVol=1,
                            totalRNAmass=0.500, choseFDR=0.1)
     ```
+
 4. Review the results of the analysis in the RatTox.MET.CTL.RData and
    RatTox.MET.CTL.pdf file of the main diagnostic plots
 
 5. Analysis of additional example data sets is described in the package vignette.
 Open the vignette pdf file with the command:
+
     ```
     vignette("erccdashboard")
     ```
